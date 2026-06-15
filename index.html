@@ -53,7 +53,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',-appl
 .btn{font:inherit;font-size:14px;padding:9px 15px;background:transparent;border:1px solid var(--ink);border-radius:var(--rmd);color:var(--ink);cursor:pointer;}
 .btn:hover{background:var(--ink);color:var(--paper);}
 .btn:active{transform:scale(.98);}
-.btn.go{background:var(--wire);border-color:var(--wire);color:#fff;font-weight:600;}
+.btn.go{background:var(--wire);border-color:var(--wire);color:#fff;font-weight:700;font-size:16px;padding:13px 28px;}
 .btn.go:hover{background:#9c3622;}
 .btn.sm{font-size:12px;padding:6px 11px;}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
@@ -106,7 +106,7 @@ input[type=range]{accent-color:var(--wire);}
 .tagx.out{background:var(--wire-soft);color:var(--wire);}
 .score2{font-family:'Spline Sans Mono',monospace;font-size:11px;color:var(--muted);margin-top:5px;border-top:1px dotted var(--rule);padding-top:5px;}
 .score2 b{color:var(--ink);font-weight:500;}
-/* branch point alert */
+/* turning point alert */
 .bpalert{border-left:3px solid var(--wire);background:var(--wire-soft);border-radius:0 var(--rmd) var(--rmd) 0;padding:.55rem .8rem;margin:7px 0;font-size:13px;animation:fade .3s ease;}
 .bpalert .bpk{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--wire);font-weight:500;}
 .bpalert b{font-weight:600;}
@@ -199,10 +199,10 @@ body.show-adv .ctl.adv{display:flex;}
  <svg class="wh" viewBox="0 0 360 92" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The White House"><g fill="var(--ink)"><rect x="6" y="82" width="348" height="4"/><rect x="16" y="50" width="328" height="32"/><rect x="10" y="45" width="340" height="6" rx="1"/><rect x="20" y="40" width="3" height="6"/><rect x="36" y="40" width="3" height="6"/><rect x="52" y="40" width="3" height="6"/><rect x="68" y="40" width="3" height="6"/><rect x="84" y="40" width="3" height="6"/><rect x="100" y="40" width="3" height="6"/><rect x="116" y="40" width="3" height="6"/><rect x="132" y="40" width="3" height="6"/><rect x="148" y="40" width="3" height="6"/><rect x="164" y="40" width="3" height="6"/><rect x="180" y="40" width="3" height="6"/><rect x="196" y="40" width="3" height="6"/><rect x="212" y="40" width="3" height="6"/><rect x="228" y="40" width="3" height="6"/><rect x="244" y="40" width="3" height="6"/><rect x="260" y="40" width="3" height="6"/><rect x="276" y="40" width="3" height="6"/><rect x="292" y="40" width="3" height="6"/><rect x="308" y="40" width="3" height="6"/><rect x="324" y="40" width="3" height="6"/><rect x="340" y="40" width="3" height="6"/><rect x="150" y="38" width="60" height="44"/><polygon points="146,40 180,22 214,40"/><rect x="178.5" y="6" width="2" height="18"/><rect x="180.5" y="6" width="13" height="7"/></g><g fill="var(--paper)"><rect x="157" y="46" width="3.5" height="34"/><rect x="168" y="46" width="3.5" height="34"/><rect x="179" y="46" width="3.5" height="34"/><rect x="190" y="46" width="3.5" height="34"/><rect x="201" y="46" width="3.5" height="34"/></g><rect x="174" y="62" width="12" height="18" fill="var(--ink)"/><g fill="var(--paper)"><rect x="26.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="40.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="54.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="68.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="82.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="96.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="110.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="124.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="138.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="210.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="224.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="238.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="252.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="266.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="280.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="294.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="308.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="322.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="26.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="40.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="54.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="68.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="82.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="96.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="110.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="124.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="138.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="210.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="224.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="238.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="252.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="266.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="280.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="294.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="308.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="322.0" y="71.0" width="7.0" height="7.0" rx="0.6"/></g></svg>
  <div class="mast-r">2028 DEMOCRATIC PRIMARY<br>SIMULATION DESK<br><span id="clock">—</span></div>
 </div>
-<div class="subrule"><span>Most coverage asks who is ahead. This asks what would have to happen for someone to get ahead.</span><span>Contract prices as of mid-June, drawn from the live betting markets I track</span></div>
+<div class="subrule"><span>Most coverage asks who is ahead. This asks what would have to happen for someone to get ahead.</span><span>Baseline assumptions current to mid-June 2026</span></div>
 
 <div class="bpstrip" id="bpstrip">
- <span class="bplabel">Today's branch points</span>
+ <span class="bplabel">Today's turning points</span>
  <button class="bpchip" onclick="cueBranch('aoc')">AOC decision</button>
  <button class="bpchip" onclick="cueBranch('calendar')">DNC calendar</button>
  <button class="bpchip" onclick="cueBranch('newsom')">Newsom scrutiny</button>
@@ -216,7 +216,7 @@ body.show-adv .ctl.adv{display:flex;}
  <div class="sb"><div class="lab">Current frontrunner</div><div class="val" id="sbFront">—</div></div>
  <div class="sb"><div class="lab">Last nominee</div><div class="val" id="sbNom">—</div></div>
  <div class="sb"><div class="lab">Convention floor</div><div class="val" id="sbCont">—</div></div>
- <div class="sb"><div class="lab">Branch points fired</div><div class="val" id="sbBP">—</div></div>
+ <div class="sb"><div class="lab">Turning points this run</div><div class="val" id="sbBP">—</div></div>
 </div>
 
 <div class="row" style="margin-bottom:1.1rem;">
@@ -230,16 +230,16 @@ body.show-adv .ctl.adv{display:flex;}
 <div id="aggregate" class="section" style="display:none;"></div>
 <div id="stage" class="section" style="display:none;"></div>
 
-<h2 class="s">Branch point rankings</h2>
+<h2 class="s">Turning point rankings</h2>
 <div class="section">
  <div class="shead"><span>The election's most decisive variables · by average swing</span><span class="note" id="rankStatus">built with the heatmap</span></div>
- <div id="rankings"><div class="muted">Build the heatmap below and these rank automatically: the branch points that move the most outcomes, measured in average win-rate swing across the field. This ranks the election itself, not the candidates.</div></div>
+ <div id="rankings"><div class="muted">Build the heatmap below and these rank automatically: the turning points that move the most outcomes, measured in average win-rate swing across the field. This ranks the election itself, not the candidates.</div></div>
 </div>
 
-<h2 class="s">The branch point heatmap</h2>
+<h2 class="s">The turning point heatmap</h2>
 <div class="section">
  <div class="shead"><span>What moves whom · 10,000 paired runs per lever</span><span class="note" id="hmStatus">not yet built</span></div>
- <div class="hm" id="heatmap"><div class="muted">Click "Build heatmap" to compute how much each branch point swings each candidate. This is the part that's actually journalism: not the odds, but what changes them.</div></div>
+ <div class="hm" id="heatmap"><div class="muted">Click "Build heatmap" to compute how much each turning point swings each candidate. This shows what changes the odds, not just the odds themselves.</div></div>
 </div>
 
 <h2 class="s">The field</h2>
@@ -278,7 +278,7 @@ body.show-adv .ctl.adv{display:flex;}
  </div>
 </div>
 
-<p class="foot">THE 2028 MACHINE · A MODEL BUILT FROM ONE OPERATOR'S PRIORS, NOT A FORECAST · THE STRENGTHS ARE ARGUABLE ON PURPOSE; THE VALUE IS WHAT MOVES THE OUTCOME, NOT THE HEADLINE ODDS · BASELINE PRICES READ OFF THE BETTING MARKETS I TRACK, CURRENT TO MID-JUNE AND ALWAYS DRIFTING · THE DRISCOLL GLOBE · POLITICAL SYSTEMS DESK</p>
+<p class="foot">THE 2028 MACHINE · A MODEL BUILT FROM ONE OPERATOR'S PRIORS, NOT A FORECAST · THE STRENGTHS ARE ARGUABLE ON PURPOSE; THE VALUE IS WHAT MOVES THE OUTCOME, NOT THE HEADLINE ODDS · BASELINE ASSUMPTIONS CURRENT TO MID-JUNE 2026 AND ALWAYS DRIFTING · THE DRISCOLL GLOBE · POLITICAL SYSTEMS DESK</p>
 <div class="modal-bg" id="modalBg" onclick="closeModal(event)">
  <div class="modal" id="modalBox" onclick="event.stopPropagation()">
   <button class="modal-x" onclick="closeModal()">×</button>
@@ -310,10 +310,10 @@ const CANDS=[
  {id:'platner',name:'Graham Platner',role:'Senate nominee, Maine',age:42,mkt:0.7,run:0,lane:'pop',rank:18,debate:1.0,str:'Riveting bio, populist voice',weak:'Freshman, heavy scrutiny',base:5,fit:{SC:0.50,NH:1.40,NV:0.80,IA:1.00,MI:1.05,GA:0.70,NC:0.80,ST:0.90}},
  {id:'stewart',name:'Jon Stewart',role:'Broadcaster',age:65,mkt:1.7,run:18,lane:'out',rank:19,debate:1.2,str:'Attention, anti-elite credibility',weak:'66 on election day; wants influence not the job',base:5,fit:{SC:0.60,NH:1.10,NV:1.00,IA:0.90,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
  {id:'fain',name:'Shawn Fain',role:'UAW President',age:56,mkt:0.4,run:10,lane:'pop',rank:20,debate:1.0,str:'Purest class-war vessel',weak:'Never run for anything',base:5,fit:{SC:0.60,NH:0.80,NV:1.30,IA:1.10,MI:1.50,GA:0.70,NC:0.85,ST:0.95}},
- {id:'walz',name:'Tim Walz',role:'Gov., Minnesota',age:64,mkt:0.7,run:5,lane:'rest',rank:21,debate:1.0,str:'Folksy, soft-left',weak:'Losing VP rarely tops the ticket',base:5,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.20,MI:1.10,GA:0.80,NC:0.90,ST:0.95}},
+ {id:'walz',name:'Tim Walz',role:'Gov., Minnesota',age:64,mkt:0.7,run:5,lane:'elec',rank:21,debate:1.0,str:'Folksy, soft-left',weak:'Losing VP rarely tops the ticket',base:5,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.20,MI:1.10,GA:0.80,NC:0.90,ST:0.95}},
  {id:'other',name:'Someone else',role:'Not yet declared',age:0,mkt:9,run:100,lane:'out',rank:0,debate:1.0,str:'The candidate the moment hasn\u2019t named',weak:'Does not exist yet',base:6,fit:{SC:1.00,NH:1.00,NV:1.00,IA:1.00,MI:1.00,GA:1.00,NC:1.00,ST:1.00}}
 ];
-const POOLS={rest:['harris','warnock','ossoff','walz'],pop:['aoc','khanna','murphy','talarico','platner','fain'],elec:['newsom','shapiro','pritzker','beshear','kelly','whitmer','moore','rahm','pete'],out:['stewart','other']};
+const POOLS={rest:['harris','warnock','ossoff'],pop:['aoc','khanna','murphy','talarico','platner','fain'],elec:['newsom','shapiro','pritzker','beshear','kelly','whitmer','moore','rahm','pete','walz'],out:['stewart','other']};
 const POOLOF={};Object.keys(POOLS).forEach(p=>POOLS[p].forEach(id=>POOLOF[id]=p));
 // pools that the establishment-coordination mechanic can consolidate (institutional pools)
 const COORD_POOLS=['rest','elec'];
@@ -515,12 +515,12 @@ function play(){
    let h='<div class="node"><div class="month">The field forms</div><div class="nhead">'+s.count+' candidates in</div><div class="muted" style="font-size:13px;">'+s.env+'</div>';
    s.notes.forEach(n=>h+='<div class="muted" style="font-size:13px;margin-top:3px;">'+n+'</div>');
    h+='</div>';tl.insertAdjacentHTML('beforeend',h);
-   s.events.forEach(e=>{bpThisRun++;tl.insertAdjacentHTML('beforeend','<div class="bpalert"><div class="bpk">Branch point</div><b>'+e.label+'.</b> '+(e.mult>1?'Their position strengthens.':'Their standing takes a hit.')+'</div>');});
+   s.events.forEach(e=>{bpThisRun++;tl.insertAdjacentHTML('beforeend','<div class="bpalert"><div class="bpk">Turning point</div><b>'+e.label+'.</b> '+(e.mult>1?'Their position strengthens.':'Their standing takes a hit.')+'</div>');});
   } else if(s.type==='coordfail'){
-   bpThisRun++;tl.insertAdjacentHTML('beforeend','<div class="bpalert"><div class="bpk">Branch point</div><b>The establishment fails to coordinate.</b> No one clears the lane, the field stays fractured, and a plurality is now enough to win.</div>');
+   bpThisRun++;tl.insertAdjacentHTML('beforeend','<div class="bpalert"><div class="bpk">Turning point</div><b>The establishment fails to coordinate.</b> No one clears the lane, the field stays fractured, and a plurality is now enough to win.</div>');
   } else if(s.type==='coord'){
    const poolName={rest:'Restoration',elec:'Electability'}[s.pool]||'establishment';
-   bpThisRun++;let h='<div class="bpalert"><div class="bpk">Branch point</div><b>The '+poolName+' lane consolidates behind '+nm(s.bene)+'.</b>';
+   bpThisRun++;let h='<div class="bpalert"><div class="bpk">Turning point</div><b>The '+poolName+' lane consolidates behind '+nm(s.bene)+'.</b>';
    if(s.exits.length)h+=' '+s.exits.map(nm).join(', ')+(s.exits.length>1?' step aside and clear the lane.':' steps aside and clears the lane.');h+='</div>';tl.insertAdjacentHTML('beforeend',h);
   } else if(s.type==='state'){
    const mx=s.shares[0].s;
@@ -537,12 +537,12 @@ function play(){
    tl.insertAdjacentHTML('beforeend',h);
    // share card
    const why=s.reasons.map(r=>'<li>'+r.charAt(0).toUpperCase()+r.slice(1)+'.</li>').join('');
-   const shareTxt='The 2028 Machine says:\n\nNominee: '+nm(s.leader)+(s.majority?'':' (contested convention)')+'\n\nWhy:\n'+s.reasons.map(r=>'- '+r.charAt(0).toUpperCase()+r.slice(1)+'.').join('\n')+'\n\nRun your own at The Driscoll Globe';
+   const shareTxt='The 2028 Machine says:\n\nNominee: '+nm(s.leader)+(s.majority?'':' (contested convention)')+'\n\nWon because:\n'+s.reasons.map(r=>'- '+r.charAt(0).toUpperCase()+r.slice(1)+'.').join('\n')+'\n\nRun your own at The Driscoll Globe';
    const npic=PHOTOS[s.leader]?'<img class="sh-photo" src="'+PHOTOS[s.leader]+'" alt="">':'<div class="sh-mono">'+nm(s.leader).split(' ').map(w=>w[0]).slice(0,2).join('')+'</div>';
    const pctTxt=Math.round(s.delegates/s.total*100)+'% of delegates';
    const sc='<div class="sharecard"><div class="sh-brand"><img class="sh-wh" src="'+WH+'" alt=""><span>The 2028 Machine · The Driscoll Globe</span></div>'
     +'<div class="sh-main">'+npic+'<div class="sh-text"><div class="sh-top">'+(s.majority?'The nominee':'Leads a contested convention')+'</div><div class="sh-nom">'+nm(s.leader)+'</div><div class="sh-pct">'+pctTxt+'</div></div></div>'
-    +'<div class="sh-whyhead">Because</div><ul class="sh-because">'+why+'</ul>'
+    +'<div class="sh-whyhead">Won because</div><ul class="sh-because">'+why+'</ul>'
     +'<div class="sh-actions"><button class="btn sm" onclick=\'copyShare('+JSON.stringify(JSON.stringify(shareTxt))+')\'>Copy result</button><button class="btn sm" onclick="play()">Run a different world</button></div></div>';
    tl.insertAdjacentHTML('beforeend',sc);
    runs++;bpFired+=bpThisRun;if(!s.majority)contestedCount++;
@@ -604,7 +604,7 @@ function renderRankings(results){
  sorted.forEach((r,i)=>{
   h+='<div class="rankrow"><div class="rnum">'+(i+1)+'</div><div class="rkey">'+r.key+'<span class="rmover">biggest mover: '+nm(r.mover).split(' ').slice(-1)[0]+' '+(r.mv>0?'+':'')+r.mv.toFixed(0)+'</span></div><div class="rbart"><div class="rbarf" style="width:'+(r.avgSwing/mx*100).toFixed(1)+'%"></div></div><div class="rval">'+r.avgSwing.toFixed(1)+'</div></div>';
  });
- h+='</div><div class="legend">Average swing is how many percentage points a branch point moves the typical candidate\u2019s win rate when it flips. Higher means the whole field bends around that one decision. This is the election measured as a system of choices.</div>';
+ h+='</div><div class="legend">Average swing is how many percentage points a turning point moves the typical candidate\u2019s win rate when it flips. Higher means the whole field bends around that one decision. This is the election measured as a system of choices.</div>';
  document.getElementById('rankings').innerHTML=h;
  document.getElementById('rankStatus').textContent='ranked · top lever: '+sorted[0].key;
 }
@@ -615,7 +615,7 @@ function renderHeatmap(results,watch){
   if(v>=0)return 'background:rgba(31,122,92,'+(a*0.85).toFixed(2)+');color:'+(a>0.5?'#fff':'inherit');
   return 'background:rgba(184,68,43,'+(a*0.85).toFixed(2)+');color:'+(a>0.5?'#fff':'inherit');
  }
- let h='<table class="hmtable"><tr><th>Branch point</th>';
+ let h='<table class="hmtable"><tr><th>Turning point</th>';
  watch.forEach(k=>h+='<th>'+nm(k).split(' ').slice(-1)[0]+'</th>');
  h+='<th>Biggest mover</th></tr>';
  results.forEach(r=>{
@@ -623,7 +623,7 @@ function renderHeatmap(results,watch){
   watch.forEach(k=>{const v=r.sw[k];h+='<td class="hmcell" style="'+cellColor(v)+'">'+(v>0?'+':'')+v.toFixed(0)+'</td>';});
   h+='<td style="text-align:left;font-weight:600;">'+nm(r.mover).split(' ').slice(-1)[0]+' '+(r.mv>0?'+':'')+r.mv.toFixed(0)+'</td></tr>';
  });
- h+='</table><div class="legend">Each cell is the change in a candidate\u2019s win rate (percentage points) when the branch point flips from off to on, holding everything else at current settings. Green helps, red hurts. This is the model\u2019s real output: not who wins, but what changes the answer.</div>';
+ h+='</table><div class="legend">Each cell is the change in a candidate\u2019s win rate (percentage points) when the turning point flips from off to on, holding everything else at current settings. Green helps, red hurts. What changes the answer matters more than who wins.</div>';
  document.getElementById('heatmap').innerHTML=h;
 }
 function buildCards(){
@@ -673,7 +673,7 @@ function copyShare(txt){
 }
 function fallbackCopy(t){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}
 function cueBranch(which){
- // preset controls to dramatize a branch point, scroll to controls, then run
+ // preset controls to dramatize a turning point, scroll to controls, then run
  const set=(id,v)=>{const e=document.getElementById(id);if(e){e.value=v;const o=document.getElementById(id+'Out');if(o)o.textContent=v+'%';}};
  if(which==='aoc'){set('pAoc',47);document.getElementById('selTheme').value='afford';}
  else if(which==='calendar'){document.getElementById('selCal').value='A';}
