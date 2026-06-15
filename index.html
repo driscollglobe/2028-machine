@@ -398,7 +398,7 @@ function simulate(C,collect){
   if(c.id==='khanna')b*=aoc?0.3:2.0;
   if(c.id==='murphy')b*=aoc?0.45:1.6;
   if(c.id==='fain')b*=aoc?0.4:1.0;
-  if(c.id==='platner')b=({narrow:3,solid:5,land:8})[plat]*TM.platner[theme]*(aoc?0.5:1);
+  if(c.id==='platner')b=(({narrow:3,solid:5,land:8})[plat]||1.5)*TM.platner[theme]*(aoc?0.5:1);
   if(c.id==='newsom'){b*=aoc?1.15:1.0;if(!nsurv)b*=0.4;}
   if(c.id==='pete')b*=harris?0.6:1.15;
   if(c.id==='ossoff')b*=(ossWin==='big'?1.25:0.9)*(harris?0.85:1);
@@ -443,16 +443,18 @@ function simulate(C,collect){
    let f=c.fit[st==='LS'?'ST':st];
    const cm=calClass&&CAL[calClass]?CAL[calClass][c.id]:null;if(cm)f*=cm;
    if(st==='SC'&&((black==='hold'&&c.id==='harris')||(black==='another'&&c.id===blackBene)))f*=1.15;
-   const v=str[c.id]*f*mom[c.id]*Math.exp(gnoise()*0.42);
+   let v=str[c.id]*f*mom[c.id]*Math.exp(gnoise()*0.42);
+   if(!isFinite(v)||v<0)v=0;
    sc[c.id]=v;tot+=v;
   });
-  const shares=Object.keys(sc).map(k=>({k,s:sc[k]/tot})).sort((a,b)=>b.s-a.s);
+  const keys=Object.keys(sc);
+  const shares=keys.map(k=>({k,s:tot>0?sc[k]/tot:1/keys.length})).sort((a,b)=>b.s-a.s);
   const viable=shares.filter(x=>x.s>=0.15);const pool=viable.length?viable:shares.slice(0,3);
   const ptot=pool.reduce((a,x)=>a+x.s,0);pool.forEach(x=>dels[x.k]+=DELS[st]*x.s/ptot);
   return shares;
  }
  seq.forEach((st,si)=>{
-  const shares=contest(st,null);won[shares[0].k]++;
+  const shares=contest(st,null);if(shares.length)won[shares[0].k]++;
   // debate skill: between contests, repeated strong debaters gain
   if(C.pDb>0){shares.slice(0,4).forEach(x=>{const c=CANDS.find(cc=>cc.id===x.k);const lift=1+(c.debate-1)*C.pDb;str[x.k]*=lift;if(c.debate>1.05&&x.s>0.1)dbWins[x.k]++;});}
   const dropped=[];
@@ -479,13 +481,13 @@ function simulate(C,collect){
    steps.push({type:'coord',bene,exits,pool:topPool});
   }
  }
- const stS=contest('ST',null);won[stS[0].k]++;
+ const stS=contest('ST',null);if(stS.length)won[stS[0].k]++;
  steps.push({type:'state',st:'ST',shares:stS.slice(0,5),dropped:[],board:board()});
  const top3=board().slice(0,3).map(x=>x.k).filter(k=>alive[k]);
  Object.keys(alive).forEach(k=>{if(alive[k]&&!top3.includes(k))alive[k]=false;});
  const lsS=contest('LS',top3);
  steps.push({type:'state',st:'LS',shares:lsS.slice(0,3),dropped:[],board:board()});
- const fin=board();const total=seq.reduce((a,s)=>a+DELS[s],0)+DELS.ST+DELS.LS;
+ let fin=board();if(!fin.length)fin=[{k:'other',d:1}];const total=seq.reduce((a,s)=>a+DELS[s],0)+DELS.ST+DELS.LS;
  const reasons=[];
  if(!aoc)reasons.push('AOC stayed out of the race'); else reasons.push('AOC ran and anchored the left');
  if(!harris)reasons.push('Harris declined to run');
