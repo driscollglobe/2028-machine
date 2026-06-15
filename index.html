@@ -139,7 +139,11 @@ input[type=range]{accent-color:var(--wire);}
 .abt{flex:1;height:16px;background:var(--paper);border:1px solid var(--rule);border-radius:3px;position:relative;overflow:hidden;}
 .abf{position:absolute;left:0;top:0;height:100%;background:var(--ink);}
 .abf.lead{background:var(--wire);}
+.abf.contested{background:repeating-linear-gradient(45deg,var(--faint),var(--faint) 3px,transparent 3px,transparent 7px);}
+.dpr{display:inline-flex;align-items:center;gap:5px;margin-left:10px;font-size:11px;color:var(--faint);font-family:'Spline Sans Mono',monospace;cursor:pointer;vertical-align:middle;}
+.dpr input{margin:0;cursor:pointer;}
 .abv{width:46px;font-family:'Spline Sans Mono',monospace;font-size:12.5px;font-weight:500;text-align:right;flex-shrink:0;}
+.aggsub{font-family:'Spline Sans Mono',monospace;font-size:10.5px;color:var(--faint);margin:-1px 0 3px 34px;}
 .ranklist{display:flex;flex-direction:column;gap:8px;}
 .rankrow{display:flex;align-items:center;gap:10px;}
 .rnum{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:18px;width:24px;color:var(--wire);text-align:center;flex-shrink:0;}
@@ -214,8 +218,8 @@ body.show-adv .ctl.adv{display:flex;}
 
 <div class="scoreboard">
  <div class="sb"><div class="lab">Current frontrunner</div><div class="val" id="sbFront">—</div></div>
- <div class="sb"><div class="lab">Last nominee</div><div class="val" id="sbNom">—</div></div>
- <div class="sb"><div class="lab">Convention floor</div><div class="val" id="sbCont">—</div></div>
+ <div class="sb"><div class="lab">Last result</div><div class="val" id="sbNom">—</div></div>
+ <div class="sb"><div class="lab">Contested in your runs</div><div class="val" id="sbCont">—</div></div>
  <div class="sb"><div class="lab">Turning points this run</div><div class="val" id="sbBP">—</div></div>
 </div>
 
@@ -233,12 +237,12 @@ body.show-adv .ctl.adv{display:flex;}
 <h2 class="s">Turning point rankings</h2>
 <div class="section">
  <div class="shead"><span>The election's most decisive variables · by average swing</span><span class="note" id="rankStatus">built with the heatmap</span></div>
- <div id="rankings"><div class="muted">Build the heatmap below and these rank automatically: the turning points that move the most outcomes, measured in average win-rate swing across the field. This ranks the election itself, not the candidates.</div></div>
+ <div id="rankings"><div class="muted">Build the heatmap below and these rank automatically: the turning points that move the most outcomes, measured in average first-place swing across the field. This ranks the election itself, not the candidates.</div></div>
 </div>
 
 <h2 class="s">The turning point heatmap</h2>
 <div class="section">
- <div class="shead"><span>What moves whom · 10,000 paired runs per lever</span><span class="note" id="hmStatus">not yet built</span></div>
+ <div class="shead"><span>What moves whom · 5,000 matched seed runs per lever</span><span class="note" id="hmStatus">not yet built</span></div>
  <div class="hm" id="heatmap"><div class="muted">Click "Build heatmap" to compute how much each turning point swings each candidate. This shows what changes the odds, not just the odds themselves.</div></div>
 </div>
 
@@ -265,12 +269,13 @@ body.show-adv .ctl.adv{display:flex;}
  </div>
  <div class="section">
   <div class="shead">Environment</div>
-  <div class="ctl adv"><label class="cl">Trump approval (late 2027)</label><input type="range" min="30" max="60" value="40" id="pTrump"><span class="cv" id="pTrumpOut">40%</span></div>
+  <div class="ctl adv"><label class="cl">Trump approval (late 2027)</label><input type="range" min="30" max="60" value="40" id="pTrump"><span class="cv" id="pTrumpOut">40%</span><label class="dpr"><input type="checkbox" id="apprMixed">Drawn per run</label></div>
   <div class="ctl"><label class="cl">What 2028 is about</label><select id="selTheme"><option value="mixed" selected>Drawn per run</option><option value="afford">Affordability and class</option><option value="ai">AI and the future of work</option><option value="fight">Democracy and fighting Trumpism</option><option value="norm">Competence and electability</option></select></div>
   <div class="ctl adv"><label class="cl">Lesson of 2026</label><select id="selLesson"><option value="mixed" selected>Drawn per run</option><option value="inst">Institutional Democrats won</option><option value="pop">Economic populists won</option><option value="muddle">Both sides claim victory</option><option value="under">Democrats underperformed</option></select></div>
   <div class="ctl adv"><label class="cl">Black Democratic voters</label><select id="selBlack"><option value="mixed" selected>Drawn per run</option><option value="hold">Harris holds the coalition</option><option value="div">Remains divided</option><option value="another">Consolidates behind another</option><option value="gen">Generational realignment</option></select></div>
-  <div class="ctl"><label class="cl">Early state calendar</label><select id="selCal"><option value="A" selected>South Carolina first: SC, NH, NV, GA</option><option value="B">Tradition: IA, NH, NV, SC</option><option value="C">Battleground: GA, NC, MI, NV</option><option value="D">Midwest first: MI, IA, NV, SC</option><option value="E">Retail: NH, IA, NV, SC</option></select></div>
-  <div class="ctl adv"><label class="cl">Media darling momentum favors</label><select id="selDarling"><option value="none" selected>No clear darling</option><option value="aoc">AOC</option><option value="ossoff">Ossoff</option><option value="moore">Moore</option><option value="khanna">Khanna</option><option value="murphy">Murphy</option></select></div>
+  <div class="ctl adv"><label class="cl">Latino Democratic voters</label><select id="selLatino"><option value="mixed" selected>Drawn per run</option><option value="aoc">Consolidate behind AOC</option><option value="pop">Break for the populist lane</option><option value="split">Remain divided</option><option value="soft">Stay soft for Democrats</option></select></div>
+  <div class="ctl"><label class="cl">Early state calendar</label><select id="selCal"><option value="mixed">Drawn per run</option><option value="A" selected>South Carolina first: SC, NH, NV, GA</option><option value="B">Tradition: IA, NH, NV, SC</option><option value="C">Battleground: GA, NC, MI, NV</option><option value="D">Midwest first: MI, IA, NV, SC</option><option value="E">Retail: NH, IA, NV, SC</option></select></div>
+  <div class="ctl adv"><label class="cl">Media darling momentum favors</label><select id="selDarling"><option value="mixed">Drawn per run</option><option value="none" selected>No clear darling</option><option value="aoc">AOC</option><option value="ossoff">Ossoff</option><option value="moore">Moore</option><option value="khanna">Khanna</option><option value="murphy">Murphy</option></select></div>
   <div class="ctl adv"><label class="cl">Establishment coordination</label><input type="range" min="0" max="100" value="50" id="pCoord"><span class="cv" id="pCoordOut">50%</span></div>
   <div class="ctl adv"><label class="cl">...or coordination FAILURE (nobody drops)</label><input type="range" min="0" max="100" value="35" id="pCoordFail"><span class="cv" id="pCoordFailOut">35%</span></div>
   <div class="ctl adv"><label class="cl">Random branch-point events</label><input type="range" min="0" max="100" value="40" id="pEvents"><span class="cv" id="pEventsOut">40%</span></div>
@@ -302,14 +307,14 @@ const CANDS=[
  {id:'murphy',name:'Chris Murphy',role:'Sen., Connecticut',age:55,mkt:1,run:66,lane:'pop',rank:10,debate:1.1,str:'Populism from inside the Senate',weak:'No national base yet',base:5,fit:{SC:0.80,NH:1.20,NV:0.90,IA:0.95,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
  {id:'kelly',name:'Mark Kelly',role:'Sen., Arizona',age:64,mkt:1.9,run:66,lane:'elec',rank:11,debate:0.9,str:'Astronaut, veteran, swing-state',weak:'Low base energy',base:6,fit:{SC:0.90,NH:1.00,NV:1.30,IA:0.95,MI:1.00,GA:0.95,NC:1.15,ST:1.00}},
  {id:'beshear',name:'Andy Beshear',role:'Gov., Kentucky',age:50,mkt:3,run:85,lane:'elec',rank:12,debate:1.05,str:'Wins deep-red turf, likeable',weak:'No natural coalition',base:5,fit:{SC:1.10,NH:0.90,NV:0.90,IA:1.30,MI:1.00,GA:1.05,NC:1.20,ST:0.95}},
- {id:'rahm',name:'Rahm Emanuel',role:'Former Amb./Mayor',age:68,mkt:2,run:79,lane:'elec',rank:13,debate:1.0,str:'Money, message, relentless',weak:'Wrong era; base despises him',base:2,fit:{SC:0.70,NH:1.40,NV:0.80,IA:0.90,MI:0.95,GA:0.75,NC:0.85,ST:0.95}},
+ {id:'rahm',name:'Rahm Emanuel',role:'Former Amb./Mayor',age:68,mkt:2,run:15,lane:'elec',rank:13,debate:1.0,str:'Money, message, relentless',weak:'Wrong era; base despises him',base:2,fit:{SC:0.70,NH:1.40,NV:0.80,IA:0.90,MI:0.95,GA:0.75,NC:0.85,ST:0.95}},
  {id:'whitmer',name:'Gretchen Whitmer',role:'Gov., Michigan',age:57,mkt:1,run:22,lane:'elec',rank:14,debate:1.0,str:'Rust Belt brand',weak:'Looks like she passed',base:6,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.10,MI:1.70,GA:0.85,NC:0.95,ST:1.00}},
  {id:'moore',name:'Wes Moore',role:'Gov., Maryland',age:50,mkt:1.5,run:50,lane:'elec',rank:15,debate:1.05,str:'Generational, compelling bio',weak:'Thin executive record',base:4,fit:{SC:1.25,NH:0.80,NV:0.95,IA:0.85,MI:0.95,GA:1.10,NC:1.10,ST:1.00}},
  {id:'warnock',name:'Raphael Warnock',role:'Sen., Georgia',age:59,mkt:0.9,run:30,lane:'rest',rank:16,debate:1.1,str:'Heir to Black institutional support',weak:'Overshadowed by Ossoff',base:4,fit:{SC:1.45,NH:0.80,NV:0.95,IA:0.85,MI:0.95,GA:1.40,NC:1.15,ST:1.00}},
  {id:'talarico',name:'James Talarico',role:'State Rep., Texas',age:36,mkt:2.1,run:14,lane:'pop',rank:17,debate:1.1,str:'Viral, young, surprising',weak:'No infrastructure',base:4,fit:{SC:1.05,NH:0.80,NV:0.95,IA:0.95,MI:0.90,GA:0.95,NC:1.00,ST:1.10}},
  {id:'platner',name:'Graham Platner',role:'Senate nominee, Maine',age:42,mkt:0.7,run:0,lane:'pop',rank:18,debate:1.0,str:'Riveting bio, populist voice',weak:'Freshman, heavy scrutiny',base:5,fit:{SC:0.50,NH:1.40,NV:0.80,IA:1.00,MI:1.05,GA:0.70,NC:0.80,ST:0.90}},
- {id:'stewart',name:'Jon Stewart',role:'Broadcaster',age:65,mkt:1.7,run:18,lane:'out',rank:19,debate:1.2,str:'Attention, anti-elite credibility',weak:'66 on election day; wants influence not the job',base:5,fit:{SC:0.60,NH:1.10,NV:1.00,IA:0.90,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
- {id:'fain',name:'Shawn Fain',role:'UAW President',age:56,mkt:0.4,run:10,lane:'pop',rank:20,debate:1.0,str:'Purest class-war vessel',weak:'Never run for anything',base:5,fit:{SC:0.60,NH:0.80,NV:1.30,IA:1.10,MI:1.50,GA:0.70,NC:0.85,ST:0.95}},
+ {id:'stewart',name:'Jon Stewart',role:'Broadcaster',age:65,mkt:1.7,run:7,lane:'out',rank:19,debate:1.2,str:'Attention, anti-elite credibility',weak:'66 on election day; wants influence not the job',base:5,fit:{SC:0.60,NH:1.10,NV:1.00,IA:0.90,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
+ {id:'fain',name:'Shawn Fain',role:'UAW President',age:56,mkt:0.4,run:5,lane:'pop',rank:20,debate:1.0,str:'Purest class-war vessel',weak:'Never run for anything',base:5,fit:{SC:0.60,NH:0.80,NV:1.30,IA:1.10,MI:1.50,GA:0.70,NC:0.85,ST:0.95}},
  {id:'walz',name:'Tim Walz',role:'Gov., Minnesota',age:64,mkt:0.7,run:5,lane:'elec',rank:21,debate:1.0,str:'Folksy, soft-left',weak:'Losing VP rarely tops the ticket',base:5,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.20,MI:1.10,GA:0.80,NC:0.90,ST:0.95}},
  {id:'other',name:'Someone else',role:'Not yet declared',age:0,mkt:9,run:100,lane:'out',rank:0,debate:1.0,str:'The candidate the moment hasn\u2019t named',weak:'Does not exist yet',base:6,fit:{SC:1.00,NH:1.00,NV:1.00,IA:1.00,MI:1.00,GA:1.00,NC:1.00,ST:1.00}}
 ];
@@ -351,12 +356,12 @@ function nm(id){return CANDS.find(c=>c.id===id).name;}
 function P(id){return +document.getElementById(id).value/100;}
 function V(id){return document.getElementById(id).value;}
 function cfg(){return{pA:P('pAoc'),pH:P('pHarris'),pN:P('pNewsom'),pOW:P('pOssWin'),pOR:P('pOssRev'),pPW:P('pPlatWin'),pPL:P('pPlatLand'),
- pC:P('pCoord'),pCF:P('pCoordFail'),pEv:P('pEvents'),pDb:P('pDebate'),appr:+V('pTrump'),
- selAoc:V('selAoc'),selPlat:V('selPlatRun'),selTheme:V('selTheme'),selLesson:V('selLesson'),selBlack:V('selBlack'),calKey:V('selCal'),darling:V('selDarling'),
+ pC:P('pCoord'),pCF:P('pCoordFail'),pEv:P('pEvents'),pDb:P('pDebate'),appr:+V('pTrump'),apprMixed:document.getElementById('apprMixed').checked,
+ selAoc:V('selAoc'),selPlat:V('selPlatRun'),selTheme:V('selTheme'),selLesson:V('selLesson'),selBlack:V('selBlack'),selLatino:V('selLatino'),calKey:V('selCal'),darling:V('selDarling'),
  field:Object.fromEntries(CANDS.map(c=>[c.id,document.getElementById('tg_'+c.id)?document.getElementById('tg_'+c.id).value:'sample']))};}
 function simulate(C,collect){
  const N=collect?1:1; // single run when narrating
- const appr=C.appr, panic=Math.min(1,Math.max(0,(appr-35)/30));
+ const appr=C.apprMixed?(33+(rng()+rng())/2*25):C.appr, panic=Math.min(1,Math.max(0,(appr-35)/30));
  const TH={afford:0.48-0.18*panic,fight:0.16+0.20*panic,norm:0.14+0.12*panic,ai:0.22-0.14*panic};
  const aoc=rng()<C.pA, harris=rng()<C.pH, nsurv=rng()<C.pN;
  const ossWin=rng()<C.pOW?(rng()<0.45?'big':'narrow'):'lose';
@@ -371,8 +376,12 @@ function simulate(C,collect){
  if(lesson==='mixed'){const r=rng();lesson=r<0.30?'inst':(r<0.55?'pop':(r<0.80?'muddle':'under'));}
  let black=C.selBlack;
  if(black==='mixed'){const r=rng();if(harris){black=r<0.35?'hold':(r<0.65?'div':(r<0.85?'another':'gen'));}else{black=r<0.40?'div':(r<0.75?'another':'gen');}}
- let blackBene=null;
- if(black==='another'){let bv=-1;['moore','warnock','newsom','ossoff','shapiro'].forEach(k=>{const cc=CANDS.find(c=>c.id===k);if(cc&&cc.mkt>bv){bv=cc.mkt;blackBene=k;}});}
+ let latino=C.selLatino;
+ if(latino==='mixed'){const r=rng();if(aoc){latino=r<0.30?'aoc':(r<0.54?'pop':(r<0.74?'split':'soft'));}else{latino=r<0.40?'pop':(r<0.68?'split':'soft');}}
+ let darling=C.darling;
+ if(darling==='mixed'){const r=rng();darling=r<0.35?'none':(r<0.52?'aoc':(r<0.67?'ossoff':(r<0.78?'moore':(r<0.89?'khanna':'murphy'))));}
+ let calKey=C.calKey;
+ if(calKey==='mixed'){const r=rng();calKey=r<0.34?'A':(r<0.60?'B':(r<0.74?'E':(r<0.87?'C':'D')));}
  const inRace={};
  CANDS.forEach(c=>{
   const sel=C.field[c.id];
@@ -385,6 +394,18 @@ function simulate(C,collect){
   if(c.id==='other'){inRace[c.id]=true;return;}
   inRace[c.id]=rng()<(c.run/100);
  });
+ // Black voters consolidate behind another candidate: decide AFTER the field is set,
+ // among candidates actually running, weighted by South Carolina fit (not auto-handed to the top one).
+ let blackBene=null;
+ if(black==='another'){
+  const poolB=['moore','warnock','newsom','ossoff','shapiro'].filter(k=>inRace[k]);
+  if(poolB.length){
+   const wts=poolB.map(k=>Math.pow(CANDS.find(c=>c.id===k).fit.SC,3));
+   const tot=wts.reduce((a,x)=>a+x,0);
+   let r=rng()*tot,acc=0;blackBene=poolB[poolB.length-1];
+   for(let z=0;z<poolB.length;z++){acc+=wts[z];if(r<acc){blackBene=poolB[z];break;}}
+  }
+ }
  const instM=0.92+0.25*panic, popM=1.12-0.25*panic, outM=1.15-0.45*panic;
  const lI=instM*(lesson==='inst'?1.2:(lesson==='pop'?0.8:(lesson==='under'?0.85:1)));
  const lP=popM*(lesson==='pop'?1.5:(lesson==='inst'?0.85:(lesson==='under'?1.1:1)));
@@ -411,14 +432,17 @@ function simulate(C,collect){
   if(black==='hold'&&harris){if(c.id==='harris')b*=1.45;if(c.id==='moore')b*=0.7;if(c.id==='pete')b*=0.6;}
   if(black==='another'&&c.id===blackBene)b*=1.3;
   if(black==='gen'){if(c.id==='aoc')b*=1.2;if(c.id==='moore')b*=1.25;if(c.id==='ossoff')b*=1.15;if(c.id==='harris')b*=0.75;}
-  if(C.darling===c.id)b*=1.35;
+  if(latino==='aoc'&&c.id==='aoc')b*=1.20;
+  if(latino==='pop'&&POOLOF[c.id]==='pop')b*=1.12;
+  if(latino==='soft'){if(c.id==='aoc')b*=0.82;else if(POOLOF[c.id]==='pop')b*=0.93;}
+  if(darling===c.id)b*=1.35;
   str[c.id]=Math.pow(Math.max(0,b),0.6);mom[c.id]=1;strikes[c.id]=0;
  });
  // AOC endorsement
  let endorse=null;
  if(!aoc){let mode=C.selAoc;if(mode==='mixed'){const r=rng();mode=r<0.20?'khanna':(r<0.35?'pop':'neutral');}
   if(mode==='khanna'&&alive.khanna)endorse='khanna';else if(mode==='pop'){endorse=alive.fain?'fain':(alive.platner?'platner':(alive.murphy?'murphy':null));}}
- if(endorse)str[endorse]*=1.6;
+ if(endorse)str[endorse]*=Math.pow(1.6,0.6);
  // random branch-point events
  const eventLog=[];
  if(rng()<C.pEv){
@@ -430,8 +454,11 @@ function simulate(C,collect){
  const fieldNotes=[];
  if(endorse)fieldNotes.push('AOC declines to run and throws her support to '+nm(endorse)+'.');
  if(inRace.newsom&&!nsurv)fieldNotes.push('Newsom enters as the frontrunner, but questions about his record shadow the launch.');
+ if(latino==='aoc'&&aoc)fieldNotes.push('Latino voters, energized by one of their own atop the ticket, move toward AOC, with Nevada the early test.');
+ else if(latino==='pop')fieldNotes.push('The Latino vote breaks for the populist lane, the way it did for Sanders in 2020.');
+ else if(latino==='soft')fieldNotes.push('Latino turnout stays soft for Democrats, the warning sign of the last two cycles.');
  steps.push({type:'field',count:ins.length,env:'The race is about '+THL[theme]+'. The party believes '+LL[lesson]+'.',notes:fieldNotes,events:eventLog});
- const seq=CALS[C.calKey], calClass=CALCLASS[C.calKey];
+ const seq=CALS[calKey], calClass=CALCLASS[calKey];
  const coordFails=rng()<C.pCF;
  const coordRoll=!coordFails && rng()<Math.min(1,C.pC*(0.8+0.75*panic));
  const winnowThresh=coordFails?0.05:0.07;
@@ -443,6 +470,7 @@ function simulate(C,collect){
    let f=c.fit[st==='LS'?'ST':st];
    const cm=calClass&&CAL[calClass]?CAL[calClass][c.id]:null;if(cm)f*=cm;
    if(st==='SC'&&((black==='hold'&&c.id==='harris')||(black==='another'&&c.id===blackBene)))f*=1.15;
+   if(st==='NV'&&((latino==='aoc'&&c.id==='aoc')||(latino==='pop'&&POOLOF[c.id]==='pop')))f*=1.15;
    let v=str[c.id]*f*mom[c.id]*Math.exp(gnoise()*0.42);
    if(!isFinite(v)||v<0)v=0;
    sc[c.id]=v;tot+=v;
@@ -517,7 +545,7 @@ function play(){
    h+='</div>';tl.insertAdjacentHTML('beforeend',h);
    s.events.forEach(e=>{bpThisRun++;tl.insertAdjacentHTML('beforeend','<div class="bpalert"><div class="bpk">Turning point</div><b>'+e.label+'.</b> '+(e.mult>1?'Their position strengthens.':'Their standing takes a hit.')+'</div>');});
   } else if(s.type==='coordfail'){
-   bpThisRun++;tl.insertAdjacentHTML('beforeend','<div class="bpalert"><div class="bpk">Turning point</div><b>The establishment fails to coordinate.</b> No one clears the lane, the field stays fractured, and a plurality is now enough to win.</div>');
+   bpThisRun++;tl.insertAdjacentHTML('beforeend','<div class="bpalert"><div class="bpk">Turning point</div><b>The establishment fails to coordinate.</b> No one clears the lane, the field stays fractured, and a plurality may be enough to lead into a contested convention.</div>');
   } else if(s.type==='coord'){
    const poolName={rest:'Restoration',elec:'Electability'}[s.pool]||'establishment';
    bpThisRun++;let h='<div class="bpalert"><div class="bpk">Turning point</div><b>The '+poolName+' lane consolidates behind '+nm(s.bene)+'.</b>';
@@ -537,16 +565,16 @@ function play(){
    tl.insertAdjacentHTML('beforeend',h);
    // share card
    const why=s.reasons.map(r=>'<li>'+r.charAt(0).toUpperCase()+r.slice(1)+'.</li>').join('');
-   const shareTxt='The 2028 Machine says:\n\nNominee: '+nm(s.leader)+(s.majority?'':' (contested convention)')+'\n\nWon because:\n'+s.reasons.map(r=>'- '+r.charAt(0).toUpperCase()+r.slice(1)+'.').join('\n')+'\n\nRun your own at The Driscoll Globe';
+   const shareTxt='The 2028 Machine says:\n\n'+(s.majority?'Nominee: '+nm(s.leader):'Leads into contested convention: '+nm(s.leader))+'\n\n'+(s.majority?'Won because:':'Led because:')+'\n'+s.reasons.map(r=>'- '+r.charAt(0).toUpperCase()+r.slice(1)+'.').join('\n')+'\n\nRun your own at The Driscoll Globe';
    const npic=PHOTOS[s.leader]?'<img class="sh-photo" src="'+PHOTOS[s.leader]+'" alt="">':'<div class="sh-mono">'+nm(s.leader).split(' ').map(w=>w[0]).slice(0,2).join('')+'</div>';
    const pctTxt=Math.round(s.delegates/s.total*100)+'% of delegates';
    const sc='<div class="sharecard"><div class="sh-brand"><img class="sh-wh" src="'+WH+'" alt=""><span>The 2028 Machine · The Driscoll Globe</span></div>'
     +'<div class="sh-main">'+npic+'<div class="sh-text"><div class="sh-top">'+(s.majority?'The nominee':'Leads a contested convention')+'</div><div class="sh-nom">'+nm(s.leader)+'</div><div class="sh-pct">'+pctTxt+'</div></div></div>'
-    +'<div class="sh-whyhead">Won because</div><ul class="sh-because">'+why+'</ul>'
+    +'<div class="sh-whyhead">'+(s.majority?'Won because':'Led because')+'</div><ul class="sh-because">'+why+'</ul>'
     +'<div class="sh-actions"><button class="btn sm" onclick=\'copyShare('+JSON.stringify(JSON.stringify(shareTxt))+')\'>Copy result</button><button class="btn sm" onclick="play()">Run a different world</button></div></div>';
    tl.insertAdjacentHTML('beforeend',sc);
    runs++;bpFired+=bpThisRun;if(!s.majority)contestedCount++;
-   document.getElementById('sbNom').textContent=nm(s.leader);
+   document.getElementById('sbNom').textContent=nm(s.leader)+(s.majority?'':' (contested)');
    document.getElementById('sbCont').textContent=Math.round(contestedCount/runs*100)+'%';
    document.getElementById('sbBP').textContent=bpThisRun;
   }
@@ -554,7 +582,7 @@ function play(){
  document.getElementById('hint').style.display='none';
  document.getElementById('runBtn').textContent='Run another';
 }
-// HEATMAP: for each lever, run paired batches (lever low vs high) and measure each candidate's win-rate swing
+// HEATMAP: for each lever, run matched-seed batches (lever low vs high) and measure each candidate's first-place swing
 function buildHeatmap(){
  const status=document.getElementById('hmStatus');
  const levers=[
@@ -565,37 +593,49 @@ function buildHeatmap(){
   {key:'Affordability issue',apply:(C,hi)=>{C.selTheme=hi?'afford':'norm';}},
   {key:'Newsom scrutiny',apply:(C,hi)=>{C.pN=hi?1:0;}},
   {key:'Coordination fails',apply:(C,hi)=>{C.pCF=hi?1:0;}},
-  {key:'Trump approval high',apply:(C,hi)=>{C.appr=hi?58:33;}}
+  {key:'Trump approval high',apply:(C,hi)=>{C.appr=hi?58:33;C.apprMixed=false;}}
  ];
  const watch=['newsom','aoc','harris','ossoff','shapiro','pete','khanna','murphy','pritzker','kelly','beshear'];
  const base=cfg();
- const N=450;
+ // MATCHED SEED comparison: each pair starts the world from the same seed with the lever
+ // off and again with it on. Some branches (e.g. AOC's endorsement when she stays out) draw
+ // extra random numbers, so the streams can diverge after that point. The swing is therefore
+ // a matched-seed estimate averaged over the model's other uncertainties, not a strict ceteris
+ // paribus hold. 5,000 matched runs per lever for stable rankings.
+ const PAIRS=5000, CHUNK=400, HM_SEED=987654321;
  const results=[];
- let i=0;
+ let i=0, done=0, Coff=null, Con=null, lo=null, hi=null;
  status.textContent='computing...';
- function batch(C,hi){
-  const Cc=JSON.parse(JSON.stringify(C));levers[i].apply(Cc,hi);
-  const w={};watch.forEach(k=>w[k]=0);let tot=0;
-  for(let j=0;j<N;j++){const win=fastWin(Cc);if(win in w)w[win]++;tot++;}
-  const o={};watch.forEach(k=>o[k]=w[k]/tot*100);return o;
+ function startLever(){
+  Coff=JSON.parse(JSON.stringify(base));levers[i].apply(Coff,false);
+  Con=JSON.parse(JSON.stringify(base));levers[i].apply(Con,true);
+  lo={};hi={};watch.forEach(k=>{lo[k]=0;hi[k]=0;});done=0;
  }
- function nextLever(){
-  if(i>=levers.length){
-   renderHeatmap(results,watch);
-   renderRankings(results);
-   status.textContent='built · '+(levers.length*N*2).toLocaleString()+' runs';
-   return;
+ function step(){
+  const end=Math.min(done+CHUNK,PAIRS);
+  for(;done<end;done++){
+   const s=(HM_SEED+(i*PAIRS+done)*2654435761)>>>0; // distinct, well-spread seed per pair
+   rng=mb(s);const a=fastWin(Coff);if(a in lo)lo[a]++;
+   rng=mb(s);const b=fastWin(Con);if(b in hi)hi[b]++; // identical stream, lever flipped
   }
-  const lo=batch(base,false),hi=batch(base,true);
-  const sw={};watch.forEach(k=>sw[k]=hi[k]-lo[k]);
+  status.textContent='computing... lever '+(i+1)+'/'+levers.length+' ('+Math.round(done/PAIRS*100)+'%)';
+  if(done<PAIRS){setTimeout(step,0);return;}
+  const sw={};watch.forEach(k=>sw[k]=(hi[k]-lo[k])/PAIRS*100);
   let mover=null,mv=0;watch.forEach(k=>{if(Math.abs(sw[k])>Math.abs(mv)){mv=sw[k];mover=k;}});
   const avgSwing=watch.reduce((a,k)=>a+Math.abs(sw[k]),0)/watch.length;
   results.push({key:levers[i].key,sw,mover,mv,avgSwing});
   i++;
-  status.textContent='computing... '+i+'/'+levers.length;
-  setTimeout(nextLever,0); // yield to browser so UI stays responsive
+  if(i>=levers.length){
+   renderHeatmap(results,watch);
+   renderRankings(results);
+   status.textContent='built · '+(levers.length*PAIRS).toLocaleString()+' matched seed runs';
+   seed=Date.now()%2147483647;rng=mb(seed); // release the deterministic seed for the rest of the page
+   return;
+  }
+  startLever();setTimeout(step,0);
  }
- setTimeout(nextLever,20);
+ startLever();
+ setTimeout(step,20);
 }
 function renderRankings(results){
  const sorted=results.slice().sort((a,b)=>b.avgSwing-a.avgSwing);
@@ -604,7 +644,7 @@ function renderRankings(results){
  sorted.forEach((r,i)=>{
   h+='<div class="rankrow"><div class="rnum">'+(i+1)+'</div><div class="rkey">'+r.key+'<span class="rmover">biggest mover: '+nm(r.mover).split(' ').slice(-1)[0]+' '+(r.mv>0?'+':'')+r.mv.toFixed(0)+'</span></div><div class="rbart"><div class="rbarf" style="width:'+(r.avgSwing/mx*100).toFixed(1)+'%"></div></div><div class="rval">'+r.avgSwing.toFixed(1)+'</div></div>';
  });
- h+='</div><div class="legend">Average swing is how many percentage points a turning point moves the typical candidate\u2019s win rate when it flips. Higher means the whole field bends around that one decision. This is the election measured as a system of choices.</div>';
+ h+='</div><div class="legend">Average swing is how many percentage points a turning point moves the typical candidate\u2019s first place rate when it flips. Higher means the whole field bends around that one decision. This is the election measured as a system of choices.</div>';
  document.getElementById('rankings').innerHTML=h;
  document.getElementById('rankStatus').textContent='ranked · top lever: '+sorted[0].key;
 }
@@ -623,7 +663,7 @@ function renderHeatmap(results,watch){
   watch.forEach(k=>{const v=r.sw[k];h+='<td class="hmcell" style="'+cellColor(v)+'">'+(v>0?'+':'')+v.toFixed(0)+'</td>';});
   h+='<td style="text-align:left;font-weight:600;">'+nm(r.mover).split(' ').slice(-1)[0]+' '+(r.mv>0?'+':'')+r.mv.toFixed(0)+'</td></tr>';
  });
- h+='</table><div class="legend">Each cell is the change in a candidate\u2019s win rate (percentage points) when the turning point flips from off to on, holding everything else at current settings. Green helps, red hurts. What changes the answer matters more than who wins.</div>';
+ h+='</table><div class="legend">Each cell is the change in a candidate\u2019s first place rate (percentage points) when the turning point flips from off to on, with the same starting seeds and averaging over the model\u2019s other uncertainties. Green helps, red hurts. What changes the answer matters more than who wins.</div>';
  document.getElementById('heatmap').innerHTML=h;
 }
 function buildCards(){
@@ -644,22 +684,28 @@ function run10k(){
  agg.innerHTML='<div class="shead"><span>10,000 elections · current settings</span><span class="note" id="aggStatus">running...</span></div><div id="aggBody"><div class="muted">Simulating...</div></div>';
  const C=cfg();
  const TOTAL=10000, CHUNK=1000;
- const wins={};CANDS.forEach(c=>wins[c.id]=0);
+ const maj={},lead={};CANDS.forEach(c=>{maj[c.id]=0;lead[c.id]=0;});
  let done=0, contested=0;
  function chunk(){
   const end=Math.min(done+CHUNK,TOTAL);
-  for(;done<end;done++){const r=simulate(C,false);wins[r.winner]++;if(!r.majority)contested++;}
+  for(;done<end;done++){const r=simulate(C,false);if(r.majority)maj[r.winner]++;else{lead[r.winner]++;contested++;}}
   document.getElementById('aggStatus').textContent=done<TOTAL?('running '+Math.round(done/TOTAL*100)+'%'):'10,000 elections complete';
   if(done<TOTAL){setTimeout(chunk,0);return;}
-  // render distribution
-  const rows=CANDS.filter(c=>wins[c.id]>0).map(c=>({id:c.id,name:c.name,p:wins[c.id]/TOTAL*100})).sort((a,b)=>b.p-a.p);
-  const mx=rows[0].p;
+  // render distribution: first-place finish split into majority wins vs contested-convention leads
+  const rows=CANDS.filter(c=>(maj[c.id]+lead[c.id])>0).map(c=>({id:c.id,name:c.name,
+    first:(maj[c.id]+lead[c.id])/TOTAL*100,majp:maj[c.id]/TOTAL*100,leadp:lead[c.id]/TOTAL*100
+  })).sort((a,b)=>b.first-a.first);
+  const mx=rows[0].first;
   let h='<div class="agglist">';
   rows.forEach(r=>{
    const pic=PHOTOS[r.id]?'<img class="apic" src="'+PHOTOS[r.id]+'">':'<span class="amono">'+r.name.split(' ').map(w=>w[0]).slice(0,2).join('')+'</span>';
-   h+='<div class="aggrow">'+pic+'<div class="abn">'+r.name+'</div><div class="abt"><div class="abf'+(r.p===mx?' lead':'')+'" style="width:'+(r.p/mx*100).toFixed(1)+'%"></div></div><div class="abv">'+r.p.toFixed(1)+'%</div></div>';
+   h+='<div class="aggrow">'+pic+'<div class="abn">'+r.name+'</div><div class="abt">'
+    +'<div class="abf contested" style="width:'+(r.first/mx*100).toFixed(1)+'%"></div>'
+    +'<div class="abf'+(r.first===mx?' lead':'')+'" style="width:'+(r.majp/mx*100).toFixed(1)+'%"></div>'
+    +'</div><div class="abv">'+r.first.toFixed(1)+'%</div></div>'
+    +'<div class="aggsub">'+r.majp.toFixed(1)+'% win a majority · '+r.leadp.toFixed(1)+'% lead a contested convention</div>';
   });
-  h+='</div><div class="legend">Win share across 10,000 simulated primaries at your current settings. Contested conventions: '+Math.round(contested/TOTAL*100)+'%. Change the world above and run again to watch the whole distribution shift.</div>';
+  h+='</div><div class="legend">Share of 10,000 simulated primaries where each candidate <b>finishes first</b>, at your current settings. The solid bar is winning an outright delegate majority. The hatched bar is leading into a contested convention, which the model does not resolve. Across these runs, '+Math.round(contested/TOTAL*100)+'% end contested. Finishing first is not the same as winning the nomination.</div>';
   document.getElementById('aggBody').innerHTML=h;
  }
  setTimeout(chunk,20);
@@ -705,7 +751,7 @@ function openDossier(id){
  h+='<div class="md-sec"><h4>Strength</h4><p>'+c.str+'</p></div>';
  h+='<div class="md-sec"><h4>Weakness</h4><p>'+c.weak+'</p></div>';
  h+='<div class="md-sec"><h4>Likely coalition</h4><p>'+coalition+'</p></div>';
- h+='<div class="md-sec" id="mdPaths"><h4>Best and worst paths</h4><p class="muted">Computed live from the model: which conditions maximize and minimize this candidate\u2019s nomination odds.</p><button class="btn sm" onclick="computePaths(\''+id+'\')">Compute best and worst paths</button></div>';
+ h+='<div class="md-sec" id="mdPaths"><h4>Best and worst paths</h4><p class="muted">Computed live from the model: which conditions maximize and minimize this candidate\u2019s chance of finishing first.</p><button class="btn sm" onclick="computePaths(\''+id+'\')">Compute best and worst paths</button></div>';
  document.getElementById('modalBody').innerHTML=h;
  document.getElementById('modalBg').classList.add('open');
 }
@@ -734,28 +780,41 @@ function computePaths(id){
   // most sensitive: largest absolute deviation from base
   const sens=scored.slice().sort((a,b)=>Math.abs(b.r-baseRate)-Math.abs(a.r-baseRate))[0];
   let h='<h4>Best path</h4><ul class="md-path">';
-  best.forEach(b=>h+='<li><span class="pgood">When '+b.l+'</span> — wins '+b.r.toFixed(0)+'%</li>');
+  best.forEach(b=>h+='<li><span class="pgood">When '+b.l+'</span> — finishes first '+b.r.toFixed(0)+'%</li>');
   h+='</ul><h4 style="margin-top:10px;">Worst path</h4><ul class="md-path">';
-  worst.forEach(b=>h+='<li><span class="pbad">When '+b.l+'</span> — wins '+b.r.toFixed(0)+'%</li>');
+  worst.forEach(b=>h+='<li><span class="pbad">When '+b.l+'</span> — finishes first '+b.r.toFixed(0)+'%</li>');
   h+='</ul><div class="md-sec"><h4>Most sensitive to</h4><p>'+sens.l.charAt(0).toUpperCase()+sens.l.slice(1)+' ('+(sens.r>baseRate?'+':'')+(sens.r-baseRate).toFixed(0)+' points vs baseline of '+baseRate.toFixed(0)+'%)</p></div>';
   box.innerHTML=h;
  },20);
 }
 function updateFrontrunner(){
- // quick baseline batch to name the current frontrunner under present settings
- const N=400;const C=cfg();const w={};let tot=0;
+ // Fixed seed + larger sample: the box must not change its answer when the user changes nothing.
+ const N=2500;const C=cfg();const w={};let tot=0;
+ const savedRng=rng;rng=mb(20281120);
  for(let i=0;i<N;i++){const win=fastWin(C);w[win]=(w[win]||0)+1;tot++;}
+ rng=savedRng;
  let bk=null,bv=-1;for(const k in w){if(w[k]>bv){bv=w[k];bk=k;}}
  if(bk)document.getElementById('sbFront').textContent=nm(bk)+' '+Math.round(bv/tot*100)+'%';
 }
 function resetField(){CANDS.forEach(c=>{const e=document.getElementById('tg_'+c.id);if(e)e.value='sample';});updateFrontrunner();}
-const TICK=['NEWSOM 23% · still the man to beat','OSSOFF AND AOC TIED at 9% despite Ossoff\u2019s denial','HARRIS at 7.5%, run-market says 61% likely to enter','MURPHY building the quietest shadow campaign in the field','DNC calendar fight is the most important race nobody is covering','PLATNER faces Collins in November · a blowout changes everything','KHANNA the sleeper if AI becomes the issue','ONE IN FIVE simulated primaries ends in a contested convention'];
-function initTicker(){const s=TICK.join('<span class="tsep">/</span>');document.getElementById('ticker').innerHTML=s+'<span class="tsep">/</span>'+s;}
+const TICK=['NEWSOM 23% · still the man to beat','OSSOFF AND AOC TIED at 9% despite Ossoff\u2019s denial','HARRIS at 7.5%, run-market says 61% likely to enter','MURPHY building the quietest shadow campaign in the field','DNC calendar fight is the most important race nobody is covering','PLATNER faces Collins in November · a blowout changes everything','KHANNA the sleeper if AI becomes the issue'];
+function contestedTicker(){
+ // Compute the contested-convention rate from the model itself, at default settings, fixed seed for stability.
+ try{
+  const C=cfg();const N=3000;let c=0;const saved=rng;rng=mb(19481102);
+  for(let i=0;i<N;i++){if(!simulate(C,false).majority)c++;}
+  rng=saved;
+  return Math.round(c/N*100)+'% OF SIMULATED PRIMARIES END IN A CONTESTED CONVENTION (CURRENT DEFAULTS)';
+ }catch(e){return null;}
+}
+function initTicker(extra){const items=extra?TICK.concat([extra]):TICK.slice();const s=items.join('<span class="tsep">/</span>');document.getElementById('ticker').innerHTML=s+'<span class="tsep">/</span>'+s;}
 function tickClock(){const d=new Date();document.getElementById('clock').textContent=d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}
 let _frUpd;function queueFront(){clearTimeout(_frUpd);_frUpd=setTimeout(updateFrontrunner,200);}
 ['pAoc','pHarris','pNewsom','pOssWin','pOssRev','pPlatWin','pPlatLand','pTrump','pCoord','pCoordFail','pEvents','pDebate'].forEach(id=>document.getElementById(id).addEventListener('input',e=>{document.getElementById(id+'Out').textContent=e.target.value+'%';queueFront();}));
 document.addEventListener('change',e=>{if(e.target&&e.target.tagName==='SELECT')queueFront();});
+document.getElementById('apprMixed').addEventListener('change',e=>{const s=document.getElementById('pTrump'),o=document.getElementById('pTrumpOut');s.disabled=e.target.checked;o.textContent=e.target.checked?'drawn':s.value+'%';queueFront();});
 buildCards();initTicker();tickClock();setInterval(tickClock,30000);deepLink();setTimeout(updateFrontrunner,50);
+setTimeout(()=>{const t=contestedTicker();if(t)initTicker(t);},120);
 </script>
 </body>
 </html>
