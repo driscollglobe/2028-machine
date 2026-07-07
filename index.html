@@ -302,7 +302,7 @@ const CANDS=[
  {id:'pete',name:'Pete Buttigieg',role:'Former Sec.',age:46,mkt:4.6,run:82,lane:'elec',rank:5,debate:1.15,str:'Elite communicator, donor network',weak:'Weak with Black voters',base:8,fit:{SC:0.50,NH:1.50,NV:0.90,IA:1.50,MI:1.30,GA:0.70,NC:0.95,ST:1.00}},
  {id:'pritzker',name:'JB Pritzker',role:'Gov., Illinois',age:63,mkt:2.1,run:74,lane:'elec',rank:8,debate:0.9,str:'Bottomless money, real machine',weak:'Billionaire in an anti-elite cycle',base:7,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.05,MI:1.05,GA:0.85,NC:0.90,ST:1.00}},
  {id:'khanna',name:'Ro Khanna',role:'Rep., California',age:52,mkt:1.9,run:72,lane:'pop',rank:6,debate:1.0,str:'Built for an AI-and-jobs election',weak:'Limited national base',base:5,fit:{SC:0.70,NH:1.00,NV:1.10,IA:1.20,MI:1.05,GA:0.80,NC:0.85,ST:1.05}},
- {id:'murphy',name:'Chris Murphy',role:'Sen., Connecticut',age:55,mkt:0.7,run:67,lane:'pop',rank:10,debate:1.1,str:'Populism from inside the Senate',weak:'No national base yet',base:5,fit:{SC:0.80,NH:1.20,NV:0.90,IA:0.95,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
+ {id:'murphy',name:'Chris Murphy',role:'Sen., Connecticut',age:55,mkt:0.7,run:67,lane:'elec',rank:10,debate:1.1,str:'Economic message from inside the Senate',weak:'No national base yet',base:5,fit:{SC:0.80,NH:1.20,NV:0.90,IA:0.95,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
  {id:'kelly',name:'Mark Kelly',role:'Sen., Arizona',age:64,mkt:2.3,run:65,lane:'elec',rank:11,debate:0.9,str:'Astronaut, veteran, swing-state',weak:'Low base energy',base:6,fit:{SC:0.90,NH:1.00,NV:1.30,IA:0.95,MI:1.00,GA:0.95,NC:1.15,ST:1.00}},
  {id:'beshear',name:'Andy Beshear',role:'Gov., Kentucky',age:50,mkt:2.8,run:86,lane:'elec',rank:12,debate:1.05,str:'Wins deep-red turf, likeable',weak:'No natural coalition',base:5,fit:{SC:1.10,NH:0.90,NV:0.90,IA:1.30,MI:1.00,GA:1.05,NC:1.20,ST:0.95}},
  {id:'rahm',name:'Rahm Emanuel',role:'Former Amb./Mayor',age:68,mkt:3.4,run:73,lane:'elec',rank:13,debate:1.0,str:'Money, message, relentless',weak:'Wrong era; base despises him',base:2,fit:{SC:0.70,NH:1.40,NV:0.80,IA:0.90,MI:0.95,GA:0.75,NC:0.85,ST:0.95}},
@@ -315,7 +315,7 @@ const CANDS=[
  {id:'walz',name:'Tim Walz',role:'Gov., Minnesota',age:64,mkt:0.2,run:13,lane:'elec',rank:21,debate:1.0,str:'Folksy, soft-left',weak:'Losing VP rarely tops the ticket',base:5,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.20,MI:1.10,GA:0.80,NC:0.90,ST:0.95}},
  {id:'other',name:'Someone else',role:'Not yet declared',age:0,mkt:7,run:100,lane:'out',rank:0,debate:1.0,str:'The candidate the moment hasn\u2019t named',weak:'Does not exist yet',base:6,fit:{SC:1.00,NH:1.00,NV:1.00,IA:1.00,MI:1.00,GA:1.00,NC:1.00,ST:1.00}}
 ];
-const POOLS={rest:['harris','warnock','ossoff'],pop:['aoc','khanna','murphy','talarico','fain'],elec:['newsom','shapiro','pritzker','beshear','kelly','whitmer','moore','rahm','pete','walz'],out:['stewart','other']};
+const POOLS={rest:['harris','warnock','ossoff'],pop:['aoc','khanna','talarico','fain'],elec:['newsom','shapiro','pritzker','beshear','kelly','whitmer','moore','rahm','pete','walz','murphy'],out:['stewart','other']};
 const POOLOF={};Object.keys(POOLS).forEach(p=>POOLS[p].forEach(id=>POOLOF[id]=p));
 // pools that the establishment-coordination mechanic can consolidate (institutional pools)
 const COORD_POOLS=['rest','elec'];
@@ -413,7 +413,7 @@ function simulate(C,collect){
   alive[c.id]=true;
   let b=c.base*TM[c.id][theme];
   if(c.id==='khanna')b*=aoc?0.3:2.0;
-  if(c.id==='murphy')b*=aoc?0.45:1.6;
+  if(c.id==='murphy')b*=aoc?0.8:1.2;
   if(c.id==='fain')b*=aoc?0.4:1.0;
   if(c.id==='newsom'){b*=aoc?1.15:1.0;if(!nsurv)b*=0.4;}
   if(c.id==='pete')b*=harris?0.6:1.15;
@@ -436,7 +436,7 @@ function simulate(C,collect){
  // AOC endorsement
  let endorse=null;
  if(!aoc){let mode=C.selAoc;if(mode==='mixed'){const r=rng();mode=r<0.20?'khanna':(r<0.35?'pop':'neutral');}
-  if(mode==='khanna'&&alive.khanna)endorse='khanna';else if(mode==='pop'){endorse=alive.fain?'fain':(alive.murphy?'murphy':null);}}
+  if(mode==='khanna'&&alive.khanna)endorse='khanna';else if(mode==='pop'){endorse=alive.fain?'fain':(alive.talarico?'talarico':null);}}
  if(endorse)str[endorse]*=Math.pow(1.6,0.6);
  // random branch-point events
  const eventLog=[];
