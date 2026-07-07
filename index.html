@@ -804,12 +804,23 @@ function contestedTicker(){
 }
 function initTicker(extra){const items=extra?TICK.concat([extra]):TICK.slice();const s=items.join('<span class="tsep">/</span>');document.getElementById('ticker').innerHTML=s+'<span class="tsep">/</span>'+s;}
 function tickClock(){const d=new Date();document.getElementById('clock').textContent=d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}
+/*==SIM_CORE_END==*/
 let _frUpd;function queueFront(){clearTimeout(_frUpd);_frUpd=setTimeout(updateFrontrunner,200);}
 ['pAoc','pHarris','pNewsom','pOssWin','pOssRev','pMaine','pTrump','pCoord','pCoordFail','pEvents','pDebate'].forEach(id=>document.getElementById(id).addEventListener('input',e=>{document.getElementById(id+'Out').textContent=e.target.value+'%';queueFront();}));
 document.addEventListener('change',e=>{if(e.target&&e.target.tagName==='SELECT')queueFront();});
 document.getElementById('apprMixed').addEventListener('change',e=>{const s=document.getElementById('pTrump'),o=document.getElementById('pTrumpOut');s.disabled=e.target.checked;o.textContent=e.target.checked?'drawn':s.value+'%';queueFront();});
 buildCards();initTicker();tickClock();setInterval(tickClock,30000);deepLink();setTimeout(updateFrontrunner,50);
 setTimeout(()=>{const t=contestedTicker();if(t)initTicker(t);},120);
+// ==LIVE MARKET ANCHORS== fetch nightly-updated markets.json; fall back silently to baked-in values
+fetch('markets.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(M=>{
+ if(!M||!M.candidates)return;
+ CANDS.forEach(c=>{const m=M.candidates[c.id];if(!m)return;
+  if(typeof m.mkt==='number')c.mkt=m.mkt;
+  if(typeof m.run==='number'&&c.run>0&&c.run<100)c.run=m.run;});
+ if(M.sliders){for(const k in M.sliders){const el=document.getElementById(k);if(el){el.value=M.sliders[k];const o=document.getElementById(k+'Out');if(o)o.textContent=M.sliders[k]+'%';}}}
+ if(M.fetched){const f=document.querySelector('.foot');if(f)f.textContent=f.textContent.replace('BASELINE ASSUMPTIONS CURRENT TO EARLY JULY 2026','MARKET ANCHORS AUTO-UPDATED '+M.fetched.toUpperCase()+'; PRIORS CURRENT TO EARLY JULY 2026');}
+ if(typeof queueFront==='function')queueFront();
+}).catch(()=>{});
 </script>
 </body>
 </html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Track Record | The 2028 Machine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1a1a1a;--paper:#faf8f4;--rule:#d8d2c6;--accent:#8a1f11;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,sans-serif;}
+.wrap{max-width:920px;margin:0 auto;padding:28px 18px 60px;}
+h1{font-family:Fraunces,serif;font-size:32px;margin:0 0 4px;}
+.sub{font-family:'Spline Sans Mono',monospace;font-size:12px;color:#6b6455;text-transform:uppercase;letter-spacing:.06em;margin-bottom:24px;}
+canvas{width:100%;border:1px solid var(--rule);background:#fff;}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;margin:12px 0 28px;}
+.legend span{display:inline-flex;align-items:center;gap:6px;}
+.sw{width:22px;height:3px;display:inline-block;}
+.sw.dash{background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 9px);height:2px;}
+table{border-collapse:collapse;width:100%;font-size:13px;}
+th,td{border-bottom:1px solid var(--rule);padding:7px 10px;text-align:right;font-family:'Spline Sans Mono',monospace;}
+th:first-child,td:first-child{text-align:left;font-family:Inter,sans-serif;}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#6b6455;}
+.note{font-size:12px;color:#6b6455;margin-top:26px;line-height:1.55;}
+a{color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>The Machine, on the record</h1>
+<div class="sub">Daily machine odds vs blended market price (Kalshi + Polymarket) · The Driscoll Globe</div>
+<canvas id="chart" width="920" height="420"></canvas>
+<div class="legend" id="legend"></div>
+<h1 style="font-size:20px">Latest readings</h1>
+<table id="tbl"></table>
+<p class="note">Solid lines are what the 2028 Machine believes at its default settings, re-run every morning on that day's market anchors. Dashed lines are the blended nomination price on Kalshi and Polymarket. The gap between a solid line and its dashed twin is the model's standing disagreement with the market, logged daily so that when the primary happens there is a public record of what this machine believed and when. Back to <a href="index.html">the Machine</a>.</p>
+</div>
+<script>
+const IDS=['newsom','aoc','ossoff','khanna','harris'];
+const NAMES={newsom:'Newsom',aoc:'AOC',ossoff:'Ossoff',khanna:'Khanna',harris:'Harris'};
+const COLORS={newsom:'#1f5fa8',aoc:'#8a1f11',ossoff:'#2e7d4f',khanna:'#b8860b',harris:'#6a4c93'};
+fetch('history.csv?v='+Date.now()).then(r=>r.text()).then(txt=>{
+ const rows=txt.trim().split('\n').map(l=>l.split(','));
+ const head=rows.shift(),col={};head.forEach((h,i)=>col[h]=i);
+ const data=rows.map(r=>({date:r[0],
+  m:Object.fromEntries(IDS.map(id=>[id,parseFloat(r[col['m_'+id]])])),
+  k:Object.fromEntries(IDS.map(id=>[id,parseFloat(r[col['k_'+id]])]))}));
+ draw(data);legend();latest(data);
+});
+function draw(d){
+ const cv=document.getElementById('chart'),ctx=cv.getContext('2d');
+ const W=cv.width,H=cv.height,P={l:44,r:14,t:14,b:30};
+ let max=10;d.forEach(r=>IDS.forEach(id=>{max=Math.max(max,r.m[id]||0,r.k[id]||0);}));max=Math.ceil(max/10)*10;
+ const x=i=>P.l+(d.length<2?0:(W-P.l-P.r)*i/(d.length-1));
+ const y=v=>H-P.b-(H-P.t-P.b)*v/max;
+ ctx.strokeStyle='#e5dfd3';ctx.fillStyle='#8a8272';ctx.font='11px Spline Sans Mono';
+ for(let g=0;g<=max;g+=10){ctx.beginPath();ctx.moveTo(P.l,y(g));ctx.lineTo(W-P.r,y(g));ctx.stroke();ctx.fillText(g+'%',6,y(g)+4);}
+ const step=Math.max(1,Math.floor(d.length/8));
+ d.forEach((r,i)=>{if(i%step===0||i===d.length-1)ctx.fillText(r.date.slice(5),x(i)-14,H-8);});
+ IDS.forEach(id=>{
+  ctx.strokeStyle=COLORS[id];ctx.lineWidth=2;ctx.setLineDash([]);
+  ctx.beginPath();d.forEach((r,i)=>{const v=r.m[id];if(isNaN(v))return;i?ctx.lineTo(x(i),y(v)):ctx.moveTo(x(i),y(v));});ctx.stroke();
+  ctx.setLineDash([5,4]);ctx.lineWidth=1.4;
+  ctx.beginPath();d.forEach((r,i)=>{const v=r.k[id];if(isNaN(v))return;i?ctx.lineTo(x(i),y(v)):ctx.moveTo(x(i),y(v));});ctx.stroke();
+  ctx.setLineDash([]);
+ });
+}
+function legend(){
+ const el=document.getElementById('legend');
+ el.innerHTML=IDS.map(id=>`<span style="color:${COLORS[id]}"><i class="sw" style="background:${COLORS[id]}"></i>${NAMES[id]} (machine)</span>`).join('')
+  +IDS.map(id=>`<span style="color:${COLORS[id]}"><i class="sw dash"></i>${NAMES[id]} (market)</span>`).join('');
+}
+function latest(d){
+ const last=d[d.length-1];
+ document.getElementById('tbl').innerHTML='<tr><th>Candidate</th><th>Machine</th><th>Market</th><th>Gap</th></tr>'+
+  IDS.map(id=>{const m=last.m[id],k=last.k[id],g=(m-k);
+   return `<tr><td>${NAMES[id]}</td><td>${m.toFixed(1)}%</td><td>${isNaN(k)?'–':k.toFixed(1)+'%'}</td><td style="color:${g>0?'#2e7d4f':'#8a1f11'}">${isNaN(k)?'':(g>0?'+':'')+g.toFixed(1)}</td></tr>`;}).join('');
+}
+</script>
+</body>
+</html>
