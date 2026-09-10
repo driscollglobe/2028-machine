@@ -29,7 +29,7 @@ a{color:var(--accent);}
 <body>
 <div class="wrap">
 <h1>The Machine, on the record</h1>
-<div class="sub">Daily machine odds vs blended market price (Kalshi + Polymarket) · The Driscoll Globe</div>
+<div class="sub">Daily machine odds vs blended market price (Kalshi + Polymarket) · top eight by latest market price · The Driscoll Globe</div>
 <canvas id="chart" width="920" height="420"></canvas>
 <div class="legend" id="legend"></div>
 <h1 style="font-size:20px">Latest readings</h1>
@@ -37,15 +37,24 @@ a{color:var(--accent);}
 <p class="note">Solid lines are what the 2028 Machine believes at its default settings, re-run every morning on that day's market anchors. Dashed lines are the blended nomination price on Kalshi and Polymarket. The gap between a solid line and its dashed twin is the model's standing disagreement with the market, logged daily so that when the primary happens there is a public record of what this machine believed and when. Back to <a href="index.html">the Machine</a>.</p>
 </div>
 <script>
-const IDS=['newsom','aoc','ossoff','khanna','harris'];
-const NAMES={newsom:'Newsom',aoc:'AOC',ossoff:'Ossoff',khanna:'Khanna',harris:'Harris'};
-const COLORS={newsom:'#1f5fa8',aoc:'#8a1f11',ossoff:'#2e7d4f',khanna:'#b8860b',harris:'#6a4c93'};
+// Candidate ids come from the history.csv header (m_<id> columns), not a hard-coded list.
+const NAMES={newsom:'Newsom',aoc:'AOC',ossoff:'Ossoff',harris:'Harris',shapiro:'Shapiro',pete:'Buttigieg',pritzker:'Pritzker',khanna:'Khanna',murphy:'Murphy',kelly:'Kelly',beshear:'Beshear',rahm:'Emanuel',whitmer:'Whitmer',moore:'Moore',warnock:'Warnock',talarico:'Talarico',stewart:'Stewart',fain:'Fain',walz:'Walz',other:'Someone else'};
+const PALETTE=['#1f5fa8','#8a1f11','#2e7d4f','#b8860b','#6a4c93','#c2410c','#0f766e','#7c2d12','#4338ca','#9d174d'];
+const TOP=8;
+let IDS=[],COLORS={};
+function label(id){return NAMES[id]||id;}
 fetch('history.csv?v='+Date.now()).then(r=>r.text()).then(txt=>{
- const rows=txt.trim().split('\n').map(l=>l.split(','));
- const head=rows.shift(),col={};head.forEach((h,i)=>col[h]=i);
+ const rows=txt.replace(/\r/g,'').trim().split('\n').map(l=>l.split(','));
+ const head=rows.shift(),col={};head.forEach((h,i)=>col[h.trim()]=i);
+ const allIds=head.filter(h=>h.startsWith('m_')).map(h=>h.slice(2)).filter(id=>('k_'+id) in col);
  const data=rows.map(r=>({date:r[0],
-  m:Object.fromEntries(IDS.map(id=>[id,parseFloat(r[col['m_'+id]])])),
-  k:Object.fromEntries(IDS.map(id=>[id,parseFloat(r[col['k_'+id]])]))}));
+  m:Object.fromEntries(allIds.map(id=>[id,parseFloat(r[col['m_'+id]])])),
+  k:Object.fromEntries(allIds.map(id=>[id,parseFloat(r[col['k_'+id]])]))}));
+ if(!data.length)return;
+ const last=data[data.length-1];
+ // top eight by the latest blended market price; "other" is a residual, not a candidate
+ IDS=allIds.filter(id=>id!=='other'&&!isNaN(last.k[id])).sort((a,b)=>last.k[b]-last.k[a]).slice(0,TOP);
+ IDS.forEach((id,i)=>COLORS[id]=PALETTE[i%PALETTE.length]);
  draw(data);legend();latest(data);
 });
 function draw(d){
@@ -60,22 +69,25 @@ function draw(d){
  d.forEach((r,i)=>{if(i%step===0||i===d.length-1)ctx.fillText(r.date.slice(5),x(i)-14,H-8);});
  IDS.forEach(id=>{
   ctx.strokeStyle=COLORS[id];ctx.lineWidth=2;ctx.setLineDash([]);
-  ctx.beginPath();d.forEach((r,i)=>{const v=r.m[id];if(isNaN(v))return;i?ctx.lineTo(x(i),y(v)):ctx.moveTo(x(i),y(v));});ctx.stroke();
+  ctx.beginPath();let started=false;d.forEach((r,i)=>{const v=r.m[id];if(isNaN(v)){started=false;return;}started?ctx.lineTo(x(i),y(v)):ctx.moveTo(x(i),y(v));started=true;});ctx.stroke();
   ctx.setLineDash([5,4]);ctx.lineWidth=1.4;
-  ctx.beginPath();d.forEach((r,i)=>{const v=r.k[id];if(isNaN(v))return;i?ctx.lineTo(x(i),y(v)):ctx.moveTo(x(i),y(v));});ctx.stroke();
+  ctx.beginPath();started=false;d.forEach((r,i)=>{const v=r.k[id];if(isNaN(v)){started=false;return;}started?ctx.lineTo(x(i),y(v)):ctx.moveTo(x(i),y(v));started=true;});ctx.stroke();
   ctx.setLineDash([]);
+  // single-point series get a dot so a one-day history is still visible
+  d.forEach((r,i)=>{[['m',2.6],['k',1.8]].forEach(([key,rad])=>{const v=r[key][id];if(isNaN(v))return;const prev=i>0?r0(d[i-1][key][id]):NaN,next=i<d.length-1?r0(d[i+1][key][id]):NaN;if(isNaN(prev)&&isNaN(next)){ctx.fillStyle=COLORS[id];ctx.beginPath();ctx.arc(x(i),y(v),rad,0,Math.PI*2);ctx.fill();}});});
  });
 }
+function r0(v){return typeof v==='number'?v:NaN;}
 function legend(){
  const el=document.getElementById('legend');
- el.innerHTML=IDS.map(id=>`<span style="color:${COLORS[id]}"><i class="sw" style="background:${COLORS[id]}"></i>${NAMES[id]} (machine)</span>`).join('')
-  +IDS.map(id=>`<span style="color:${COLORS[id]}"><i class="sw dash"></i>${NAMES[id]} (market)</span>`).join('');
+ el.innerHTML=IDS.map(id=>`<span style="color:${COLORS[id]}"><i class="sw" style="background:${COLORS[id]}"></i>${label(id)} (machine)</span>`).join('')
+  +IDS.map(id=>`<span style="color:${COLORS[id]}"><i class="sw dash"></i>${label(id)} (market)</span>`).join('');
 }
 function latest(d){
  const last=d[d.length-1];
  document.getElementById('tbl').innerHTML='<tr><th>Candidate</th><th>Machine</th><th>Market</th><th>Gap</th></tr>'+
   IDS.map(id=>{const m=last.m[id],k=last.k[id],g=(m-k);
-   return `<tr><td>${NAMES[id]}</td><td>${m.toFixed(1)}%</td><td>${isNaN(k)?'–':k.toFixed(1)+'%'}</td><td style="color:${g>0?'#2e7d4f':'#8a1f11'}">${isNaN(k)?'':(g>0?'+':'')+g.toFixed(1)}</td></tr>`;}).join('');
+   return `<tr><td>${label(id)}</td><td>${isNaN(m)?'n/a':m.toFixed(1)+'%'}</td><td>${isNaN(k)?'n/a':k.toFixed(1)+'%'}</td><td style="color:${g>0?'#2e7d4f':'#8a1f11'}">${isNaN(k)||isNaN(m)?'':(g>0?'+':'')+g.toFixed(1)}</td></tr>`;}).join('');
 }
 </script>
 </body>
