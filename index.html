@@ -356,7 +356,7 @@ body.show-adv h2.s.adv{display:block;}
  <div class="section">
   <div class="shead">Candidate gates</div>
   <div class="ctl"><label class="cl">AOC runs for president</label><input type="range" min="0" max="100" value="66" id="pAoc"><span class="cv" id="pAocOut">66%</span></div>
-  <div class="ctl adv"><label class="cl">If AOC stays out, she...</label><select id="selAoc"><option value="mixed" selected>Drawn per run</option><option value="khanna">Endorses Khanna</option><option value="elsayed">Endorses El-Sayed</option><option value="fain">Endorses Fain</option><option value="neutral">Stays neutral</option></select></div>
+  <div class="ctl adv"><label class="cl">If AOC stays out, she...</label><select id="selAoc"><option value="mixed" selected>Drawn per run</option><option value="khanna">Endorses Khanna</option><option value="elsayed">Endorses El-Sayed</option><option value="fain">Endorses Fain</option><option value="other">Endorses someone not yet declared</option><option value="neutral">Stays neutral</option></select></div>
   <div class="ctl"><label class="cl">Harris runs</label><input type="range" min="0" max="100" value="78" id="pHarris"><span class="cv" id="pHarrisOut">78%</span></div>
   <div class="ctl"><label class="cl">Newsom holds up under scrutiny</label><input type="range" min="0" max="100" value="60" id="pNewsom"><span class="cv" id="pNewsomOut">60%</span></div>
   <div class="ctl adv"><label class="cl">Ossoff wins Georgia</label><input type="range" min="0" max="100" value="62" id="pOssWin"><span class="cv" id="pOssWinOut">62%</span></div>
@@ -573,10 +573,11 @@ function simulate(C,collect){
  const lP=popM*(lesson==='pop'?1.5:(lesson==='inst'?0.85:(lesson==='under'?1.1:1)));
  const lO=outM*(lesson==='under'?1.4:(lesson==='inst'?0.9:1));
  const str={},mom={},strikes={},alive={},dels={},won={},dbWins={};
- // AOC fallback chain: when she stays out, AOC_POOL base units of Movement Left strength go to her heirs.
- // Split by base strength unless she names one heir, who takes the full transfer. Drawn per run picks
- // an heir 35% of the time and stays neutral otherwise.
- const AOC_POOL=7, AOC_HEIRS=['khanna','elsayed','fain'], AOC_IN_MULT={khanna:0.3,elsayed:0.6,fain:0.4};
+ // AOC fallback chain: when she stays out, AOC_POOL base units of Movement Left strength go to her heirs,
+ // including a candidate nobody has named yet (the Sanders shaped hole in the field). Split by base strength
+ // unless she names one heir, who takes the full transfer. Drawn per run picks an heir 35% of the time and
+ // stays neutral otherwise.
+ const AOC_POOL=7, AOC_HEIRS=['khanna','elsayed','fain','other'], AOC_IN_MULT={khanna:0.3,elsayed:0.6,fain:0.4,other:1};
  let endorse=null;
  if(!aoc){let mode=C.selAoc;
   if(mode==='mixed'){const r=rng();mode=r<0.35?AOC_HEIRS[Math.floor(rng()*AOC_HEIRS.length)]:'neutral';}
