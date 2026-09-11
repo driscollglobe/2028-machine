@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The 2028 Machine | The Driscoll Globe</title>
+<meta property="og:title" content="The 2028 Machine">
+<meta property="og:description" content="A 2028 Democratic primary simulator. Not who is ahead, but what would have to happen for someone to get ahead.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://driscollglobe.github.io/2028-machine/">
+<meta property="og:image" content="https://driscollglobe.github.io/2028-machine/cards/default.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -196,6 +202,28 @@ body.show-adv .ctl.adv{display:flex;}
 .md-path .pgood{color:var(--tealx);font-weight:500;}
 .md-path .pbad{color:var(--wire);font-weight:500;}
 .modetoggle{display:flex;gap:6px;margin-bottom:1.1rem;align-items:center;}
+.nav{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:.2rem 0 .9rem;display:flex;gap:14px;flex-wrap:wrap;}
+.nav a{color:var(--wire);text-decoration:none;border-bottom:1px solid var(--wire-soft);}
+.nav a:hover{border-bottom-color:var(--wire);}
+.cc .gaplink{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--wire);text-decoration:none;margin-top:6px;}
+.changestrip{margin-bottom:1.1rem;}
+.changestrip .seg{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.06em;padding:3px 9px;border:1px solid var(--ink);border-radius:var(--rmd);cursor:pointer;background:transparent;color:var(--ink);text-transform:none;}
+.changestrip .seg.on{background:var(--ink);color:var(--paper);}
+.cstable{border-collapse:collapse;width:100%;font-family:'Spline Sans Mono',monospace;font-size:12px;}
+.cstable th{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:500;text-align:right;padding:2px 8px;}
+.cstable td{padding:3px 8px;text-align:right;border-top:1px solid var(--rule);white-space:nowrap;}
+.cstable th:first-child,.cstable td:first-child{text-align:left;font-family:'Inter',sans-serif;}
+.cstable .book{text-align:left;color:var(--muted);font-size:11px;}
+.up{color:var(--tealx);}.down{color:var(--wire);}
+.brgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px 18px;margin-bottom:10px;}
+.brcols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px;}
+@media(max-width:600px){.brcols{grid-template-columns:1fr;}}
+.brcol h4{font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:500;margin:0 0 6px;}
+.brrow{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;border-top:1px solid var(--rule);}
+.brrow b{font-family:'Spline Sans Mono',monospace;font-weight:500;}
+.cardimg{width:100%;border:1px solid var(--rule);border-radius:var(--rmd);margin-top:10px;background:var(--paper);}
+.sharelink{font-family:'Spline Sans Mono',monospace;font-size:12px;word-break:break-all;background:var(--paper);border:1px solid var(--rule);border-radius:var(--rmd);padding:8px 10px;margin-top:10px;}
+.quick{color:var(--amber);}
 .modetoggle .seg{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.06em;padding:5px 12px;border:1px solid var(--ink);border-radius:var(--rmd);cursor:pointer;background:transparent;color:var(--ink);}
 .modetoggle .seg.on{background:var(--ink);color:var(--paper);}
 .cols2{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;}
@@ -214,6 +242,7 @@ body.show-adv .ctl.adv{display:flex;}
  <svg class="wh" viewBox="0 0 360 92" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The White House"><g fill="var(--ink)"><rect x="6" y="82" width="348" height="4"/><rect x="16" y="50" width="328" height="32"/><rect x="10" y="45" width="340" height="6" rx="1"/><rect x="20" y="40" width="3" height="6"/><rect x="36" y="40" width="3" height="6"/><rect x="52" y="40" width="3" height="6"/><rect x="68" y="40" width="3" height="6"/><rect x="84" y="40" width="3" height="6"/><rect x="100" y="40" width="3" height="6"/><rect x="116" y="40" width="3" height="6"/><rect x="132" y="40" width="3" height="6"/><rect x="148" y="40" width="3" height="6"/><rect x="164" y="40" width="3" height="6"/><rect x="180" y="40" width="3" height="6"/><rect x="196" y="40" width="3" height="6"/><rect x="212" y="40" width="3" height="6"/><rect x="228" y="40" width="3" height="6"/><rect x="244" y="40" width="3" height="6"/><rect x="260" y="40" width="3" height="6"/><rect x="276" y="40" width="3" height="6"/><rect x="292" y="40" width="3" height="6"/><rect x="308" y="40" width="3" height="6"/><rect x="324" y="40" width="3" height="6"/><rect x="340" y="40" width="3" height="6"/><rect x="150" y="38" width="60" height="44"/><polygon points="146,40 180,22 214,40"/><rect x="178.5" y="6" width="2" height="18"/><rect x="180.5" y="6" width="13" height="7"/></g><g fill="var(--paper)"><rect x="157" y="46" width="3.5" height="34"/><rect x="168" y="46" width="3.5" height="34"/><rect x="179" y="46" width="3.5" height="34"/><rect x="190" y="46" width="3.5" height="34"/><rect x="201" y="46" width="3.5" height="34"/></g><rect x="174" y="62" width="12" height="18" fill="var(--ink)"/><g fill="var(--paper)"><rect x="26.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="40.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="54.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="68.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="82.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="96.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="110.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="124.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="138.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="210.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="224.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="238.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="252.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="266.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="280.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="294.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="308.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="322.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="26.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="40.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="54.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="68.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="82.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="96.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="110.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="124.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="138.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="210.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="224.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="238.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="252.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="266.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="280.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="294.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="308.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="322.0" y="71.0" width="7.0" height="7.0" rx="0.6"/></g></svg>
  <div class="mast-r">2028 DEMOCRATIC PRIMARY<br>SIMULATION DESK<br><span id="clock">—</span></div>
 </div>
+<div class="nav"><a href="gap.html">The gap: polls vs markets</a><a href="track.html">Track record</a><a href="https://driscollglobe.substack.com">The Driscoll Globe</a></div>
 <div class="subrule"><span>Most coverage asks who is ahead. This asks what would have to happen for someone to get ahead.</span><span>Market anchors as of September 10, 2026</span></div>
 
 <div class="bpstrip" id="bpstrip">
@@ -235,6 +264,8 @@ body.show-adv .ctl.adv{display:flex;}
  <div class="sb"><div class="lab">Turning points this run</div><div class="val" id="sbBP">—</div></div>
 </div>
 
+<div class="section changestrip" id="changestrip"><div class="shead"><span id="csTitle">Since yesterday</span><span class="row" style="gap:5px;"><button class="seg on" id="csDay" onclick="setChangeMode('day')">Since yesterday</button><button class="seg" id="csLaunch" onclick="setChangeMode('launch')">Since launch</button></span></div><div id="csBody" class="muted">Loading history.csv</div></div>
+
 <div class="pollboard" id="pollboard"><div class="shead"><span>Market vs polls · top six by market blend</span><span class="note" id="pollStatus">loading polls.csv</span></div><div id="pollboardBody"><div class="muted">Loading national primary polls from the last 30 days.</div></div></div>
 
 <div class="row" style="margin-bottom:1.1rem;">
@@ -242,6 +273,7 @@ body.show-adv .ctl.adv{display:flex;}
  <button class="btn" id="run10kBtn" onclick="run10k()">Run 10,000 elections</button>
  <button class="btn sm" onclick="buildHeatmap()" id="hmBtn">Build heatmap</button>
  <button class="btn sm" onclick="resetField()">Reset field</button>
+ <button class="btn sm" onclick="shareRun()">Share this run</button>
  <span class="note" id="hint">One primary plays out as a timeline. The heatmap shows what moves whom.</span>
 </div>
 
@@ -265,6 +297,14 @@ body.show-adv .ctl.adv{display:flex;}
  <div class="shead"><span>Hover a card for the dossier · set In/Out to override the market</span></div>
  <div class="cardgrid" id="cardgrid"></div>
  <div class="pollnote">Poll average is an equal weight mean of national Democratic primary polls from the last 30 days. Harvard CAPS Harris samples all Democrats rather than likely primary voters and runs hot on Harris. Polls measure name recognition this far out. Markets drive the model. The gap is the story.</div>
+</div>
+
+<h2 class="s">Your bracket</h2>
+<div class="section" id="bracket">
+ <div class="shead"><span>Set the run odds for the top six by market, then run the machine on your priors</span><span class="note" id="brStatus">market defaults loaded</span></div>
+ <div class="brgrid" id="brSliders"></div>
+ <div class="row"><button class="btn" onclick="runBracket()">Run my bracket</button><button class="btn sm" onclick="saveBracket()">Save my bracket</button><button class="btn sm" onclick="resetBracket()">Back to market odds</button><span class="note">The link encodes your six numbers. No accounts, nothing stored.</span></div>
+ <div id="brResult"></div>
 </div>
 
 <h2 class="s">The world</h2>
@@ -347,6 +387,15 @@ const DELS={SC:55,NH:33,NV:36,IA:40,MI:117,GA:108,NC:116,ST:1500,LS:2200};
 const THL={afford:'affordability and class',ai:'AI and the future of work',fight:'democracy and fighting Trumpism',norm:'competence and electability'};
 const LL={inst:'institutional Democrats won 2026',pop:'economic populists won 2026',muddle:'2026 settled nothing',under:'Democrats underperformed in 2026'};
 // random events: id -> {p, who, desc, eff}
+// turning point presets: the chips, the ?bp= deep links, and the nightly share cards all read this
+const BP_PRESETS={
+ aoc:{label:'AOC decision',set:{pAoc:47,selTheme:'afford'}},
+ calendar:{label:'DNC calendar',set:{selCal:'A'}},
+ newsom:{label:'Newsom scrutiny',set:{pNewsom:20}},
+ georgia:{label:'Georgia result',set:{pOssWin:85,pOssRev:80},adv:true},
+ ai:{label:'AI economy',set:{selTheme:'ai',pAoc:20}},
+ harris:{label:'Harris polls',set:{pollsHarris:true},adv:true}
+};
 const EVENTS=[
  {k:'newsom',label:'Newsom stumbles in the second debate',mult:0.55,need:c=>c.newsom},
  {k:'newsom',label:'Newsom lands a viral takedown of Vance',mult:1.4,need:c=>c.newsom},
@@ -404,7 +453,7 @@ function simulate(C,collect){
   if(c.id==='harris'){inRace[c.id]=harris;return;}
   if(c.id==='ossoff'){inRace[c.id]=ossIn;return;}
   if(c.id==='other'){inRace[c.id]=true;return;}
-  inRace[c.id]=rng()<(c.run/100);
+  inRace[c.id]=rng()<((C.runOverride&&typeof C.runOverride[c.id]==='number'?C.runOverride[c.id]:c.run)/100);
  });
  // Black voters consolidate behind another candidate: decide AFTER the field is set,
  // among candidates actually running, weighted by South Carolina fit (not auto-handed to the top one).
@@ -615,7 +664,7 @@ function buildHeatmap(){
  // extra random numbers, so the streams can diverge after that point. The swing is therefore
  // a matched-seed estimate averaged over the model's other uncertainties, not a strict ceteris
  // paribus hold. 5,000 matched runs per lever for stable rankings.
- const PAIRS=5000, CHUNK=400, HM_SEED=987654321;
+ const PAIRS=QUICK?2500:5000, CHUNK=400, HM_SEED=987654321;
  const results=[];
  let i=0, done=0, Coff=null, Con=null, lo=null, hi=null;
  status.textContent='computing...';
@@ -641,7 +690,7 @@ function buildHeatmap(){
   if(i>=levers.length){
    renderHeatmap(results,watch);
    renderRankings(results);
-   status.textContent='built · '+(levers.length*PAIRS).toLocaleString()+' matched seed runs';
+   status.textContent=(QUICK?'quick run · ':'built · ')+(levers.length*PAIRS).toLocaleString()+' matched seed runs';
    seed=Date.now()%2147483647;rng=mb(seed); // release the deterministic seed for the rest of the page
    return;
   }
@@ -744,41 +793,62 @@ function buildCards(){
    +'<div class="odds polls" id="odds_'+c.id+'">'+oddsRow(c)+'</div>'
    +'<div class="odds" id="runrow_'+c.id+'"><span>run <b>'+c.run+'%</b></span><span>rank <b>#'+c.rank+'</b></span></div>'
    +'<span class="lane '+c.lane+'">'+({rest:'Restoration',pop:'Populist left',elec:'Electability',out:'Outsider'})[c.lane]+'</span>'
-   +'<div class="sw"><b>Strength:</b> '+c.str+'<br><b>Weakness:</b> '+c.weak+'</div></div>';
+   +'<div class="sw"><b>Strength:</b> '+c.str+'<br><b>Weakness:</b> '+c.weak+'</div>'
+   +'<a class="gaplink" href="gap.html#'+c.id+'" onclick="event.stopPropagation()">Polls vs market</a></div>';
  }).join('');
 }
 function run10k(){
  const agg=document.getElementById('aggregate');
  agg.style.display='block';
- agg.innerHTML='<div class="shead"><span>10,000 elections · current settings</span><span class="note" id="aggStatus">running...</span></div><div id="aggBody"><div class="muted">Simulating...</div></div>';
+ const TOTAL=simBudget(10000), CHUNK=1000;
+ const title=QUICK&&TOTAL<10000?'<span class="quick">Quick run</span> · '+TOTAL.toLocaleString()+' elections · current settings':TOTAL.toLocaleString()+' elections · current settings';
+ agg.innerHTML='<div class="shead"><span>'+title+'</span><span class="note" id="aggStatus">running...</span></div><div id="aggBody"><div class="muted">Simulating...</div></div>';
  const C=cfg();
- const TOTAL=10000, CHUNK=1000;
  const maj={},lead={};CANDS.forEach(c=>{maj[c.id]=0;lead[c.id]=0;});
  let done=0, contested=0;
  function chunk(){
   const end=Math.min(done+CHUNK,TOTAL);
   for(;done<end;done++){const r=simulate(C,false);if(r.majority)maj[r.winner]++;else{lead[r.winner]++;contested++;}}
-  document.getElementById('aggStatus').textContent=done<TOTAL?('running '+Math.round(done/TOTAL*100)+'%'):'10,000 elections complete';
+  document.getElementById('aggStatus').textContent=done<TOTAL?('running '+Math.round(done/TOTAL*100)+'%'):(TOTAL.toLocaleString()+' elections complete');
   if(done<TOTAL){setTimeout(chunk,0);return;}
-  // render distribution: first-place finish split into majority wins vs contested-convention leads
-  const rows=CANDS.filter(c=>(maj[c.id]+lead[c.id])>0).map(c=>({id:c.id,name:c.name,
-    first:(maj[c.id]+lead[c.id])/TOTAL*100,majp:maj[c.id]/TOTAL*100,leadp:lead[c.id]/TOTAL*100
-  })).sort((a,b)=>b.first-a.first);
-  const mx=rows[0].first;
-  let h='<div class="agglist">';
-  rows.forEach(r=>{
-   const pic=PHOTOS[r.id]?'<img class="apic" src="'+PHOTOS[r.id]+'">':'<span class="amono">'+r.name.split(' ').map(w=>w[0]).slice(0,2).join('')+'</span>';
-   h+='<div class="aggrow">'+pic+'<div class="abn">'+r.name+'</div><div class="abt">'
-    +'<div class="abf contested" style="width:'+(r.first/mx*100).toFixed(1)+'%"></div>'
-    +'<div class="abf'+(r.first===mx?' lead':'')+'" style="width:'+(r.majp/mx*100).toFixed(1)+'%"></div>'
-    +'</div><div class="abv">'+r.first.toFixed(1)+'%</div></div>'
-    +'<div class="aggsub">'+r.majp.toFixed(1)+'% win a majority · '+r.leadp.toFixed(1)+'% lead a contested convention</div>';
-  });
-  h+='</div><div class="legend">Share of 10,000 simulated primaries where each candidate <b>finishes first</b>, at your current settings. The solid bar is winning an outright delegate majority. The hatched bar is leading into a contested convention, which the model does not resolve. Across these runs, '+Math.round(contested/TOTAL*100)+'% end contested. Finishing first is not the same as winning the nomination.</div>';
-  document.getElementById('aggBody').innerHTML=h;
+  const rows=CANDS.filter(c=>(maj[c.id]+lead[c.id])>0).map(c=>({id:c.id,name:c.name,first:(maj[c.id]+lead[c.id])/TOTAL*100,majp:maj[c.id]/TOTAL*100,leadp:lead[c.id]/TOTAL*100})).sort((a,b)=>b.first-a.first);
+  document.getElementById('aggBody').innerHTML=renderAggregate(rows,TOTAL,Math.round(contested/TOTAL*100));
  }
  setTimeout(chunk,20);
 }
+function renderAggregate(rows,TOTAL,contestedPct){
+ // render distribution: first-place finish split into majority wins vs contested-convention leads
+ const mx=rows[0].first;
+ let h='<div class="agglist">';
+ rows.forEach(r=>{
+  const pic=PHOTOS[r.id]?'<img class="apic" src="'+PHOTOS[r.id]+'">':'<span class="amono">'+r.name.split(' ').map(w=>w[0]).slice(0,2).join('')+'</span>';
+  h+='<div class="aggrow">'+pic+'<div class="abn">'+r.name+'</div><div class="abt">'
+   +'<div class="abf contested" style="width:'+(r.first/mx*100).toFixed(1)+'%"></div>'
+   +'<div class="abf'+(r.first===mx?' lead':'')+'" style="width:'+(r.majp/mx*100).toFixed(1)+'%"></div>'
+   +'</div><div class="abv">'+r.first.toFixed(1)+'%</div></div>'
+   +'<div class="aggsub">'+r.majp.toFixed(1)+'% win a majority · '+r.leadp.toFixed(1)+'% lead a contested convention</div>';
+ });
+ h+='</div><div class="legend">Share of '+TOTAL.toLocaleString()+' simulated primaries where each candidate <b>finishes first</b>, at '+(TOTAL>=20000?'the default settings':'your current settings')+'. The solid bar is winning an outright delegate majority. The hatched bar is leading into a contested convention, which the model does not resolve. Across these runs, '+contestedPct+'% end contested. Finishing first is not the same as winning the nomination.</div>';
+ return h;
+}
+// ==PRECOMPUTED DEFAULT== default.json is written nightly by scripts/baseline.js. On load the page paints from it
+// and only simulates once a reader changes a control.
+const DEF={data:null,painted:false,pending:true};
+function paintDefault(){
+ fetch('default.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(d=>{
+  DEF.pending=false;
+  if(!d||!d.first||!d.order){fallbackDefault();return;}
+  DEF.data=d;DEF.painted=true;
+  document.getElementById('sbFront').textContent=nm(d.frontrunner.id)+' '+Math.round(d.frontrunner.share)+'%';
+  const agg=document.getElementById('aggregate');agg.style.display='block';
+  agg.innerHTML='<div class="shead"><span>'+d.runs.toLocaleString()+' elections · default settings · precomputed '+d.date+'</span><span class="note">change any control to simulate live</span></div><div id="aggBody"></div>';
+  const rows=d.order.filter(id=>d.first[id]>0).map(id=>({id,name:nm(id),first:d.first[id],majp:d.majority[id]||0,leadp:d.lead[id]||0}));
+  document.getElementById('aggBody').innerHTML=renderAggregate(rows,d.runs,Math.round(d.contested));
+  initTicker(Math.round(d.contested)+'% OF SIMULATED PRIMARIES END IN A CONTESTED CONVENTION (DEFAULT SETTINGS, '+d.runs.toLocaleString()+' RUNS)');
+  renderBracketResult(null);
+ }).catch(()=>{DEF.pending=false;fallbackDefault();});
+}
+function fallbackDefault(){updateFrontrunner();const t=contestedTicker();if(t)initTicker(t);}
 function copyShare(txt){
  const t=JSON.parse(txt);
  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>{},()=>{fallbackCopy(t);});}
@@ -787,24 +857,41 @@ function copyShare(txt){
  setTimeout(()=>{try{event.target.textContent='Copy result';}catch(e){}},1800);
 }
 function fallbackCopy(t){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}
+let currentBP=null;
+function applyPreset(which){
+ const pre=BP_PRESETS[which];if(!pre)return false;
+ Object.keys(pre.set).forEach(id=>{const e=document.getElementById(id);if(!e)return;const v=pre.set[id];
+  if(typeof v==='boolean'){e.checked=v;return;}
+  e.value=v;const o=document.getElementById(id+'Out');if(o)o.textContent=v+'%';});
+ if(pre.adv)setMode('advanced');
+ currentBP=which;setOgImage(which);
+ return true;
+}
 function cueBranch(which){
  // preset controls to dramatize a turning point, scroll to controls, then run
- const set=(id,v)=>{const e=document.getElementById(id);if(e){e.value=v;const o=document.getElementById(id+'Out');if(o)o.textContent=v+'%';}};
- if(which==='aoc'){set('pAoc',47);document.getElementById('selTheme').value='afford';}
- else if(which==='calendar'){document.getElementById('selCal').value='A';}
- else if(which==='newsom'){set('pNewsom',20);}
- else if(which==='georgia'){set('pOssWin',85);set('pOssRev',80);setMode('advanced');}
- else if(which==='ai'){document.getElementById('selTheme').value='ai';set('pAoc',20);}
- else if(which==='harris'){document.getElementById('pollsHarris').checked=true;setMode('advanced');}
+ if(!applyPreset(which))return;
  const hm=document.querySelector('h2.s');if(hm)hm.scrollIntoView({behavior:'smooth',block:'start'});
  play();
+ if(typeof queueFront==='function')queueFront(); // the preset changed controls, so the frontrunner box must re-simulate
+}
+function setOgImage(which){
+ const m=document.querySelector('meta[property="og:image"]');
+ if(m)m.setAttribute('content',SITE+'cards/'+(which||'default')+'.png');
 }
 function deepLink(){
  const params=new URLSearchParams(location.search);
  const bp=params.get('bp');
- if(bp&&['aoc','calendar','newsom','georgia','ai','harris'].includes(bp)){
-  cueBranch(bp);
- }
+ if(bp&&BP_PRESETS[bp]){cueBranch(bp);}
+}
+function shareRun(){
+ const link=SITE+(currentBP?'?bp='+currentBP:'');
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(link).then(()=>{},()=>{fallbackCopy(link);});}
+ else fallbackCopy(link);
+ const label=currentBP?BP_PRESETS[currentBP].label:'Default settings';
+ document.getElementById('modalBody').innerHTML='<div class="md-name">Share this run</div><div class="muted">'+label+' · link copied to your clipboard</div>'
+  +'<div class="sharelink">'+link+'</div>'
+  +'<img class="cardimg" src="cards/'+(currentBP||'default')+'.png?v='+Date.now()+'" alt="Share card: '+label+'" onerror="this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'muted\',textContent:\'Card renders after the next nightly run.\'}))">';
+ document.getElementById('modalBg').classList.add('open');
 }
 function setMode(m){
  document.body.classList.toggle('show-adv',m==='advanced');
@@ -867,6 +954,9 @@ function updateFrontrunner(){
  if(bk)document.getElementById('sbFront').textContent=nm(bk)+' '+Math.round(bv/tot*100)+'%';
 }
 function resetField(){CANDS.forEach(c=>{const e=document.getElementById('tg_'+c.id);if(e)e.value='sample';});updateFrontrunner();}
+const SITE='https://driscollglobe.github.io/2028-machine/';
+const QUICK=window.innerWidth<700; // small screens get capped, labelled quick runs
+function simBudget(n){return QUICK?Math.min(n,5000):n;}
 const TICK=['OSSOFF 17 leads Kalshi · AOC 19 leads Polymarket · NEWSOM 14 sits third on both books','BLEND: AOC 17.7, OSSOFF 16.6, NEWSOM 14.1 · a three-way race at the top','HARRIS 8 on the books, 29 to 42 in the polls · the gap is the story','OSSOFF run-market now says 71% he goes despite the denial','PETE 5.6 and SHAPIRO 5.6 · the electability lane is priced as a coin flip between them','KHANNA the sleeper if AI becomes the issue · run-market 78%','MARKET ANCHORS blend Kalshi and Polymarket as of September 10, 2026'];
 function contestedTicker(){
  // Compute the contested-convention rate from the model itself, at default settings, fixed seed for stability.
@@ -880,13 +970,106 @@ function contestedTicker(){
 function initTicker(extra){const items=extra?TICK.concat([extra]):TICK.slice();const s=items.join('<span class="tsep">/</span>');document.getElementById('ticker').innerHTML=s+'<span class="tsep">/</span>'+s;}
 function tickClock(){const d=new Date();document.getElementById('clock').textContent=d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}
 /*==SIM_CORE_END==*/
+// ==DAILY CHANGE STRIP== reads history.csv (written nightly by scripts/baseline.js)
+const HIST={rows:[],mode:'day'};
+function loadHistory(){
+ fetch('history.csv?v='+Date.now()).then(r=>r.ok?r.text():null).then(t=>{
+  if(!t){document.getElementById('csBody').textContent='history.csv unavailable';return;}
+  HIST.rows=parseCSV(t).filter(r=>r.date);
+  renderChangeStrip();
+ }).catch(()=>{document.getElementById('csBody').textContent='history.csv unavailable';});
+}
+function setChangeMode(m){HIST.mode=m;document.getElementById('csDay').classList.toggle('on',m==='day');document.getElementById('csLaunch').classList.toggle('on',m==='launch');renderChangeStrip();}
+function sgn(x){return (x>0?'+':'')+x.toFixed(1);}
+function cls(x){return x>0?'up':(x<0?'down':'');}
+function numOr(v){const x=parseFloat(v);return isFinite(x)?x:null;}
+function renderChangeStrip(){
+ const body=document.getElementById('csBody'),title=document.getElementById('csTitle');
+ const rows=HIST.rows;
+ if(rows.length<2){body.innerHTML='<b>First run</b> · the strip fills in once history.csv has two rows.';title.textContent='Since yesterday';return;}
+ const last=rows[rows.length-1];
+ const base=HIST.mode==='launch'?rows[0]:rows[rows.length-2];
+ title.textContent=(HIST.mode==='launch'?'Since launch':'Since yesterday')+' · '+base.date+' to '+last.date;
+ const ids=CANDS.map(c=>c.id).filter(id=>id!=='other'&&numOr(last['k_'+id])!==null);
+ const top=ids.slice().sort((a,b)=>numOr(last['k_'+b])-numOr(last['k_'+a])).slice(0,8);
+ const items=top.map(id=>{
+  const k1=numOr(last['k_'+id]),k0=numOr(base['k_'+id]),m1=numOr(last['m_'+id]),m0=numOr(base['m_'+id]);
+  const kal=(numOr(last['kal_'+id])!==null&&numOr(base['kal_'+id])!==null)?numOr(last['kal_'+id])-numOr(base['kal_'+id]):null;
+  const pol=(numOr(last['poly_'+id])!==null&&numOr(base['poly_'+id])!==null)?numOr(last['poly_'+id])-numOr(base['poly_'+id]):null;
+  const r1=numOr(last['run_'+id]),r0=numOr(base['run_'+id]);
+  return {id,dk:k0===null?null:k1-k0,dm:m0===null?null:m1-m0,kal,pol,dr:(r1===null||r0===null)?null:r1-r0};
+ }).sort((a,b)=>Math.abs(b.dk===null?0:b.dk)-Math.abs(a.dk===null?0:a.dk));
+ let h='<table class="cstable"><tr><th>Candidate</th><th>Market</th><th>Model</th><th style="text-align:left">Which book moved</th><th>Run odds</th></tr>';
+ items.forEach(x=>{
+  let book='book detail starts with the next nightly row';
+  if(x.kal!==null&&x.pol!==null){
+   if(Math.abs(x.kal)<0.05&&Math.abs(x.pol)<0.05)book='neither book moved';
+   else if(Math.abs(x.kal)>Math.abs(x.pol))book='Kalshi moved more ('+sgn(x.kal)+' vs Polymarket '+sgn(x.pol)+')';
+   else if(Math.abs(x.pol)>Math.abs(x.kal))book='Polymarket moved more ('+sgn(x.pol)+' vs Kalshi '+sgn(x.kal)+')';
+   else book='both books '+sgn(x.kal);
+  }
+  h+='<tr><td>'+nm(x.id)+'</td><td class="'+(x.dk===null?'':cls(x.dk))+'">'+(x.dk===null?'new':sgn(x.dk))+'</td><td class="'+(x.dm===null?'':cls(x.dm))+'">'+(x.dm===null?'new':sgn(x.dm))+'</td><td class="book">'+book+'</td><td class="'+(x.dr===null?'':cls(x.dr))+'">'+(x.dr===null?'n/a':sgn(x.dr))+'</td></tr>';
+ });
+ h+='</table><div class="legend">Market is the change in the Kalshi and Polymarket blend, model is the change in first place share at default settings, both in points. Sorted by the size of the market move. Run odds come from the Kalshi run market.</div>';
+ body.innerHTML=h;
+}
+// ==YOUR BRACKET== reader priors for the top six by market, encoded in the URL as ?me=
+const BR={ids:[],touched:false,result:null};
+function bracketIds(){return CANDS.filter(c=>c.id!=='other').slice().sort((a,b)=>b.mkt-a.mkt).slice(0,6).map(c=>c.id);}
+function bracketDefault(id){if(id==='aoc')return +document.getElementById('pAoc').value;if(id==='harris')return +document.getElementById('pHarris').value;return CANDS.find(c=>c.id===id).run;}
+function buildBracket(vals){
+ BR.ids=bracketIds();
+ const grid=document.getElementById('brSliders');
+ grid.innerHTML=BR.ids.map(id=>{const v=vals&&typeof vals[id]==='number'?vals[id]:bracketDefault(id);
+  return '<div class="ctl"><label class="cl">'+nm(id)+' runs</label><input type="range" min="0" max="100" value="'+v+'" id="br_'+id+'" oninput="BR.touched=true;document.getElementById(\'br_'+id+'Out\').textContent=this.value+\'%\'"><span class="cv" id="br_'+id+'Out">'+v+'%</span></div>';}).join('');
+}
+function bracketValues(){const o={};BR.ids.forEach(id=>o[id]=+document.getElementById('br_'+id).value);return o;}
+function bracketLink(){const v=bracketValues();return SITE+'?me='+BR.ids.map(id=>id+':'+v[id]).join(',');}
+function runBracket(){
+ const v=bracketValues();const C=cfg();C.runOverride={};
+ BR.ids.forEach(id=>{if(id==='aoc')C.pA=v[id]/100;else if(id==='harris'){C.pH=C.pollsHarris?0.95:v[id]/100;}else C.runOverride[id]=v[id];});
+ const N=simBudget(10000);const st=document.getElementById('brStatus');st.textContent='running '+N.toLocaleString()+' elections...';
+ const saved=rng;rng=mb(20280303);const w={};
+ setTimeout(()=>{
+  for(let i=0;i<N;i++){const r=simulate(C,false);w[r.winner]=(w[r.winner]||0)+1;}
+  rng=saved;
+  BR.result={N,shares:Object.keys(w).map(k=>({id:k,pct:w[k]/N*100})).sort((a,b)=>b.pct-a.pct)};
+  st.innerHTML=(QUICK&&N<10000?'<span class="quick">quick run</span> · ':'')+N.toLocaleString()+' elections on your odds';
+  history.replaceState(null,'',location.pathname+'?me='+BR.ids.map(id=>id+':'+v[id]).join(','));
+  renderBracketResult(BR.result);
+ },20);
+}
+function renderBracketResult(res){
+ const el=document.getElementById('brResult');
+ const mine=res?res.shares.slice(0,5):null;
+ let mkt=null;
+ if(DEF.data)mkt=DEF.data.order.slice(0,5).map(id=>({id,pct:DEF.data.first[id]}));
+ if(!mine&&!mkt){el.innerHTML='';return;}
+ const col=(title,list,note)=>'<div class="brcol"><h4>'+title+'</h4>'+(list?list.map(x=>'<div class="brrow"><span>'+nm(x.id)+'</span><b>'+x.pct.toFixed(1)+'%</b></div>').join(''):'<div class="muted">'+note+'</div>')+'</div>';
+ el.innerHTML='<div class="brcols">'+col('Your top five',mine,'Move a slider and run.')+col('Market default top five',mkt,'default.json not loaded yet')+'</div>';
+}
+function saveBracket(){
+ const link=bracketLink();
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(link).then(()=>{},()=>{fallbackCopy(link);});}
+ else fallbackCopy(link);
+ const st=document.getElementById('brStatus');st.textContent='link copied';
+ history.replaceState(null,'',location.pathname+link.slice(SITE.length));
+}
+function resetBracket(){BR.touched=false;buildBracket();document.getElementById('brStatus').textContent='market defaults loaded';history.replaceState(null,'',location.pathname);renderBracketResult(null);}
+function bracketFromUrl(){
+ const me=new URLSearchParams(location.search).get('me');if(!me)return;
+ const vals={};me.split(',').forEach(p=>{const [id,v]=p.split(':');const x=parseInt(v,10);if(id&&isFinite(x)&&x>=0&&x<=100)vals[id]=x;});
+ if(!Object.keys(vals).length)return;
+ BR.touched=true;buildBracket(vals);
+ const b=document.getElementById('bracket');if(b)b.scrollIntoView({block:'start'});
+ runBracket();
+}
 let _frUpd;function queueFront(){clearTimeout(_frUpd);_frUpd=setTimeout(updateFrontrunner,200);}
 ['pAoc','pHarris','pNewsom','pOssWin','pOssRev','pMaine','pTrump','pCoord','pCoordFail','pEvents','pDebate'].forEach(id=>document.getElementById(id).addEventListener('input',e=>{document.getElementById(id+'Out').textContent=e.target.value+'%';queueFront();}));
 document.addEventListener('change',e=>{if(e.target&&e.target.tagName==='SELECT')queueFront();});
 document.getElementById('pollsHarris').addEventListener('change',queueFront);
 document.getElementById('apprMixed').addEventListener('change',e=>{const s=document.getElementById('pTrump'),o=document.getElementById('pTrumpOut');s.disabled=e.target.checked;o.textContent=e.target.checked?'drawn':s.value+'%';queueFront();});
-buildCards();renderPollBoard();loadPolls();initTicker();tickClock();setInterval(tickClock,30000);deepLink();setTimeout(updateFrontrunner,50);
-setTimeout(()=>{const t=contestedTicker();if(t)initTicker(t);},120);
+buildCards();renderPollBoard();loadPolls();loadHistory();initTicker();tickClock();setInterval(tickClock,30000);buildBracket();paintDefault();deepLink();bracketFromUrl();
 // ==LIVE MARKET ANCHORS== fetch nightly-updated markets.json; fall back silently to baked-in values
 fetch('markets.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(M=>{
  if(!M||!M.blend)return;
@@ -898,8 +1081,8 @@ fetch('markets.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(M=>{
  [['pAoc','aoc'],['pHarris','harris']].forEach(([sl,id])=>{const r=M.run?M.run[id]:undefined;const el=document.getElementById(sl);if(el&&typeof r==='number'){el.value=Math.round(r);const o=document.getElementById(sl+'Out');if(o)o.textContent=Math.round(r)+'%';}});
  if(M.date){const f=document.querySelector('.foot');if(f)f.textContent=f.textContent.replace('MARKET ANCHORS AS OF SEPTEMBER 10, 2026','MARKET ANCHORS AUTO-UPDATED '+M.date.toUpperCase());
   const sub=document.querySelector('.subrule span:last-child');if(sub)sub.textContent='Market anchors auto-updated '+M.date;}
- refreshOdds();renderPollBoard();
- if(typeof queueFront==='function')queueFront();
+ refreshOdds();renderPollBoard();if(!BR.touched)buildBracket();
+ if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();
 }).catch(()=>{});
 </script>
 </body>
