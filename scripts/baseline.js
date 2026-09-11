@@ -113,16 +113,14 @@ if (fs.existsSync(HISTORY)) {
     });
   }
 }
-if (existing.some(r => r.date === M.date)) {
-  console.log('history.csv already has a row for ' + M.date + '; nothing appended');
-  process.exit(0);
-}
+// One row per date: a rerun on the same day replaces that day's row. Older rows are never touched.
 const newRow = { date: M.date };
 ids.forEach(id => { newRow['m_' + id] = String(share[id]); newRow['k_' + id] = String(M.blend[id]); });
-const rows = existing.concat([newRow]);
+const replaced = existing.some(r => r.date === M.date);
+const rows = existing.filter(r => r.date !== M.date).concat([newRow]);
 const out = [header.join(',')].concat(rows.map(r => header.map(h => r[h] === undefined ? '' : r[h]).join(','))).join('\n') + '\n';
 fs.writeFileSync(HISTORY, out);
 
 const top = ids.slice().sort((a, b) => share[b] - share[a]).slice(0, 8);
-console.log('Appended ' + M.date + ' to history.csv (' + RUNS + ' runs, ' + Math.round(contested / RUNS * 100) + '% contested)');
+console.log((replaced ? 'Replaced ' : 'Appended ') + M.date + ' in history.csv (' + RUNS + ' runs, ' + Math.round(contested / RUNS * 100) + '% contested)');
 console.log(top.map(id => id + ' ' + share[id]).join(', '));

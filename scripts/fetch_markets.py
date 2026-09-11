@@ -7,8 +7,10 @@ Standard library only. Writes markets.json at the repo root with the shape:
    "run": {id: pct}, "sources": [urls]}
 
 blend is the simple average of the two books rounded to one decimal, or the
-single available book when one of them lacks the candidate. Contracts that do
-not map to a candidate id are summed into "other" and logged by name.
+single available book when one of them lacks the candidate. "other" is 100
+minus the sum of the mapped blends, the same rule the page uses for its baked
+in value. Contracts that do not map to a candidate id are logged by name and
+their blended total is written separately as unmapped_pct for reference.
 Any HTTP error, empty book, or missing top candidate is fatal on purpose.
 """
 import json
@@ -16,6 +18,10 @@ import sys
 import urllib.request
 import urllib.error
 from datetime import datetime, timezone
+try:
+    from zoneinfo import ZoneInfo
+except ImportError:  # pragma: no cover
+    ZoneInfo = None
 from decimal import Decimal, ROUND_HALF_UP
 
 KALSHI_BASE = "https://api.elections.kalshi.com/trade-api/v2/markets"
@@ -137,8 +143,8 @@ def kalshi_book(event_ticker, label):
             raise SystemExit("Kalshi %s maps two contracts to %s" % (label, cid))
         book[cid] = r1(pct)
     if unmapped:
-        log("Kalshi %s unmapped, counted into other: %s" % (label, "; ".join(unmapped)))
-    book["other"] = r1(other)
+        log("Kalshi %s unmapped: %s" % (label, "; ".join(unmapped)))
+    book["_unmapped"] = r1(other)
     return book
 
 
@@ -180,14 +186,16 @@ def polymarket_book(slug):
     if placeholders:
         log("Polymarket skipped %d inactive placeholder slots with no price" % len(placeholders))
     if unmapped:
-        log("Polymarket unmapped, counted into other: %s" % "; ".join(unmapped))
-    book["other"] = r1(other)
+        log("Polymarket unmapped: %s" % "; ".join(unmapped))
+    book["_unmapped"] = r1(other)
     return book
 
 
 def blend_books(k, p):
     blend = {}
     for cid in IDS:
+        if cid == "other":
+            continue
         kv = k.get(cid)
         pv = p.get(cid)
         if kv is not None and pv is not None:
@@ -196,14 +204,29 @@ def blend_books(k, p):
             blend[cid] = kv
         elif pv is not None:
             blend[cid] = pv
+    # other is the residual: 100 minus everything the model names
+    blend["other"] = r1(100.0 - sum(blend.values()))
     return blend
+
+
+def today_str():
+    """Stamp rows with the desk's date (US Eastern). The 10:00 UTC cron lands at 6am Eastern,
+    so the two agree on the nightly run; this only matters for manual runs late in the day."""
+    tz = timezone.utc
+    if ZoneInfo is not None:
+        try:
+            tz = ZoneInfo("America/New_York")
+        except Exception:
+            pass
+    return datetime.now(tz).strftime("%Y-%m-%d")
 
 
 def main():
     kal = kalshi_book(KALSHI_NOM_EVENT, "nominee")
     poly = polymarket_book(POLY_NOM_SLUG)
     run = kalshi_book(KALSHI_RUN_EVENT, "run")
-    run.pop("other", None)
+    run.pop("_unmapped", None)
+    unmapped_pct = r1((kal["_unmapped"] + poly["_unmapped"]) / 2.0)
 
     blend = blend_books(kal, poly)
     missing = [c for c in TOP_FIVE_CHECK if c not in blend]
@@ -214,17 +237,18 @@ def main():
         raise SystemExit("Refusing to write zero prices for: " + ", ".join(zeros))
 
     out = {
-        "date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        "date": today_str(),
         "kalshi": {c: kal[c] for c in IDS if c in kal},
         "polymarket": {c: poly[c] for c in IDS if c in poly},
         "blend": blend,
         "run": {c: run[c] for c in IDS if c in run},
+        "unmapped_pct": unmapped_pct,
         "sources": SOURCES,
     }
     with open("markets.json", "w") as f:
         json.dump(out, f, indent=1)
         f.write("\n")
-    log("Wrote markets.json for " + out["date"])
+    log("Wrote markets.json for " + out["date"] + "; unmapped contracts blended to %s" % unmapped_pct)
     for c in IDS:
         log("  %-9s kalshi %-5s poly %-5s blend %-5s run %s" % (
             c, kal.get(c, "-"), poly.get(c, "-"), blend.get(c, "-"), run.get(c, "-")))

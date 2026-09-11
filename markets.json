@@ -1,16 +1,16 @@
 {
  "date": "2026-09-10",
  "kalshi": {
-  "newsom": 14.0,
+  "newsom": 13.0,
   "aoc": 16.0,
   "ossoff": 17.0,
   "harris": 8.3,
   "shapiro": 4.7,
   "pete": 5.5,
   "pritzker": 1.3,
-  "khanna": 1.9,
+  "khanna": 1.8,
   "murphy": 0.6,
-  "kelly": 4.0,
+  "kelly": 3.9,
   "beshear": 3.4,
   "rahm": 3.5,
   "whitmer": 0.8,
@@ -19,11 +19,10 @@
   "talarico": 1.9,
   "stewart": 0.5,
   "fain": 1.0,
-  "walz": 0.1,
-  "other": 12.1
+  "walz": 0.1
  },
  "polymarket": {
-  "newsom": 14.5,
+  "newsom": 15.0,
   "aoc": 19.4,
   "ossoff": 16.2,
   "harris": 7.9,
@@ -40,20 +39,19 @@
   "warnock": 0.5,
   "talarico": 2.5,
   "stewart": 0.1,
-  "walz": 0.1,
-  "other": 6.4
+  "walz": 0.1
  },
  "blend": {
-  "newsom": 14.3,
+  "newsom": 14.0,
   "aoc": 17.7,
   "ossoff": 16.6,
   "harris": 8.1,
   "shapiro": 5.6,
   "pete": 5.6,
   "pritzker": 1.4,
-  "khanna": 1.9,
+  "khanna": 1.8,
   "murphy": 0.5,
-  "kelly": 3.6,
+  "kelly": 3.5,
   "beshear": 3.1,
   "rahm": 3.1,
   "whitmer": 0.7,
@@ -63,7 +61,7 @@
   "stewart": 0.3,
   "fain": 1.0,
   "walz": 0.1,
-  "other": 9.3
+  "other": 12.0
  },
  "run": {
   "newsom": 85.0,
@@ -78,7 +76,7 @@
   "kelly": 65.0,
   "beshear": 87.0,
   "rahm": 85.0,
-  "whitmer": 27.0,
+  "whitmer": 30.0,
   "moore": 70.0,
   "warnock": 35.0,
   "talarico": 15.0,
@@ -86,6 +84,7 @@
   "fain": 31.0,
   "walz": 3.9
  },
+ "unmapped_pct": 8.8,
  "sources": [
   "https://api.elections.kalshi.com/trade-api/v2/markets?event_ticker=KXPRESNOMD-28",
   "https://api.elections.kalshi.com/trade-api/v2/markets?event_ticker=KX2028DRUN-28",
