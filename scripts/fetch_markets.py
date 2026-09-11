@@ -37,7 +37,7 @@ SOURCES = [
 ]
 
 # Candidate ids used by index.html. Order matters only for output readability.
-IDS = ["newsom", "aoc", "ossoff", "harris", "shapiro", "pete", "pritzker", "khanna",
+IDS = ["newsom", "aoc", "sanders", "ossoff", "harris", "shapiro", "pete", "pritzker", "khanna",
        "murphy", "kelly", "beshear", "rahm", "whitmer", "moore", "warnock", "talarico",
        "elsayed", "stewart", "fain", "walz", "other"]
 
@@ -62,6 +62,8 @@ NAME_TO_ID = {
     "raphael warnock": "warnock",
     "james talarico": "talarico",
     "abdul el-sayed": "elsayed",
+    "bernie sanders": "sanders",
+    "bernard sanders": "sanders",
     "abdul el sayed": "elsayed",
     "jon stewart": "stewart",
     "shawn fain": "fain",
