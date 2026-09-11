@@ -414,7 +414,7 @@ const CANDS=[
  {id:'sanders',name:'Bernie Sanders',role:'Sen., Vermont',age:87,mkt:0.4,run:8,lane:'movement',rank:19,debate:1.0,str:'Founder of the lane; the list, the money, the loyalty',weak:'87 on election day and has said his time has passed',base:10,fit:{SC:0.70,NH:1.40,NV:1.20,IA:1.10,MI:1.10,GA:0.80,NC:0.90,ST:1.00}},
  {id:'ossoff',name:'Jon Ossoff',role:'Sen., Georgia',age:41,mkt:16.6,run:71,lane:'suburb',rank:9,debate:1.0,str:'Viral speeches, swing-state wins',weak:'Imitative; disavowed running',base:12,fit:{SC:1.30,NH:0.90,NV:0.95,IA:0.90,MI:0.95,GA:1.80,NC:1.20,ST:1.00}},
  {id:'shapiro',name:'Josh Shapiro',role:'Gov., Pennsylvania',age:55,mkt:5.6,run:73,lane:'suburb',rank:7,debate:1.0,str:'Wins the tipping-point state',weak:'No early-state launchpad',base:9,fit:{SC:0.85,NH:1.10,NV:0.95,IA:0.95,MI:1.00,GA:0.95,NC:1.15,ST:1.00}},
- {id:'pete',name:'Pete Buttigieg',role:'Former Sec.',age:46,mkt:5.6,run:86,lane:'suburb',rank:5,debate:1.15,str:'Elite communicator, donor network',weak:'Weak with Black voters',base:8,fit:{SC:0.50,NH:1.50,NV:0.90,IA:1.50,MI:1.30,GA:0.70,NC:0.95,ST:1.00}},
+ {id:'pete',name:'Pete Buttigieg',role:'Former Sec.',age:46,mkt:5.6,run:86,lane:'suburb',rank:5,debate:1.15,str:'Elite communicator, donor network',weak:'Weak with Black voters',base:10,fit:{SC:0.50,NH:1.50,NV:0.90,IA:1.50,MI:1.30,GA:0.70,NC:0.95,ST:1.00}},
  {id:'pritzker',name:'JB Pritzker',role:'Gov., Illinois',age:63,mkt:1.4,run:77,lane:'fight',rank:8,debate:0.9,str:'Bottomless money, real machine',weak:'Billionaire in an anti-elite cycle',base:7,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.05,MI:1.05,GA:0.85,NC:0.90,ST:1.00}},
  {id:'khanna',name:'Ro Khanna',role:'Rep., California',age:52,mkt:1.9,run:78,lane:'movement',rank:6,debate:1.0,str:'Built for an AI-and-jobs election',weak:'Limited national base',base:5,fit:{SC:0.70,NH:1.00,NV:1.10,IA:1.20,MI:1.05,GA:0.80,NC:0.85,ST:1.05}},
  {id:'murphy',name:'Chris Murphy',role:'Sen., Connecticut',age:55,mkt:0.6,run:60,lane:'suburb',rank:10,debate:1.1,str:'Economic message from inside the Senate',weak:'No national base yet',base:5,fit:{SC:0.80,NH:1.20,NV:0.90,IA:0.95,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
@@ -601,7 +601,7 @@ function simulate(C,collect){
   if(c.id==='talarico'&&texWin)b*=2;
   if(c.id==='newsom'){b*=aoc?1.15:1.0;if(!nsurv)b*=0.4;}
   if(c.id==='harris'&&C.pollsHarris)b*=1.5;
-  if(c.id==='pete')b*=harris?0.6:1.15;
+  if(c.id==='pete')b*=harris?0.8:1.15;
   if(c.id==='ossoff')b*=(ossWin==='big'?1.25:0.9)*(harris?0.85:1);
   // lesson of 2026 bends the pools: the four institutional pools reward 'inst', the Movement Left rewards 'pop'
   const pool=POOLOF[c.id];
