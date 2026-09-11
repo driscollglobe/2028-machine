@@ -218,6 +218,8 @@ body.show-adv .ctl.adv{display:flex;}
 .cstable td{padding:3px 8px;text-align:right;border-top:1px solid var(--rule);white-space:nowrap;}
 .cstable th:first-child,.cstable td:first-child{text-align:left;font-family:'Inter',sans-serif;}
 .cstable .book{text-align:left;color:var(--muted);font-size:11px;}
+.cstable .nottracked{text-align:center;color:var(--faint);font-style:italic;font-family:'Inter',sans-serif;font-size:11.5px;}
+.csmorelink{display:inline-block;margin-top:8px;font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--wire);text-decoration:none;}
 .up{color:var(--tealx);}.down{color:var(--wire);}
 .brgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px 18px;margin-bottom:10px;}
 .brcols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px;}
@@ -297,7 +299,7 @@ body.show-adv h2.s.adv{display:block;}
  <div class="hero-note" id="heroNote"></div>
 </div>
 
-<div class="section changestrip" id="changestrip"><div class="shead"><span id="csTitle">Since yesterday</span><span class="row" style="gap:5px;"><button class="seg on" id="csDay" onclick="setChangeMode('day')">Since yesterday</button><button class="seg" id="csLaunch" onclick="setChangeMode('launch')">Since launch</button></span></div><div id="csBody" class="muted">Loading history.csv</div></div>
+<div class="section changestrip" id="changestrip"><div class="shead"><span id="csTitle">Since yesterday</span><span class="row" style="gap:5px;"><button class="seg on" id="csDay" onclick="setChangeMode('day')">Latest change</button><button class="seg" id="csLaunch" onclick="setChangeMode('launch')">Since launch</button></span></div><div id="csBody" class="muted">Loading history.csv</div></div>
 
 <div id="aggregate" class="section"><div class="shead"><span>Model result</span><span class="note">loading default.json</span></div><div id="aggBody" class="muted">Loading the precomputed default run.</div></div>
 
@@ -1053,13 +1055,19 @@ function setChangeMode(m){HIST.mode=m;document.getElementById('csDay').classList
 function sgn(x){return (x>0?'+':'')+x.toFixed(1);}
 function cls(x){return x>0?'up':(x<0?'down':'');}
 function numOr(v){const x=parseFloat(v);return isFinite(x)?x:null;}
+function stripLabel(base,last){
+ const d0=new Date(base.date+'T12:00:00'),d1=new Date(last.date+'T12:00:00');
+ const days=Math.round((d1-d0)/86400000);
+ if(days===1)return 'Since yesterday';
+ return 'Since '+d0.toLocaleDateString('en-US',{month:'long',day:'numeric'});
+}
 function renderChangeStrip(){
  const body=document.getElementById('csBody'),title=document.getElementById('csTitle');
  const rows=HIST.rows;
- if(rows.length<2){body.innerHTML='<b>First run</b> · the strip fills in once history.csv has two rows.';title.textContent='Since yesterday';return;}
+ if(rows.length<2){body.innerHTML='<b>First run</b> · the strip fills in once history.csv has two rows.';title.textContent='Latest change';return;}
  const last=rows[rows.length-1];
  const base=HIST.mode==='launch'?rows[0]:rows[rows.length-2];
- title.textContent=(HIST.mode==='launch'?'Since launch':'Since yesterday')+' · '+base.date+' to '+last.date;
+ title.textContent=(HIST.mode==='launch'?'Since launch':stripLabel(base,last))+' · '+base.date+' to '+last.date;
  const ids=CANDS.map(c=>c.id).filter(id=>id!=='other'&&numOr(last['k_'+id])!==null);
  const top=ids.slice().sort((a,b)=>numOr(last['k_'+b])-numOr(last['k_'+a])).slice(0,8);
  const items=top.map(id=>{
@@ -1069,18 +1077,29 @@ function renderChangeStrip(){
   const r1=numOr(last['run_'+id]),r0=numOr(base['run_'+id]);
   return {id,dk:k0===null?null:k1-k0,dm:m0===null?null:m1-m0,kal,pol,dr:(r1===null||r0===null)?null:r1-r0};
  }).sort((a,b)=>Math.abs(b.dk===null?0:b.dk)-Math.abs(a.dk===null?0:a.dk));
- let h='<table class="cstable"><tr><th>Candidate</th><th>Market</th><th>Model</th><th style="text-align:left">Which book moved</th><th>Run odds</th></tr>';
- items.forEach(x=>{
-  let book='book detail starts with the next nightly row';
+ // only render the book and run columns when at least one row has the data
+ const hasBook=items.some(x=>x.kal!==null&&x.pol!==null), hasRun=items.some(x=>x.dr!==null);
+ const baseMonth=new Date(base.date+'T12:00:00').toLocaleDateString('en-US',{month:'long'});
+ let h='<table class="cstable"><tr><th>Candidate</th><th>Market</th><th>Model</th>'+(hasBook?'<th style="text-align:left">Which book moved</th>':'')+(hasRun?'<th>Run odds</th>':'')+'</tr>';
+ items.forEach((x,i)=>{
+  let book='';
   if(x.kal!==null&&x.pol!==null){
    if(Math.abs(x.kal)<0.05&&Math.abs(x.pol)<0.05)book='neither book moved';
    else if(Math.abs(x.kal)>Math.abs(x.pol))book='Kalshi moved more ('+sgn(x.kal)+' vs Polymarket '+sgn(x.pol)+')';
    else if(Math.abs(x.pol)>Math.abs(x.kal))book='Polymarket moved more ('+sgn(x.pol)+' vs Kalshi '+sgn(x.kal)+')';
    else book='both books '+sgn(x.kal);
   }
-  h+='<tr><td>'+nm(x.id)+'</td><td class="'+(x.dk===null?'':cls(x.dk))+'">'+(x.dk===null?'new':sgn(x.dk))+'</td><td class="'+(x.dm===null?'':cls(x.dm))+'">'+(x.dm===null?'new':sgn(x.dm))+'</td><td class="book">'+book+'</td><td class="'+(x.dr===null?'':cls(x.dr))+'">'+(x.dr===null?'n/a':sgn(x.dr))+'</td></tr>';
+  h+='<tr'+(i>=6?' class="csmore" hidden':'')+'><td>'+nm(x.id)+'</td>';
+  if(x.dk===null&&x.dm===null)h+='<td colspan="2" class="nottracked">not tracked in '+baseMonth+'</td>';
+  else h+='<td class="'+(x.dk===null?'':cls(x.dk))+'">'+(x.dk===null?'':sgn(x.dk))+'</td><td class="'+(x.dm===null?'':cls(x.dm))+'">'+(x.dm===null?'':sgn(x.dm))+'</td>';
+  if(hasBook)h+='<td class="book">'+book+'</td>';
+  if(hasRun)h+='<td class="'+(x.dr===null?'':cls(x.dr))+'">'+(x.dr===null?'':sgn(x.dr))+'</td>';
+  h+='</tr>';
  });
- h+='</table><div class="legend">Market is the change in the Kalshi and Polymarket blend, model is the change in first place share at default settings, both in points. Sorted by the size of the market move. Run odds come from the Kalshi run market.</div>';
+ h+='</table>';
+ if(items.length>6)h+='<a class="csmorelink" href="#" onclick="event.preventDefault();document.querySelectorAll(\'#csBody .csmore\').forEach(r=>r.hidden=!r.hidden);this.textContent=this.textContent===\'Show more\'?\'Show fewer\':\'Show more\';">Show more</a>';
+ if(!hasBook&&!hasRun)h+='<div class="legend">Book detail and run odds begin with the next nightly row.</div>';
+ h+='<div class="legend">Market is the Kalshi and Polymarket blend, model is first place share at default settings, both in points.</div>';
  body.innerHTML=h;
 }
 // ==YOUR BRACKET== reader priors for the top six by market, encoded in the URL as ?me=
