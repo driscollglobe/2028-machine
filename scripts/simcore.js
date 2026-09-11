@@ -72,6 +72,7 @@ function applyMarkets(sim, M) {
     c.mkt = b;
     const r = M.run ? M.run[c.id] : undefined;
     if (typeof r === 'number' && c.run > 0 && c.run < 100) c.run = Math.round(r);
+    if (typeof c.runCap === 'number') c.run = Math.min(c.run, c.runCap); // operator cap on top of the run market
   });
   // AOC and Harris run probabilities live on the sliders, so the run market sets those too.
   if (M.run && typeof M.run.aoc === 'number') sim.controls.pAoc.value = String(Math.round(M.run.aoc));

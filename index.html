@@ -427,7 +427,7 @@ const CANDS=[
  {id:'talarico',name:'James Talarico',role:'State Rep., Texas',age:36,mkt:2.1,run:15,lane:'fight',rank:17,debate:1.1,str:'Viral, young, surprising',weak:'No infrastructure',base:4,fit:{SC:1.05,NH:0.80,NV:0.95,IA:0.95,MI:0.90,GA:0.95,NC:1.00,ST:1.10}},
  {id:'elsayed',name:'Abdul El-Sayed',role:'Sen. candidate, Michigan',age:44,mkt:2.0,run:40,lane:'movement',rank:18,debate:1.05,str:'Sanders lineage, Michigan Senate platform',weak:'Untested nationally; splits the left with AOC',base:4,fit:{SC:0.70,NH:1.00,NV:1.10,IA:1.00,MI:1.60,GA:0.75,NC:0.85,ST:1.00}},
  {id:'stewart',name:'Jon Stewart',role:'Broadcaster',age:65,mkt:0.4,run:12,lane:'out',rank:19,debate:1.2,str:'Attention, anti-elite credibility',weak:'66 on election day; wants influence not the job',base:5,fit:{SC:0.60,NH:1.10,NV:1.00,IA:0.90,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
- {id:'fain',name:'Shawn Fain',role:'UAW President',age:56,mkt:1.0,run:31,lane:'movement',tag:'Labor',rank:20,debate:1.0,str:'Purest class-war vessel',weak:'Never run for anything',base:5,fit:{SC:0.60,NH:0.80,NV:1.30,IA:1.10,MI:1.50,GA:0.70,NC:0.85,ST:0.95}},
+ {id:'fain',name:'Shawn Fain',role:'UAW President',age:56,mkt:1.0,run:15,runCap:15,lane:'movement',tag:'Labor',rank:20,debate:1.0,str:'Purest class-war vessel',weak:'Under federal investigation; fighting for his own union job first',base:5,fit:{SC:0.60,NH:0.80,NV:1.30,IA:1.10,MI:1.50,GA:0.70,NC:0.85,ST:0.95}},
  {id:'walz',name:'Tim Walz',role:'Gov., Minnesota',age:64,mkt:0.1,run:13,lane:'working',rank:21,debate:1.0,str:'Folksy, soft-left',weak:'Losing VP rarely tops the ticket',base:5,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.20,MI:1.10,GA:0.80,NC:0.90,ST:0.95}},
  {id:'other',name:'Someone else',role:'Not yet declared',age:0,mkt:9.7,run:100,lane:'out',rank:0,debate:1.0,str:'The candidate the moment hasn\u2019t named',weak:'Does not exist yet',base:6,fit:{SC:1.00,NH:1.00,NV:1.00,IA:1.00,MI:1.00,GA:1.00,NC:1.00,ST:1.00}}
 ];
@@ -1245,6 +1245,7 @@ fetch('markets.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(M=>{
  CANDS.forEach(c=>{
   const b=M.blend[c.id];if(typeof b==='number')c.mkt=b;
   const r=M.run?M.run[c.id]:undefined;if(typeof r==='number'&&c.run>0&&c.run<100)c.run=Math.round(r);
+  if(typeof c.runCap==='number')c.run=Math.min(c.run,c.runCap); // operator cap on top of the run market
  });
  // AOC and Harris run probabilities live on the sliders, so the run market sets those too
  [['pAoc','aoc'],['pHarris','harris']].forEach(([sl,id])=>{const r=M.run?M.run[id]:undefined;const el=document.getElementById(sl);if(el&&typeof r==='number'){el.value=Math.round(r);const o=document.getElementById(sl+'Out');if(o)o.textContent=Math.round(r)+'%';}});
