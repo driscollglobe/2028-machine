@@ -11,7 +11,7 @@ const ROOT = core.ROOT;
 const OUT = path.join(ROOT, 'cards');
 const SHARE = path.join(ROOT, 'share');
 const SITE = 'https://driscollglobe.github.io/2028-machine/';
-const POOL_COLOR = { rest: '#c98a18', pop: '#b8442b', elec: '#1f7a5c', out: '#5c5b55' };
+const POOL_COLOR = { anchor: '#c98a18', fight: '#b8442b', suburb: '#1f7a5c', working: '#3b6ea5', movement: '#7a3e9d', out: '#5c5b55' };
 const SITE_LABEL = 'driscollglobe.github.io/2028-machine';
 const RUNS = 20000;
 
