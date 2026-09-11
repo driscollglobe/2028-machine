@@ -84,7 +84,7 @@
   "fain": 31.0,
   "walz": 3.9
  },
- "unmapped_pct": 8.8,
+ "unmapped_pct": 8.9,
  "sources": [
   "https://api.elections.kalshi.com/trade-api/v2/markets?event_ticker=KXPRESNOMD-28",
   "https://api.elections.kalshi.com/trade-api/v2/markets?event_ticker=KX2028DRUN-28",
