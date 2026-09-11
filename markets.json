@@ -1,7 +1,7 @@
 {
  "date": "2026-09-10",
  "kalshi": {
-  "newsom": 14.0,
+  "newsom": 13.0,
   "aoc": 15.0,
   "ossoff": 16.0,
   "harris": 8.3,
@@ -43,7 +43,7 @@
   "walz": 0.1
  },
  "blend": {
-  "newsom": 14.3,
+  "newsom": 13.8,
   "aoc": 17.2,
   "ossoff": 16.1,
   "harris": 8.1,
@@ -63,7 +63,7 @@
   "stewart": 0.3,
   "fain": 1.0,
   "walz": 0.1,
-  "other": 11.8
+  "other": 12.3
  },
  "run": {
   "newsom": 85.0,
