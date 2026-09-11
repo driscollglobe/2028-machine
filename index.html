@@ -356,7 +356,7 @@ body.show-adv h2.s.adv{display:block;}
  <div class="section">
   <div class="shead">Candidate gates</div>
   <div class="ctl"><label class="cl">AOC runs for president</label><input type="range" min="0" max="100" value="66" id="pAoc"><span class="cv" id="pAocOut">66%</span></div>
-  <div class="ctl adv"><label class="cl">If AOC stays out, she...</label><select id="selAoc"><option value="mixed" selected>Drawn per run</option><option value="khanna">Endorses Khanna</option><option value="pop">Endorses the Movement Left</option><option value="neutral">Stays neutral</option></select></div>
+  <div class="ctl adv"><label class="cl">If AOC stays out, she...</label><select id="selAoc"><option value="mixed" selected>Drawn per run</option><option value="khanna">Endorses Khanna</option><option value="elsayed">Endorses El-Sayed</option><option value="fain">Endorses Fain</option><option value="neutral">Stays neutral</option></select></div>
   <div class="ctl"><label class="cl">Harris runs</label><input type="range" min="0" max="100" value="78" id="pHarris"><span class="cv" id="pHarrisOut">78%</span></div>
   <div class="ctl"><label class="cl">Newsom holds up under scrutiny</label><input type="range" min="0" max="100" value="60" id="pNewsom"><span class="cv" id="pNewsomOut">60%</span></div>
   <div class="ctl adv"><label class="cl">Ossoff wins Georgia</label><input type="range" min="0" max="100" value="62" id="pOssWin"><span class="cv" id="pOssWinOut">62%</span></div>
@@ -573,15 +573,27 @@ function simulate(C,collect){
  const lP=popM*(lesson==='pop'?1.5:(lesson==='inst'?0.85:(lesson==='under'?1.1:1)));
  const lO=outM*(lesson==='under'?1.4:(lesson==='inst'?0.9:1));
  const str={},mom={},strikes={},alive={},dels={},won={},dbWins={};
+ // AOC fallback chain: when she stays out, AOC_POOL base units of Movement Left strength go to her heirs.
+ // Split by base strength unless she names one heir, who takes the full transfer. Drawn per run picks
+ // an heir 35% of the time and stays neutral otherwise.
+ const AOC_POOL=7, AOC_HEIRS=['khanna','elsayed','fain'], AOC_IN_MULT={khanna:0.3,elsayed:0.6,fain:0.4};
+ let endorse=null;
+ if(!aoc){let mode=C.selAoc;
+  if(mode==='mixed'){const r=rng();mode=r<0.35?AOC_HEIRS[Math.floor(rng()*AOC_HEIRS.length)]:'neutral';}
+  if(AOC_HEIRS.includes(mode)&&inRace[mode])endorse=mode;}
+ const heirBase=AOC_HEIRS.filter(h=>inRace[h]).reduce((a,h)=>a+CANDS.find(c=>c.id===h).base,0);
  CANDS.forEach(c=>{
   dels[c.id]=0;won[c.id]=0;dbWins[c.id]=0;
   if(!inRace[c.id]){alive[c.id]=false;return;}
   alive[c.id]=true;
   let b=c.base*TM[c.id][theme];
-  if(c.id==='khanna')b*=aoc?0.3:2.0;
+  if(AOC_HEIRS.includes(c.id)){
+   if(aoc)b*=AOC_IN_MULT[c.id];
+   else if(endorse)b*=(c.id===endorse?1+AOC_POOL/c.base:1);
+   else if(heirBase>0)b*=1+AOC_POOL/heirBase;
+  }
   if(c.id==='murphy')b*=aoc?0.8:1.2;
-  if(c.id==='fain')b*=aoc?0.4:1.0;
-  if(c.id==='elsayed')b*=(aoc?0.6:1.2)*(michWin?2:1);
+  if(c.id==='elsayed'&&michWin)b*=2;
   if(c.id==='talarico'&&texWin)b*=2;
   if(c.id==='newsom'){b*=aoc?1.15:1.0;if(!nsurv)b*=0.4;}
   if(c.id==='harris'&&C.pollsHarris)b*=1.5;
@@ -602,12 +614,8 @@ function simulate(C,collect){
   if(darling===c.id)b*=1.35;
   str[c.id]=Math.pow(Math.max(0,b),0.6);mom[c.id]=1;strikes[c.id]=0;
  });
- // AOC endorsement
- let endorse=null;
- if(!aoc){let mode=C.selAoc;if(mode==='mixed'){const r=rng();mode=r<0.20?'khanna':(r<0.35?'pop':'neutral');}
-  if(mode==='khanna'&&alive.khanna)endorse='khanna';else if(mode==='pop'){endorse=alive.talarico?'talarico':(alive.elsayed?'elsayed':(alive.fain?'fain':null));}}
- // primary Movement Left recipients get the full boost, a secondary-pool recipient (Fain) half of it
- if(endorse)str[endorse]*=Math.pow(1.6,POOLOF[endorse]==='movement'?0.6:0.3);
+ // the named heir also gets the endorsement bump on top of the transfer
+ if(endorse)str[endorse]*=Math.pow(1.6,0.6);
  // dropout inheritance: a share of a departing candidate's strength flows to live candidates in the same pool,
  // primary pool at full weight and secondary pool at half
  function inherit(k){
