@@ -353,7 +353,7 @@ body.show-adv h2.s.adv{display:block;}
   <div class="ctl"><label class="cl">Harris runs</label><input type="range" min="0" max="100" value="78" id="pHarris"><span class="cv" id="pHarrisOut">78%</span></div>
   <div class="ctl"><label class="cl">Newsom holds up under scrutiny</label><input type="range" min="0" max="100" value="60" id="pNewsom"><span class="cv" id="pNewsomOut">60%</span></div>
   <div class="ctl adv"><label class="cl">Ossoff wins Georgia</label><input type="range" min="0" max="100" value="62" id="pOssWin"><span class="cv" id="pOssWinOut">62%</span></div>
-  <div class="ctl adv"><label class="cl">Talarico wins Texas</label><input type="range" min="0" max="100" value="55" id="pTexas"><span class="cv" id="pTexasOut">55%</span><div class="ctlnote">Silver Bulletin average Sep 10, 2026: Talarico plus 2.4. A win triples his base strength and puts his run odds at 60.</div></div>
+  <div class="ctl adv"><label class="cl">Talarico wins Texas</label><input type="range" min="0" max="100" value="55" id="pTexas"><span class="cv" id="pTexasOut">55%</span><div class="ctlnote">Silver Bulletin average Sep 10, 2026: Talarico plus 2.4. A win doubles his base strength and puts his run odds at 60.</div></div>
   <div class="ctl adv"><label class="cl">El-Sayed wins Michigan</label><input type="range" min="0" max="100" value="52" id="pMich"><span class="cv" id="pMichOut">52%</span><div class="ctlnote">CNN Sep 2026: El-Sayed plus 3. Same shape as Texas.</div></div>
   <div class="ctl adv"><label class="cl">Polls are right about Harris</label><label class="dpr"><input type="checkbox" id="pollsHarris">On: Harris runs at 95% and her base strength is multiplied by 1.5</label></div>
   <div class="ctl adv"><label class="cl">Ossoff reverses his denial</label><input type="range" min="0" max="100" value="90" id="pOssRev"><span class="cv" id="pOssRevOut">90%</span></div>
@@ -477,7 +477,7 @@ function simulate(C,collect){
  const aoc=rng()<C.pA, harris=rng()<C.pH, nsurv=rng()<C.pN;
  const ossWin=rng()<C.pOW?(rng()<0.45?'big':'narrow'):'lose';
  const ossIn=ossWin!=='lose'&&rng()<C.pOR;
- const texWin=rng()<C.pTex, michWin=rng()<C.pMich; // Senate results that launch a candidate: base x3 and run odds 60 for that run
+ const texWin=rng()<C.pTex, michWin=rng()<C.pMich; // Senate results that launch a candidate: base x2 and run odds 60 for that run
  const maineDem=rng()<C.pMaine; // Maine seat as environment: a hold feeds the institutional narrative, a loss feeds underperformance
  let theme=C.selTheme;
  if(theme==='mixed'){let r=rng(),c=0;theme='afford';for(const k in TH){c+=TH[k];if(r<c){theme=k;break;}}}
@@ -533,8 +533,8 @@ function simulate(C,collect){
   if(c.id==='khanna')b*=aoc?0.3:2.0;
   if(c.id==='murphy')b*=aoc?0.8:1.2;
   if(c.id==='fain')b*=aoc?0.4:1.0;
-  if(c.id==='elsayed')b*=(aoc?0.6:1.2)*(michWin?3:1);
-  if(c.id==='talarico'&&texWin)b*=3;
+  if(c.id==='elsayed')b*=(aoc?0.6:1.2)*(michWin?2:1);
+  if(c.id==='talarico'&&texWin)b*=2;
   if(c.id==='newsom'){b*=aoc?1.15:1.0;if(!nsurv)b*=0.4;}
   if(c.id==='harris'&&C.pollsHarris)b*=1.5;
   if(c.id==='pete')b*=harris?0.6:1.15;
