@@ -19,10 +19,10 @@
  --muted:#5c5b55;--faint:#8a897f;--wire:#b8442b;--wire-soft:#f3ddd4;
  --tealx:#1f7a5c;--tealx-soft:#dcefe7;--amber:#c98a18;--amber-soft:#f5e7c8;
  --rmd:7px;--rlg:11px;
- --p-anchor:#c98a18;--p-anchor-soft:#f5e7c8;--p-fight:#b8442b;--p-fight-soft:#f3ddd4;--p-suburb:#1f7a5c;--p-suburb-soft:#dcefe7;--p-working:#3b6ea5;--p-working-soft:#dbe6f3;--p-movement:#7a3e9d;--p-movement-soft:#e9dcf1;
+ --p-anchor:#c98a18;--p-anchor-soft:#f5e7c8;--p-fight:#b8442b;--p-fight-soft:#f3ddd4;--p-suburb:#1f7a5c;--p-suburb-soft:#dcefe7;--p-working:#3b6ea5;--p-working-soft:#dbe6f3;--p-movement:#7a3e9d;--p-movement-soft:#e9dcf1;--p-out:#8c5a2b;--p-out-soft:#efe2d3;
 }
 @media (prefers-color-scheme:dark){
- :root{--ink:#ecebe4;--paper:#15161a;--panel:#1d1e22;--rule:rgba(255,255,255,.15);--muted:#a6a59d;--faint:#76756d;--wire:#e06a4d;--wire-soft:#3a201a;--tealx:#6cc7a5;--tealx-soft:#16332a;--amber:#e0ad4e;--amber-soft:#3a2f17;--p-anchor:#e0ad4e;--p-anchor-soft:#3a2f17;--p-fight:#e06a4d;--p-fight-soft:#3a201a;--p-suburb:#6cc7a5;--p-suburb-soft:#16332a;--p-working:#7fa9d9;--p-working-soft:#1a2a3d;--p-movement:#b98ad6;--p-movement-soft:#2e2038;}
+ :root{--ink:#ecebe4;--paper:#15161a;--panel:#1d1e22;--rule:rgba(255,255,255,.15);--muted:#a6a59d;--faint:#76756d;--wire:#e06a4d;--wire-soft:#3a201a;--tealx:#6cc7a5;--tealx-soft:#16332a;--amber:#e0ad4e;--amber-soft:#3a2f17;--p-anchor:#e0ad4e;--p-anchor-soft:#3a2f17;--p-fight:#e06a4d;--p-fight-soft:#3a201a;--p-suburb:#6cc7a5;--p-suburb-soft:#16332a;--p-working:#7fa9d9;--p-working-soft:#1a2a3d;--p-movement:#b98ad6;--p-movement-soft:#2e2038;--p-out:#d1a06a;--p-out-soft:#3a2a1a;}
 }
 *{box-sizing:border-box;}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
@@ -105,7 +105,7 @@ input[type=range]{accent-color:var(--wire);}
 .lane.suburb{background:var(--p-suburb-soft);color:var(--p-suburb);}
 .lane.working{background:var(--p-working-soft);color:var(--p-working);}
 .lane.movement{background:var(--p-movement-soft);color:var(--p-movement);}
-.lane.out{background:var(--rule);color:var(--muted);}
+.lane.out{background:var(--p-out-soft);color:var(--p-out);}
 .cc .lane{cursor:help;}
 .pooldot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;}
 .cc .sw{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.35;}
@@ -262,7 +262,7 @@ body.show-adv .ctl.adv{display:flex;}
 .mr .mname{width:92px;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:16px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .mr .mtrack{flex:1;height:18px;background:var(--paper);border:1px solid var(--rule);border-radius:3px;overflow:hidden;min-width:60px;}
 .mr .mfill{height:100%;width:0;transition:width .4s ease;}
-.mfill.anchor{background:var(--p-anchor);}.mfill.fight{background:var(--p-fight);}.mfill.suburb{background:var(--p-suburb);}.mfill.working{background:var(--p-working);}.mfill.movement{background:var(--p-movement);}.mfill.out{background:var(--muted);}
+.mfill.anchor{background:var(--p-anchor);}.mfill.fight{background:var(--p-fight);}.mfill.suburb{background:var(--p-suburb);}.mfill.working{background:var(--p-working);}.mfill.movement{background:var(--p-movement);}.mfill.out{background:var(--p-out);}
 .mr .mshare{width:52px;text-align:right;font-family:'Spline Sans Mono',monospace;font-size:14px;font-weight:500;flex-shrink:0;}
 .mr .mstats{display:flex;gap:10px;font-family:'Spline Sans Mono',monospace;font-size:11px;color:var(--faint);flex-shrink:0;width:230px;justify-content:flex-end;}
 .mr .mstats span{min-width:62px;text-align:right;}
@@ -417,32 +417,32 @@ const CANDS=[
  {id:'pritzker',name:'JB Pritzker',role:'Gov., Illinois',age:63,mkt:1.4,run:77,lane:'fight',rank:8,debate:0.9,str:'Bottomless money, real machine',weak:'Billionaire in an anti-elite cycle',base:7,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.05,MI:1.05,GA:0.85,NC:0.90,ST:1.00}},
  {id:'khanna',name:'Ro Khanna',role:'Rep., California',age:52,mkt:1.9,run:78,lane:'movement',rank:6,debate:1.0,str:'Built for an AI-and-jobs election',weak:'Limited national base',base:5,fit:{SC:0.70,NH:1.00,NV:1.10,IA:1.20,MI:1.05,GA:0.80,NC:0.85,ST:1.05}},
  {id:'murphy',name:'Chris Murphy',role:'Sen., Connecticut',age:55,mkt:0.6,run:60,lane:'suburb',rank:10,debate:1.1,str:'Economic message from inside the Senate',weak:'No national base yet',base:5,fit:{SC:0.80,NH:1.20,NV:0.90,IA:0.95,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
- {id:'kelly',name:'Mark Kelly',role:'Sen., Arizona',age:64,mkt:3.1,run:65,lane:'working',rank:11,debate:0.9,str:'Astronaut, veteran, swing-state',weak:'Low base energy',base:6,fit:{SC:0.90,NH:1.00,NV:1.30,IA:0.95,MI:1.00,GA:0.95,NC:1.15,ST:1.00}},
- {id:'beshear',name:'Andy Beshear',role:'Gov., Kentucky',age:50,mkt:3.1,run:87,lane:'working',rank:12,debate:1.05,str:'Wins deep-red turf, likeable',weak:'No natural coalition',base:5,fit:{SC:1.10,NH:0.90,NV:0.90,IA:1.30,MI:1.00,GA:1.05,NC:1.20,ST:0.95}},
+ {id:'kelly',name:'Mark Kelly',role:'Sen., Arizona',age:64,mkt:3.1,run:65,lane:'suburb',rank:11,debate:0.9,str:'Astronaut, veteran, swing-state',weak:'Low base energy',base:6,fit:{SC:0.90,NH:1.00,NV:1.30,IA:0.95,MI:1.00,GA:0.95,NC:1.15,ST:1.00}},
+ {id:'beshear',name:'Andy Beshear',role:'Gov., Kentucky',age:50,mkt:3.1,run:87,lane:'anchor',rank:12,debate:1.05,str:'Wins deep-red turf, likeable',weak:'No natural coalition',base:5,fit:{SC:1.10,NH:0.90,NV:0.90,IA:1.30,MI:1.00,GA:1.05,NC:1.20,ST:0.95}},
  {id:'rahm',name:'Rahm Emanuel',role:'Former Amb./Mayor',age:68,mkt:3.1,run:85,lane:'fight',rank:13,debate:1.0,str:'Money, message, relentless',weak:'Wrong era; base despises him',base:2,fit:{SC:0.70,NH:1.40,NV:0.80,IA:0.90,MI:0.95,GA:0.75,NC:0.85,ST:0.95}},
  {id:'whitmer',name:'Gretchen Whitmer',role:'Gov., Michigan',age:57,mkt:0.7,run:27,lane:'suburb',rank:14,debate:1.0,str:'Rust Belt brand',weak:'Looks like she passed',base:6,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.10,MI:1.70,GA:0.85,NC:0.95,ST:1.00}},
  {id:'moore',name:'Wes Moore',role:'Gov., Maryland',age:50,mkt:2.0,run:70,lane:'anchor',rank:15,debate:1.05,str:'Generational, compelling bio',weak:'Thin executive record',base:4,fit:{SC:1.25,NH:0.80,NV:0.95,IA:0.85,MI:0.95,GA:1.10,NC:1.10,ST:1.00}},
  {id:'warnock',name:'Raphael Warnock',role:'Sen., Georgia',age:59,mkt:0.7,run:35,lane:'anchor',rank:16,debate:1.1,str:'Heir to Black institutional support',weak:'Overshadowed by Ossoff',base:4,fit:{SC:1.45,NH:0.80,NV:0.95,IA:0.85,MI:0.95,GA:1.40,NC:1.15,ST:1.00}},
- {id:'talarico',name:'James Talarico',role:'State Rep., Texas',age:36,mkt:2.1,run:15,lane:'movement',rank:17,debate:1.1,str:'Viral, young, surprising',weak:'No infrastructure',base:4,fit:{SC:1.05,NH:0.80,NV:0.95,IA:0.95,MI:0.90,GA:0.95,NC:1.00,ST:1.10}},
+ {id:'talarico',name:'James Talarico',role:'State Rep., Texas',age:36,mkt:2.1,run:15,lane:'fight',rank:17,debate:1.1,str:'Viral, young, surprising',weak:'No infrastructure',base:4,fit:{SC:1.05,NH:0.80,NV:0.95,IA:0.95,MI:0.90,GA:0.95,NC:1.00,ST:1.10}},
  {id:'elsayed',name:'Abdul El-Sayed',role:'Sen. candidate, Michigan',age:44,mkt:2.0,run:40,lane:'movement',rank:18,debate:1.05,str:'Sanders lineage, Michigan Senate platform',weak:'Untested nationally; splits the left with AOC',base:4,fit:{SC:0.70,NH:1.00,NV:1.10,IA:1.00,MI:1.60,GA:0.75,NC:0.85,ST:1.00}},
- {id:'stewart',name:'Jon Stewart',role:'Broadcaster',age:65,mkt:0.4,run:12,lane:'fight',rank:19,debate:1.2,str:'Attention, anti-elite credibility',weak:'66 on election day; wants influence not the job',base:5,fit:{SC:0.60,NH:1.10,NV:1.00,IA:0.90,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
+ {id:'stewart',name:'Jon Stewart',role:'Broadcaster',age:65,mkt:0.4,run:12,lane:'out',rank:19,debate:1.2,str:'Attention, anti-elite credibility',weak:'66 on election day; wants influence not the job',base:5,fit:{SC:0.60,NH:1.10,NV:1.00,IA:0.90,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
  {id:'fain',name:'Shawn Fain',role:'UAW President',age:56,mkt:1.0,run:31,lane:'working',rank:20,debate:1.0,str:'Purest class-war vessel',weak:'Never run for anything',base:5,fit:{SC:0.60,NH:0.80,NV:1.30,IA:1.10,MI:1.50,GA:0.70,NC:0.85,ST:0.95}},
  {id:'walz',name:'Tim Walz',role:'Gov., Minnesota',age:64,mkt:0.1,run:13,lane:'working',rank:21,debate:1.0,str:'Folksy, soft-left',weak:'Losing VP rarely tops the ticket',base:5,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.20,MI:1.10,GA:0.80,NC:0.90,ST:0.95}},
  {id:'other',name:'Someone else',role:'Not yet declared',age:0,mkt:10.1,run:100,lane:'out',rank:0,debate:1.0,str:'The candidate the moment hasn\u2019t named',weak:'Does not exist yet',base:6,fit:{SC:1.00,NH:1.00,NV:1.00,IA:1.00,MI:1.00,GA:1.00,NC:1.00,ST:1.00}}
 ];
 // five pools of the primary electorate. share is the operator's prior for each pool's slice of the vote.
 const POOL_META={
- anchor:{label:'Party Anchor',share:22,def:'Democrats who have decided recent nominations: older, institutional, strongest in South Carolina, the South, and Northern cities with large Black electorates.'},
+ anchor:{label:'Party Anchor',share:22,def:'Older, institutional, church going Democrats who have decided recent nominations, strongest in South Carolina, the South, and Northern cities with large Black electorates.'},
  fight:{label:'Fight',share:15,def:'Democrats who want a brawler against Trump and blame party leadership for losing.'},
- suburb:{label:'Suburb Democrats',share:27,def:'College-educated Democrats in metros and inner suburbs who dominate donor lists and coastal and Northern primaries.'},
+ suburb:{label:'Suburb Democrats',share:23,def:'College-educated Democrats in metros and inner suburbs who dominate donor lists and coastal and Northern primaries.'},
  working:{label:'Working Families',share:16,def:'Non-college Democrats and union households in the industrial Midwest, Appalachia, and old factory suburbs.'},
  movement:{label:'Movement Left',share:20,def:'Very liberal and younger Democrats who want a sharper economic and foreign policy break than the Biden and Harris years offered.'},
- out:{label:'Unnamed',share:0,def:'The candidate the moment has not named yet.'}
+ out:{label:'Outsider',share:4,def:'Voters who want nobody from politics.'}
 };
-const POOLS={anchor:['harris','warnock','moore'],fight:['newsom','pritzker','rahm','stewart'],suburb:['pete','whitmer','murphy','shapiro','ossoff'],working:['beshear','walz','kelly','fain'],movement:['aoc','khanna','elsayed','talarico'],out:['other']};
+const POOLS={anchor:['harris','warnock','moore','beshear'],fight:['newsom','pritzker','rahm','talarico'],suburb:['pete','whitmer','murphy','shapiro','ossoff','kelly'],working:['walz','fain'],movement:['aoc','khanna','elsayed'],out:['stewart','other']};
 const POOLOF={};Object.keys(POOLS).forEach(p=>POOLS[p].forEach(id=>POOLOF[id]=p));
 // secondary pool: used only for dropout and endorsement transfers, at half weight
-const POOL2={ossoff:'anchor',shapiro:'working',kelly:'suburb',talarico:'working',fain:'movement',moore:'suburb',rahm:'suburb',harris:'suburb',whitmer:'working',pritzker:'working',khanna:'suburb',elsayed:'working',walz:'suburb'};
+const POOL2={ossoff:'anchor',shapiro:'working',kelly:'working',beshear:'working',talarico:'movement',stewart:'fight',fain:'movement',moore:'suburb',rahm:'suburb',harris:'suburb',whitmer:'working',pritzker:'working',khanna:'suburb',elsayed:'working',walz:'suburb'};
 // why each candidate sits where they sit; shown on the pool tag and in the dossier
 const POOL_WHY={
  harris:'After 2024 her remaining primary strength is the institutional vote that made her the nominee, especially Black voters and Black women.',
@@ -457,18 +457,18 @@ const POOL_WHY={
  murphy:'Connecticut gun safety liberalism is a professional class product.',
  shapiro:'Pennsylvania governor who can hold factory suburbs and union households. His own manners are suburban.',
  ossoff:'The 2026 rise is the Georgia next generation lane, not Warnock\u2019s church lane or Harris\u2019s restoration lane.',
- beshear:'He wins a red state by talking work, church, and disaster response to voters other Democrats cannot reach.',
+ beshear:'Older, church going, loyal Democrats who want the party as it was. He wins them in Kentucky, which is why the establishment likes him.',
  walz:'The 2024 pitch was union teacher and Midwestern dad, aimed at non-college Democrats.',
- kelly:'Arizona veteran senator built for a Southwest primary that is Latino, suburban, and military.',
+ kelly:'Institutional moderate built for the suburbs: astronaut, gun safety, the Biden shortlist. Veterans are the crossover.',
  fain:'Trade unionist first. If his people vote in a primary, they are union households.',
  aoc:'Incumbent face of the post-Sanders very liberal bloc, not of the church vote or the factory vote.',
  khanna:'Sanders 2020 and Bay Area antitrust left. Geography is suburban. Ideology is the left.',
  elsayed:'The 2026 Michigan Senate primary win over an establishment House member was a left proof of concept in a working state.',
- talarico:'Young Texas progressive Christian whose national attention sits with the new left, not yet with a proven Sun Belt machine.'
+ talarico:'Viral confrontation on the Texas House floor is the brand. A fighter first, a progressive Christian second.'
 };
 CANDS.forEach(c=>{c.lane=POOLOF[c.id]||'out';c.lane2=POOL2[c.id]||null;});
 function poolLabel(k){return (POOL_META[k]||POOL_META.out).label;}
-function poolTip(c){const m=POOL_META[c.lane]||POOL_META.out;return m.label+(m.share?' · '+m.share+'% of the primary electorate':'')+'. '+m.def+(c.lane2?' Secondary: '+poolLabel(c.lane2)+'.':'')+(POOL_WHY[c.id]?' '+POOL_WHY[c.id]:'');}
+function poolTip(c){const m=POOL_META[c.lane]||POOL_META.out;return m.label+(m.share&&c.id!=='other'?' · '+m.share+'% of the primary electorate':'')+'. '+m.def+(c.lane2?' Secondary: '+poolLabel(c.lane2)+'.':'')+(POOL_WHY[c.id]?' '+POOL_WHY[c.id]:'');}
 // pools the establishment-coordination mechanic can consolidate: everything but the Movement Left
 const COORD_POOLS=['anchor','fight','suburb','working'];
 const TM={
@@ -946,7 +946,7 @@ function renderAggregate(rows,TOTAL,contestedPct){
  };
  let h='<div class="mtop">'+rows.slice(0,5).map(row).join('')+'</div>';
  if(rows.length>5)h+='<div class="mrest">'+rows.slice(5).map(row).join('')+'</div><button class="btn sm mmore" onclick="toggleAll(this)">Show all '+rows.length+'</button>';
- h+='<div class="legend">Share of '+TOTAL.toLocaleString()+' simulated primaries where each candidate finishes first, at '+(TOTAL>=20000?'the default settings':'your current settings')+'. Bar color is the candidate\u2019s pool: <span style="color:var(--p-anchor)">Party Anchor</span>, <span style="color:var(--p-fight)">Fight</span>, <span style="color:var(--p-suburb)">Suburb Democrats</span>, <span style="color:var(--p-working)">Working Families</span>, <span style="color:var(--p-movement)">Movement Left</span>. '+contestedPct+'% of these runs end in a contested convention, which the model does not resolve. mkt is the Kalshi and Polymarket blend, poll the 30 day national average, gap poll minus market.</div>';
+ h+='<div class="legend">Share of '+TOTAL.toLocaleString()+' simulated primaries where each candidate finishes first, at '+(TOTAL>=20000?'the default settings':'your current settings')+'. Bar color is the candidate\u2019s pool: <span style="color:var(--p-anchor)">Party Anchor</span>, <span style="color:var(--p-fight)">Fight</span>, <span style="color:var(--p-suburb)">Suburb Democrats</span>, <span style="color:var(--p-working)">Working Families</span>, <span style="color:var(--p-movement)">Movement Left</span>, <span style="color:var(--p-out)">Outsider</span>. '+contestedPct+'% of these runs end in a contested convention, which the model does not resolve. mkt is the Kalshi and Polymarket blend, poll the 30 day national average, gap poll minus market.</div>';
  setTimeout(()=>{document.querySelectorAll('#aggregate .mfill').forEach(el=>{el.style.width=el.dataset.w+'%';});},30);
  return h;
 }
