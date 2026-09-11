@@ -39,7 +39,7 @@ SOURCES = [
 # Candidate ids used by index.html. Order matters only for output readability.
 IDS = ["newsom", "aoc", "ossoff", "harris", "shapiro", "pete", "pritzker", "khanna",
        "murphy", "kelly", "beshear", "rahm", "whitmer", "moore", "warnock", "talarico",
-       "stewart", "fain", "walz", "other"]
+       "elsayed", "stewart", "fain", "walz", "other"]
 
 # Lowercased contract names as the two books print them.
 NAME_TO_ID = {
@@ -61,6 +61,8 @@ NAME_TO_ID = {
     "wes moore": "moore",
     "raphael warnock": "warnock",
     "james talarico": "talarico",
+    "abdul el-sayed": "elsayed",
+    "abdul el sayed": "elsayed",
     "jon stewart": "stewart",
     "shawn fain": "fain",
     "tim walz": "walz",

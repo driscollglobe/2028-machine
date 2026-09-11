@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Gap | The 2028 Machine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#16171a;--paper:#f5f3ec;--panel:#ffffff;--rule:rgba(20,21,24,.14);--muted:#5c5b55;--faint:#8a897f;--wire:#b8442b;--wire-soft:#f3ddd4;--tealx:#1f7a5c;--rmd:7px;--rlg:11px;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.55;}
+.wrap{max-width:1040px;margin:0 auto;padding:22px 18px 60px;}
+.mast{border-bottom:3px double var(--ink);padding-bottom:.75rem;margin-bottom:.4rem;display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;}
+.mast-r{font-family:'Spline Sans Mono',monospace;font-size:11px;color:var(--muted);text-align:right;line-height:1.5;}
+.badge{display:inline-block;margin-top:4px;padding:1px 8px;border:1px solid var(--rule);border-radius:10px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+.globe{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase;}
+h1{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:34px;line-height:1.02;margin:.1rem 0 0;}
+h2.pagetitle{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:26px;margin:.9rem 0 .2rem;}
+h2.s{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px;margin:1.6rem 0 .6rem;}
+.getdata{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-top:10px;}
+.getdata a{color:var(--wire);text-decoration:none;margin-right:14px;}
+#polltbl td,#polltbl th{cursor:default;}
+#polltbl th.hd{text-align:left;}
+#polltbl td.hd{text-align:left;font-family:'Inter',sans-serif;white-space:normal;min-width:120px;}
+.nav{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:.4rem 0 1.2rem;display:flex;gap:14px;flex-wrap:wrap;}
+.nav a{color:var(--wire);text-decoration:none;}
+.dek{font-size:16px;color:var(--muted);max-width:720px;margin-bottom:1.2rem;}
+.section{border:1px solid var(--rule);border-radius:var(--rlg);background:var(--panel);padding:1rem 1.1rem;overflow-x:auto;}
+.shead{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+table{border-collapse:collapse;width:100%;font-size:13.5px;}
+th{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:500;text-align:right;padding:6px 8px;cursor:pointer;user-select:none;white-space:nowrap;border-bottom:1px solid var(--ink);}
+th:hover{color:var(--ink);}
+th.on{color:var(--ink);}
+th.on::after{content:' \25BE';}
+th.on.asc::after{content:' \25B4';}
+td{padding:7px 8px;text-align:right;border-top:1px solid var(--rule);font-family:'Spline Sans Mono',monospace;font-size:13px;vertical-align:top;white-space:nowrap;}
+th:first-child,td:first-child{text-align:left;font-family:'Inter',sans-serif;white-space:nowrap;}
+th.note,td.note{text-align:left;font-family:'Inter',sans-serif;white-space:normal;min-width:260px;color:var(--muted);font-size:13px;}
+td.note.empty{color:var(--faint);font-style:italic;}
+.up{color:var(--tealx);}.down{color:var(--wire);}
+tr.hl td{background:var(--wire-soft);}
+.legend{font-size:11.5px;color:var(--faint);margin-top:10px;line-height:1.5;}
+.foot{font-family:'Spline Sans Mono',monospace;font-size:11px;color:var(--faint);border-top:1px solid var(--rule);padding-top:1rem;margin-top:2rem;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="mast">
+ <div class="mast-l"><div class="globe">The Driscoll Globe</div><h1>The 2028 Machine</h1></div>
+ <div class="mast-r">2028 DEMOCRATIC PRIMARY<br>SIMULATION DESK<br><span class="badge" id="updBadge">Updated nightly</span></div>
+</div>
+<h2 class="pagetitle">The gap: polls versus markets</h2>
+<div class="nav"><a href="index.html">The 2028 Machine</a><a href="track.html">Track record</a><a href="https://driscollglobe.substack.com">The Driscoll Globe</a></div>
+<p class="dek">Polls measure name recognition this far out. Markets price the whole path to the nomination. The distance between them, candidate by candidate, is the story. Click a column to sort.</p>
+<div class="section">
+ <div class="shead"><span>National Democratic primary polls, last 30 days, against the Kalshi and Polymarket blend</span><span id="status">loading</span></div>
+ <table id="tbl"><thead><tr>
+  <th data-k="name">Candidate</th><th data-k="poll">Poll average</th><th data-k="mkt">Market blend</th><th data-k="gap" class="on">Gap</th><th data-k="run">Run odds</th><th class="note">Note</th>
+ </tr></thead><tbody></tbody></table>
+ <div class="legend">Poll average is an equal weight mean of national Democratic primary polls from the last 30 days (polls.csv). Market blend is the simple average of the Kalshi and Polymarket nomination prices (markets.json, updated nightly). Gap is poll minus market in points. Run odds are from the Kalshi run market. Notes are hand written in notes.json.</div>
+ <div class="getdata">Get the data: <a href="https://github.com/driscollglobe/2028-machine/blob/main/polls.csv">polls.csv</a><a href="https://github.com/driscollglobe/2028-machine/blob/main/history.csv">history.csv</a></div>
+</div>
+
+<h2 class="s">Every poll on file</h2>
+<div class="section">
+ <div class="shead"><span>polls.csv in full · national Democratic primary ballots · empty cells mean the poll did not test that candidate</span><span id="pollcount"></span></div>
+ <table id="polltbl"><thead></thead><tbody></tbody></table>
+ <div class="getdata">Get the data: <a href="https://github.com/driscollglobe/2028-machine/blob/main/polls.csv">polls.csv</a><a href="https://github.com/driscollglobe/2028-machine/blob/main/history.csv">history.csv</a></div>
+</div>
+<p class="foot">THE 2028 MACHINE · THE DRISCOLL GLOBE · POLITICAL SYSTEMS DESK</p>
+</div>
+<script>
+const NAMES={newsom:'Gavin Newsom',aoc:'AOC',ossoff:'Jon Ossoff',harris:'Kamala Harris',shapiro:'Josh Shapiro',pete:'Pete Buttigieg',pritzker:'JB Pritzker',khanna:'Ro Khanna',murphy:'Chris Murphy',kelly:'Mark Kelly',beshear:'Andy Beshear',rahm:'Rahm Emanuel',whitmer:'Gretchen Whitmer',moore:'Wes Moore',warnock:'Raphael Warnock',talarico:'James Talarico',elsayed:'Abdul El-Sayed',stewart:'Jon Stewart',fain:'Shawn Fain',walz:'Tim Walz',other:'Someone else'};
+const WINDOW_DAYS=30;
+let ROWS=[],sortKey='gap',sortAsc=false;
+function parseCSV(text){
+ const lines=text.replace(/\r/g,'').split('\n').filter(l=>l.trim().length);
+ if(!lines.length)return [];
+ const head=lines[0].split(',');
+ return lines.slice(1).map(l=>{const cells=l.split(',');const o={};head.forEach((h,i)=>o[h.trim()]=(cells[i]||'').trim());return o;});
+}
+function pollAverages(rows){
+ const today=new Date(),cutoff=new Date(today.getTime()-WINDOW_DAYS*86400000);
+ const sum={},n={};let used=0;
+ rows.forEach(r=>{
+  if((r.geography||'').toLowerCase()!=='national')return;
+  const end=new Date(r.field_end+'T12:00:00');
+  if(isNaN(end)||end<cutoff||end>today)return;
+  used++;
+  Object.keys(NAMES).forEach(id=>{const v=r[id];if(v===undefined||v==='')return;const x=parseFloat(v);if(!isFinite(x))return;sum[id]=(sum[id]||0)+x;n[id]=(n[id]||0)+1;});
+ });
+ const avg={};Object.keys(sum).forEach(k=>avg[k]=Math.round(sum[k]/n[k]*10)/10);
+ return {avg,n,used};
+}
+const get=(u,kind)=>fetch(u+'?v='+Date.now()).then(r=>r.ok?(kind==='text'?r.text():r.json()):null).catch(()=>null);
+Promise.all([get('polls.csv','text'),get('markets.json','json'),get('notes.json','json')]).then(([csv,M,notes])=>{
+ const pollRows=csv?parseCSV(csv):[];
+ const polls=csv?pollAverages(pollRows):{avg:{},n:{},used:0};
+ renderPollTable(pollRows);
+ if(M&&M.date){const b=document.getElementById('updBadge');if(b)b.textContent='Updated '+M.date;}
+ const blend=M&&M.blend?M.blend:{};const run=M&&M.run?M.run:{};
+ notes=notes||{};
+ ROWS=Object.keys(NAMES).filter(id=>id!=='other'&&(typeof blend[id]==='number'||typeof polls.avg[id]==='number')).map(id=>{
+  const mkt=typeof blend[id]==='number'?blend[id]:null,poll=typeof polls.avg[id]==='number'?polls.avg[id]:null;
+  return {id,name:NAMES[id],poll,mkt,gap:(poll===null||mkt===null)?null:Math.round((poll-mkt)*10)/10,run:typeof run[id]==='number'?Math.round(run[id]):null,note:notes[id]||''};
+ });
+ document.getElementById('status').textContent=polls.used+' poll'+(polls.used===1?'':'s')+' in window · markets '+(M&&M.date?M.date:'baked in');
+ render();
+ const hl=location.hash.replace('#','');if(hl){const tr=document.getElementById('row_'+hl);if(tr){tr.classList.add('hl');tr.scrollIntoView({block:'center'});}}
+});
+function renderPollTable(rows){
+ const meta=[['pollster','Pollster'],['sponsor','Sponsor'],['field_start','Field start'],['field_end','Field end'],['sample','Sample'],['population','Population']];
+ const ids=Object.keys(NAMES).filter(id=>id!=='other'&&rows.some(r=>r[id]!==undefined&&r[id]!==''));
+ const last=id=>NAMES[id].split(' ').slice(-1)[0];
+ document.querySelector('#polltbl thead').innerHTML='<tr>'+meta.map(m=>'<th class="hd">'+m[1]+'</th>').join('')+ids.map(id=>'<th>'+last(id)+'</th>').join('')+'</tr>';
+ const sorted=rows.slice().sort((a,b)=>(b.field_end||'').localeCompare(a.field_end||''));
+ document.querySelector('#polltbl tbody').innerHTML=sorted.map(r=>'<tr>'+meta.map(m=>'<td class="hd">'+(r[m[0]]||'')+'</td>').join('')+ids.map(id=>'<td>'+(r[id]===undefined?'':r[id])+'</td>').join('')+'</tr>').join('');
+ document.getElementById('pollcount').textContent=rows.length+' poll'+(rows.length===1?'':'s');
+}
+function fmt(v,signed){if(v===null)return '<span class="down" style="color:var(--faint)">n/a</span>';return signed?((v>0?'+':'')+v.toFixed(1)):v.toFixed(1);}
+function render(){
+ const rows=ROWS.slice().sort((a,b)=>{
+  let x=a[sortKey],y=b[sortKey];
+  if(sortKey==='name')return sortAsc?x.localeCompare(y):y.localeCompare(x);
+  if(x===null)x=-Infinity;if(y===null)y=-Infinity;
+  return sortAsc?x-y:y-x;
+ });
+ document.querySelector('#tbl tbody').innerHTML=rows.map(r=>'<tr id="row_'+r.id+'"><td>'+r.name+'</td><td>'+fmt(r.poll)+(r.poll===null?'':'%')+'</td><td>'+fmt(r.mkt)+(r.mkt===null?'':'%')+'</td><td class="'+(r.gap===null?'':(r.gap>0?'up':'down'))+'">'+fmt(r.gap,true)+'</td><td>'+(r.run===null?'n/a':r.run+'%')+'</td><td class="note'+(r.note?'':' empty')+'">'+(r.note||'no note yet')+'</td></tr>').join('');
+ document.querySelectorAll('#tbl th[data-k]').forEach(th=>{th.classList.toggle('on',th.dataset.k===sortKey);th.classList.toggle('asc',th.dataset.k===sortKey&&sortAsc);});
+}
+document.querySelectorAll('#tbl th[data-k]').forEach(th=>th.addEventListener('click',()=>{const k=th.dataset.k;if(sortKey===k)sortAsc=!sortAsc;else{sortKey=k;sortAsc=k==='name';}render();}));
+</script>
+</body>
+</html>
