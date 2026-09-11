@@ -82,7 +82,10 @@ input[type=range]{accent-color:var(--wire);}
 .cc .mono{width:54px;height:54px;border-radius:50%;border:2px solid var(--rule);margin-bottom:6px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:19px;color:var(--muted);background:var(--paper);}
 .cc .nm{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:15px;line-height:1.1;}
 .cc .meta{font-size:11px;color:var(--faint);margin-top:1px;}
-.cc .odds{display:flex;gap:10px;margin-top:6px;font-family:'Spline Sans Mono',monospace;font-size:11px;}
+.cc .odds{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px;font-family:'Spline Sans Mono',monospace;font-size:11px;}
+.cc .odds span{display:flex;flex-direction:column;min-width:0;}
+.cc .odds span i{font-style:normal;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);}
+.cc .odds.pair{grid-template-columns:repeat(3,1fr);}
 .cc .odds b{color:var(--ink);font-weight:500;}
 .cc .odds.polls{margin-top:3px;}
 .cc .odds .gap.pos{color:var(--tealx);}
@@ -271,7 +274,6 @@ body.show-adv .ctl.adv{display:flex;}
 body.show-adv .section.adv{display:block;}
 body.show-adv h2.s.adv{display:block;}
 .cardgrid{grid-auto-rows:1fr;}
-.cc .odds span{min-width:64px;}
 .onecard .final,.onecard .sharecard{margin-top:12px;}
 .bpstrip .btn{margin-left:auto;}
 .foot{font-family:'Spline Sans Mono',monospace;font-size:11px;color:var(--faint);border-top:1px solid var(--rule);padding-top:1rem;margin-top:2rem;line-height:1.6;}
@@ -817,9 +819,9 @@ function oddsRow(c){
  const x=pollNums(c);
  const pollTxt=x.poll===null?'<b>&nbsp;</b>':'<b>'+x.poll.toFixed(1)+'%</b>';
  const gapTxt=x.gap===null?'<b>&nbsp;</b>':'<b class="gap '+(x.gap>=0?'pos':'neg')+'">'+fmtGap(x.gap)+'</b>';
- return '<span>market <b>'+x.mkt.toFixed(1)+'%</b></span><span>poll '+pollTxt+'</span><span>gap '+gapTxt+'</span>';
+ return '<span><i>market</i><b>'+x.mkt.toFixed(1)+'%</b></span><span><i>poll</i>'+pollTxt+'</span><span><i>gap</i>'+gapTxt+'</span>';
 }
-function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=oddsRow(c);const r=document.getElementById('runrow_'+c.id);if(r)r.innerHTML='<span>run <b>'+c.run+'%</b></span><span>rank <b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>';});}
+function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=oddsRow(c);const r=document.getElementById('runrow_'+c.id);if(r)r.innerHTML='<span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>';});}
 function renderPollBoard(){
  const body=document.getElementById('pollboardBody');if(!body)return;
  const top=CANDS.filter(c=>c.id!=='other').slice().sort((a,b)=>b.mkt-a.mkt).slice(0,6);
@@ -849,7 +851,7 @@ function buildCards(){
    +pic
    +'<div class="nm">'+c.name+'</div><div class="meta">'+c.role+' · '+c.age+' in \u201928</div>'
    +'<div class="odds polls" id="odds_'+c.id+'">'+oddsRow(c)+'</div>'
-   +'<div class="odds" id="runrow_'+c.id+'"><span>run <b>'+c.run+'%</b></span><span>rank <b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span></div>'
+   +'<div class="odds pair" id="runrow_'+c.id+'"><span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span></div>'
    +'<span class="lane '+c.lane+'">'+({rest:'Restoration',pop:'Populist left',elec:'Electability',out:'Outsider'})[c.lane]+'</span>'
    +'<div class="sw"><b>Strength:</b> '+c.str+'<br><b>Weakness:</b> '+c.weak+'</div>'
    +'<a class="gaplink" href="gap.html#'+c.id+'" onclick="event.stopPropagation()">Polls vs market</a></div>';
