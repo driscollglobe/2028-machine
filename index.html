@@ -356,7 +356,7 @@ body.show-adv h2.s.adv{display:block;}
  <div class="section">
   <div class="shead">Candidate gates</div>
   <div class="ctl"><label class="cl">AOC runs for president</label><input type="range" min="0" max="100" value="66" id="pAoc"><span class="cv" id="pAocOut">66%</span></div>
-  <div class="ctl adv"><label class="cl">If AOC stays out, she...</label><select id="selAoc"><option value="mixed" selected>Drawn per run</option><option value="khanna">Endorses Khanna</option><option value="elsayed">Endorses El-Sayed</option><option value="fain">Endorses Fain</option><option value="other">Endorses someone not yet declared</option><option value="neutral">Stays neutral</option></select></div>
+  <div class="ctl adv"><label class="cl">If AOC stays out, she...</label><select id="selAoc"><option value="mixed" selected>Drawn per run</option><option value="khanna">Endorses Khanna</option><option value="elsayed">Endorses El-Sayed</option><option value="fain">Endorses Fain</option><option value="stewart">Endorses Stewart</option><option value="other">Endorses someone not yet declared</option><option value="neutral">Stays neutral</option></select></div>
   <div class="ctl"><label class="cl">Harris runs</label><input type="range" min="0" max="100" value="78" id="pHarris"><span class="cv" id="pHarrisOut">78%</span></div>
   <div class="ctl"><label class="cl">Newsom holds up under scrutiny</label><input type="range" min="0" max="100" value="60" id="pNewsom"><span class="cv" id="pNewsomOut">60%</span></div>
   <div class="ctl adv"><label class="cl">Ossoff wins Georgia</label><input type="range" min="0" max="100" value="62" id="pOssWin"><span class="cv" id="pOssWinOut">62%</span></div>
@@ -426,7 +426,7 @@ const CANDS=[
  {id:'talarico',name:'James Talarico',role:'State Rep., Texas',age:36,mkt:2.1,run:15,lane:'fight',rank:17,debate:1.1,str:'Viral, young, surprising',weak:'No infrastructure',base:4,fit:{SC:1.05,NH:0.80,NV:0.95,IA:0.95,MI:0.90,GA:0.95,NC:1.00,ST:1.10}},
  {id:'elsayed',name:'Abdul El-Sayed',role:'Sen. candidate, Michigan',age:44,mkt:2.0,run:40,lane:'movement',rank:18,debate:1.05,str:'Sanders lineage, Michigan Senate platform',weak:'Untested nationally; splits the left with AOC',base:4,fit:{SC:0.70,NH:1.00,NV:1.10,IA:1.00,MI:1.60,GA:0.75,NC:0.85,ST:1.00}},
  {id:'stewart',name:'Jon Stewart',role:'Broadcaster',age:65,mkt:0.4,run:12,lane:'out',rank:19,debate:1.2,str:'Attention, anti-elite credibility',weak:'66 on election day; wants influence not the job',base:5,fit:{SC:0.60,NH:1.10,NV:1.00,IA:0.90,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
- {id:'fain',name:'Shawn Fain',role:'UAW President',age:56,mkt:1.0,run:31,lane:'movement',rank:20,debate:1.0,str:'Purest class-war vessel',weak:'Never run for anything',base:5,fit:{SC:0.60,NH:0.80,NV:1.30,IA:1.10,MI:1.50,GA:0.70,NC:0.85,ST:0.95}},
+ {id:'fain',name:'Shawn Fain',role:'UAW President',age:56,mkt:1.0,run:31,lane:'movement',tag:'Labor',rank:20,debate:1.0,str:'Purest class-war vessel',weak:'Never run for anything',base:5,fit:{SC:0.60,NH:0.80,NV:1.30,IA:1.10,MI:1.50,GA:0.70,NC:0.85,ST:0.95}},
  {id:'walz',name:'Tim Walz',role:'Gov., Minnesota',age:64,mkt:0.1,run:13,lane:'working',rank:21,debate:1.0,str:'Folksy, soft-left',weak:'Losing VP rarely tops the ticket',base:5,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.20,MI:1.10,GA:0.80,NC:0.90,ST:0.95}},
  {id:'other',name:'Someone else',role:'Not yet declared',age:0,mkt:10.1,run:100,lane:'out',rank:0,debate:1.0,str:'The candidate the moment hasn\u2019t named',weak:'Does not exist yet',base:6,fit:{SC:1.00,NH:1.00,NV:1.00,IA:1.00,MI:1.00,GA:1.00,NC:1.00,ST:1.00}}
 ];
@@ -468,7 +468,8 @@ const POOL_WHY={
 };
 CANDS.forEach(c=>{c.lane=POOLOF[c.id]||'out';c.lane2=POOL2[c.id]||null;});
 function poolLabel(k){return (POOL_META[k]||POOL_META.out).label;}
-function poolTip(c){const m=POOL_META[c.lane]||POOL_META.out;return m.label+(m.share&&c.id!=='other'?' · '+m.share+'% of the primary electorate':'')+'. '+m.def+(c.lane2?' Secondary: '+poolLabel(c.lane2)+'.':'')+(POOL_WHY[c.id]?' '+POOL_WHY[c.id]:'');}
+function tagLabel(c){return c.tag||poolLabel(c.lane);}
+function poolTip(c){const m=POOL_META[c.lane]||POOL_META.out;return (c.tag?c.tag+', a '+m.label+' seat':m.label)+(m.share&&c.id!=='other'?' · '+m.share+'% of the primary electorate':'')+'. '+m.def+(c.lane2?' Secondary: '+poolLabel(c.lane2)+'.':'')+(POOL_WHY[c.id]?' '+POOL_WHY[c.id]:'');}
 // pools the establishment-coordination mechanic can consolidate: everything but the Movement Left
 const COORD_POOLS=['anchor','fight','suburb','working'];
 const TM={
@@ -574,10 +575,10 @@ function simulate(C,collect){
  const lO=outM*(lesson==='under'?1.4:(lesson==='inst'?0.9:1));
  const str={},mom={},strikes={},alive={},dels={},won={},dbWins={};
  // AOC fallback chain: when she stays out, AOC_POOL base units of Movement Left strength go to her heirs,
- // including a candidate nobody has named yet (the Sanders shaped hole in the field). Split by base strength
+ // including Stewart when he runs and a candidate nobody has named yet (the Sanders shaped hole in the field). Split by base strength
  // unless she names one heir, who takes the full transfer. Drawn per run picks an heir 35% of the time and
  // stays neutral otherwise.
- const AOC_POOL=7, AOC_HEIRS=['khanna','elsayed','fain','other'], AOC_IN_MULT={khanna:0.3,elsayed:0.6,fain:0.4,other:1};
+ const AOC_POOL=7, AOC_HEIRS=['khanna','elsayed','fain','stewart','other'], AOC_IN_MULT={khanna:0.3,elsayed:0.6,fain:0.4,stewart:1,other:1};
  let endorse=null;
  if(!aoc){let mode=C.selAoc;
   if(mode==='mixed'){const r=rng();mode=r<0.35?AOC_HEIRS[Math.floor(rng()*AOC_HEIRS.length)]:'neutral';}
@@ -918,7 +919,7 @@ function buildCards(){
    +'<div class="nm">'+c.name+'</div><div class="meta">'+c.role+' · '+c.age+' in \u201928</div>'
    +'<div class="odds polls" id="odds_'+c.id+'">'+oddsRow(c)+'</div>'
    +'<div class="odds pair" id="runrow_'+c.id+'"><span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span></div>'
-   +'<span class="lane '+c.lane+'" title="'+poolTip(c).replace(/"/g,'&quot;')+'">'+poolLabel(c.lane)+'</span>'
+   +'<span class="lane '+c.lane+'" title="'+poolTip(c).replace(/"/g,'&quot;')+'">'+tagLabel(c)+'</span>'
    +'<div class="sw"><b>Strength:</b> '+c.str+'<br><b>Weakness:</b> '+c.weak+'</div>'
    +'<a class="gaplink" href="gap.html#'+c.id+'" onclick="event.stopPropagation()">Polls vs market</a></div>';
  }).join('');
@@ -1039,7 +1040,7 @@ function setMode(m){
 function openDossier(id){
  const c=CANDS.find(x=>x.id===id);if(!c)return;
  const pic=PHOTOS[id]?'<img class="md-photo" src="'+PHOTOS[id]+'">':'<div class="md-mono">'+c.name.split(' ').map(w=>w[0]).slice(0,2).join('')+'</div>';
- const laneL=poolLabel(c.lane)+(c.lane2?' (secondary: '+poolLabel(c.lane2)+')':'');
+ const laneL=tagLabel(c)+(c.tag?' ('+poolLabel(c.lane)+')':'')+(c.lane2?' (secondary: '+poolLabel(c.lane2)+')':'');
  const coalition=(POOL_META[c.lane]||POOL_META.out).def+(POOL_WHY[id]?' '+POOL_WHY[id]:'');
  let h='<div class="md-head">'+pic+'<div><div class="md-name">'+c.name+'</div><div class="md-meta">'+c.role+' · age '+c.age+' in 2028 · '+laneL+'</div></div></div>';
  h+='<div class="md-odds"><span>market <b>'+c.mkt+'%</b></span><span>runs <b>'+c.run+'%</b></span><span>my rank <b>#'+c.rank+'</b></span></div>';
