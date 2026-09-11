@@ -9,6 +9,9 @@ const core = require('./simcore');
 
 const ROOT = core.ROOT;
 const OUT = path.join(ROOT, 'cards');
+const SHARE = path.join(ROOT, 'share');
+const SITE = 'https://driscollglobe.github.io/2028-machine/';
+const POOL_COLOR = { rest: '#c98a18', pop: '#b8442b', elec: '#1f7a5c', out: '#5c5b55' };
 const SITE_LABEL = 'driscollglobe.github.io/2028-machine';
 const RUNS = 20000;
 
@@ -23,8 +26,8 @@ function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
 function cardHtml(title, sub, rows, date) {
   const max = rows[0] ? rows[0].pct : 1;
-  const bars = rows.map((r, i) => '<div class="row"><div class="name">' + esc(r.name) + '</div>'
-    + '<div class="track"><div class="fill' + (i === 0 ? ' lead' : '') + '" style="width:' + (r.pct / max * 100).toFixed(1) + '%"></div></div>'
+  const bars = rows.map(r => '<div class="row"><div class="name">' + esc(r.name) + '</div>'
+    + '<div class="track"><div class="fill" style="width:' + (r.pct / max * 100).toFixed(1) + '%;background:' + (POOL_COLOR[r.lane] || POOL_COLOR.out) + '"></div></div>'
     + '<div class="pct">' + r.pct.toFixed(1) + '%</div></div>').join('');
   return '<!DOCTYPE html><html><head><meta charset="utf-8"><style>'
     + 'body{margin:0;width:1200px;height:630px;background:#f5f3ec;color:#16171a;font-family:Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden;}'
@@ -36,7 +39,7 @@ function cardHtml(title, sub, rows, date) {
     + '.row{display:flex;align-items:center;gap:18px;margin:9px 0;}'
     + '.name{width:230px;font-size:26px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}'
     + '.track{flex:1;height:30px;background:#fff;border:1.5px solid rgba(20,21,24,.18);border-radius:5px;overflow:hidden;}'
-    + '.fill{height:100%;background:#16171a;}.fill.lead{background:#b8442b;}'
+    + '.fill{height:100%;}'
     + '.pct{width:110px;text-align:right;font-family:Menlo,Consolas,monospace;font-size:26px;font-weight:600;}'
     + '.foot{margin-top:auto;display:flex;justify-content:space-between;font-family:Menlo,Consolas,monospace;font-size:17px;letter-spacing:.08em;color:#5c5b55;border-top:3px double #16171a;padding-top:14px;}'
     + '</style></head><body><div class="card">'
@@ -47,12 +50,36 @@ function cardHtml(title, sub, rows, date) {
     + '</div></body></html>';
 }
 
+// One static page per preset with its own og tags. Social crawlers read HTML and never run
+// JavaScript, so this is the only way a shared link unfurls with the matching card. The page
+// forwards humans to the ?bp= deep link.
+function writeSharePage(job, rows, date) {
+  fs.mkdirSync(SHARE, { recursive: true });
+  const target = SITE + '?bp=' + job.key;
+  const img = SITE + 'cards/' + job.key + '.png';
+  const desc = job.title + ': ' + rows.map(r => r.name + ' ' + r.pct.toFixed(1) + '%').join(', ') + ' (' + date + ').';
+  const html = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>The 2028 Machine: ' + esc(job.title) + '</title>\n'
+    + '<meta property="og:title" content="The 2028 Machine: ' + esc(job.title) + '">\n'
+    + '<meta property="og:description" content="' + esc(desc) + '">\n'
+    + '<meta property="og:type" content="website">\n'
+    + '<meta property="og:url" content="' + SITE + 'share/' + job.key + '.html">\n'
+    + '<meta property="og:image" content="' + img + '">\n'
+    + '<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n'
+    + '<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:image" content="' + img + '">\n'
+    + '<meta http-equiv="refresh" content="0; url=' + target + '">\n'
+    + '<link rel="canonical" href="' + target + '">\n'
+    + '</head>\n<body>\n<p>Taking you to <a href="' + target + '">The 2028 Machine, ' + esc(job.title) + '</a>.</p>\n<script>location.replace(' + JSON.stringify(target) + ');</script>\n</body>\n</html>\n';
+  fs.writeFileSync(path.join(SHARE, job.key + '.html'), html);
+  console.log('wrote share/' + job.key + '.html');
+}
+
 async function main() {
   const { chromium } = resolvePlaywright();
   const sim = core.load();
   const M = JSON.parse(fs.readFileSync(path.join(ROOT, 'markets.json'), 'utf8'));
   core.applyMarkets(sim, M);
-  const nm = id => sim.CANDS.find(c => c.id === id).name;
+  const cand = id => sim.CANDS.find(c => c.id === id);
+  const lastName = id => cand(id).name.split(' ').slice(-1)[0];
   const presets = sim.BP_PRESETS;
   const jobs = [{ key: 'default', title: 'Default settings', sub: 'Who finishes first when the market sets the odds' }]
     .concat(Object.keys(presets).map(k => ({ key: k, title: presets[k].label, sub: 'What changes when this turning point flips' })));
@@ -73,11 +100,12 @@ async function main() {
       });
     }
     const res = core.runMany(fresh, fresh.cfg(), RUNS, core.seedFrom(M.date + ':' + job.key));
-    const rows = Object.keys(res.first).map(id => ({ id, name: nm(id), pct: res.first[id] })).sort((a, b) => b.pct - a.pct).slice(0, 5);
+    const rows = Object.keys(res.first).map(id => ({ id, name: lastName(id), lane: cand(id).lane, pct: res.first[id] })).sort((a, b) => b.pct - a.pct).slice(0, 5);
     await page.setContent(cardHtml(job.title, job.sub, rows, M.date), { waitUntil: 'load' });
     const file = path.join(OUT, job.key + '.png');
     await page.screenshot({ path: file, type: 'png' });
     console.log('wrote cards/' + job.key + '.png: ' + rows.map(r => r.id + ' ' + r.pct).join(', '));
+    if (job.key !== 'default') writeSharePage(job, rows, M.date);
   }
   await browser.close();
 }

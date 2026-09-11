@@ -8,7 +8,7 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const HISTORY = path.join(ROOT, 'history.csv');
 const OUTDIR = path.join(ROOT, 'changelog');
-const NAMES = { newsom: 'Gavin Newsom', aoc: 'AOC', ossoff: 'Jon Ossoff', harris: 'Kamala Harris', shapiro: 'Josh Shapiro', pete: 'Pete Buttigieg', pritzker: 'JB Pritzker', khanna: 'Ro Khanna', murphy: 'Chris Murphy', kelly: 'Mark Kelly', beshear: 'Andy Beshear', rahm: 'Rahm Emanuel', whitmer: 'Gretchen Whitmer', moore: 'Wes Moore', warnock: 'Raphael Warnock', talarico: 'James Talarico', stewart: 'Jon Stewart', fain: 'Shawn Fain', walz: 'Tim Walz', other: 'the field' };
+const NAMES = { newsom: 'Gavin Newsom', aoc: 'AOC', ossoff: 'Jon Ossoff', harris: 'Kamala Harris', shapiro: 'Josh Shapiro', pete: 'Pete Buttigieg', pritzker: 'JB Pritzker', khanna: 'Ro Khanna', murphy: 'Chris Murphy', kelly: 'Mark Kelly', beshear: 'Andy Beshear', rahm: 'Rahm Emanuel', whitmer: 'Gretchen Whitmer', moore: 'Wes Moore', warnock: 'Raphael Warnock', talarico: 'James Talarico', elsayed: 'Abdul El-Sayed', stewart: 'Jon Stewart', fain: 'Shawn Fain', walz: 'Tim Walz', other: 'the field' };
 
 function parseCSV(text) {
   const lines = text.replace(/\r/g, '').split('\n').filter(l => l.trim().length);

@@ -1,11 +1,11 @@
 {
  "date": "2026-09-10",
  "kalshi": {
-  "newsom": 13.0,
-  "aoc": 16.0,
-  "ossoff": 17.0,
+  "newsom": 14.0,
+  "aoc": 15.0,
+  "ossoff": 16.0,
   "harris": 8.3,
-  "shapiro": 4.7,
+  "shapiro": 4.6,
   "pete": 5.5,
   "pritzker": 1.3,
   "khanna": 1.8,
@@ -17,12 +17,13 @@
   "moore": 2.3,
   "warnock": 0.8,
   "talarico": 1.9,
+  "elsayed": 1.0,
   "stewart": 0.5,
   "fain": 1.0,
   "walz": 0.1
  },
  "polymarket": {
-  "newsom": 15.0,
+  "newsom": 14.5,
   "aoc": 19.4,
   "ossoff": 16.2,
   "harris": 7.9,
@@ -42,11 +43,11 @@
   "walz": 0.1
  },
  "blend": {
-  "newsom": 14.0,
-  "aoc": 17.7,
-  "ossoff": 16.6,
+  "newsom": 14.3,
+  "aoc": 17.2,
+  "ossoff": 16.1,
   "harris": 8.1,
-  "shapiro": 5.6,
+  "shapiro": 5.5,
   "pete": 5.6,
   "pritzker": 1.4,
   "khanna": 1.8,
@@ -58,10 +59,11 @@
   "moore": 2.0,
   "warnock": 0.7,
   "talarico": 2.2,
+  "elsayed": 1.0,
   "stewart": 0.3,
   "fain": 1.0,
   "walz": 0.1,
-  "other": 12.0
+  "other": 11.8
  },
  "run": {
   "newsom": 85.0,
@@ -84,7 +86,7 @@
   "fain": 31.0,
   "walz": 3.9
  },
- "unmapped_pct": 8.9,
+ "unmapped_pct": 8.3,
  "sources": [
   "https://api.elections.kalshi.com/trade-api/v2/markets?event_ticker=KXPRESNOMD-28",
   "https://api.elections.kalshi.com/trade-api/v2/markets?event_ticker=KX2028DRUN-28",
