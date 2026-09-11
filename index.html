@@ -426,7 +426,7 @@ const CANDS=[
  {id:'talarico',name:'James Talarico',role:'State Rep., Texas',age:36,mkt:2.1,run:15,lane:'fight',rank:17,debate:1.1,str:'Viral, young, surprising',weak:'No infrastructure',base:4,fit:{SC:1.05,NH:0.80,NV:0.95,IA:0.95,MI:0.90,GA:0.95,NC:1.00,ST:1.10}},
  {id:'elsayed',name:'Abdul El-Sayed',role:'Sen. candidate, Michigan',age:44,mkt:2.0,run:40,lane:'movement',rank:18,debate:1.05,str:'Sanders lineage, Michigan Senate platform',weak:'Untested nationally; splits the left with AOC',base:4,fit:{SC:0.70,NH:1.00,NV:1.10,IA:1.00,MI:1.60,GA:0.75,NC:0.85,ST:1.00}},
  {id:'stewart',name:'Jon Stewart',role:'Broadcaster',age:65,mkt:0.4,run:12,lane:'out',rank:19,debate:1.2,str:'Attention, anti-elite credibility',weak:'66 on election day; wants influence not the job',base:5,fit:{SC:0.60,NH:1.10,NV:1.00,IA:0.90,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
- {id:'fain',name:'Shawn Fain',role:'UAW President',age:56,mkt:1.0,run:31,lane:'working',rank:20,debate:1.0,str:'Purest class-war vessel',weak:'Never run for anything',base:5,fit:{SC:0.60,NH:0.80,NV:1.30,IA:1.10,MI:1.50,GA:0.70,NC:0.85,ST:0.95}},
+ {id:'fain',name:'Shawn Fain',role:'UAW President',age:56,mkt:1.0,run:31,lane:'movement',rank:20,debate:1.0,str:'Purest class-war vessel',weak:'Never run for anything',base:5,fit:{SC:0.60,NH:0.80,NV:1.30,IA:1.10,MI:1.50,GA:0.70,NC:0.85,ST:0.95}},
  {id:'walz',name:'Tim Walz',role:'Gov., Minnesota',age:64,mkt:0.1,run:13,lane:'working',rank:21,debate:1.0,str:'Folksy, soft-left',weak:'Losing VP rarely tops the ticket',base:5,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.20,MI:1.10,GA:0.80,NC:0.90,ST:0.95}},
  {id:'other',name:'Someone else',role:'Not yet declared',age:0,mkt:10.1,run:100,lane:'out',rank:0,debate:1.0,str:'The candidate the moment hasn\u2019t named',weak:'Does not exist yet',base:6,fit:{SC:1.00,NH:1.00,NV:1.00,IA:1.00,MI:1.00,GA:1.00,NC:1.00,ST:1.00}}
 ];
@@ -439,10 +439,10 @@ const POOL_META={
  movement:{label:'Movement Left',share:20,def:'Very liberal and younger Democrats who want a sharper economic and foreign policy break than the Biden and Harris years offered.'},
  out:{label:'Outsider',share:4,def:'Voters who want nobody from politics.'}
 };
-const POOLS={anchor:['harris','warnock','moore','beshear'],fight:['newsom','pritzker','rahm','talarico'],suburb:['pete','whitmer','murphy','shapiro','ossoff','kelly'],working:['walz','fain'],movement:['aoc','khanna','elsayed'],out:['stewart','other']};
+const POOLS={anchor:['harris','warnock','moore','beshear'],fight:['newsom','pritzker','rahm','talarico'],suburb:['pete','whitmer','murphy','shapiro','ossoff','kelly'],working:['walz'],movement:['aoc','khanna','elsayed','fain'],out:['stewart','other']};
 const POOLOF={};Object.keys(POOLS).forEach(p=>POOLS[p].forEach(id=>POOLOF[id]=p));
 // secondary pool: used only for dropout and endorsement transfers, at half weight
-const POOL2={ossoff:'anchor',shapiro:'working',kelly:'working',beshear:'working',talarico:'movement',stewart:'fight',fain:'movement',moore:'suburb',rahm:'suburb',harris:'suburb',whitmer:'working',pritzker:'working',khanna:'suburb',elsayed:'working',walz:'suburb'};
+const POOL2={ossoff:'anchor',shapiro:'working',kelly:'working',beshear:'working',talarico:'movement',stewart:'fight',fain:'working',moore:'suburb',rahm:'suburb',harris:'suburb',whitmer:'working',pritzker:'working',khanna:'suburb',elsayed:'working',walz:'suburb'};
 // why each candidate sits where they sit; shown on the pool tag and in the dossier
 const POOL_WHY={
  harris:'After 2024 her remaining primary strength is the institutional vote that made her the nominee, especially Black voters and Black women.',
@@ -460,7 +460,7 @@ const POOL_WHY={
  beshear:'Older, church going, loyal Democrats who want the party as it was. He wins them in Kentucky, which is why the establishment likes him.',
  walz:'The 2024 pitch was union teacher and Midwestern dad, aimed at non-college Democrats.',
  kelly:'Institutional moderate built for the suburbs: astronaut, gun safety, the Biden shortlist. Veterans are the crossover.',
- fain:'Trade unionist first. If his people vote in a primary, they are union households.',
+ fain:'Class war unionist whose primary voters are the Sanders left more than the union hall.',
  aoc:'Incumbent face of the post-Sanders very liberal bloc, not of the church vote or the factory vote.',
  khanna:'Sanders 2020 and Bay Area antitrust left. Geography is suburban. Ideology is the left.',
  elsayed:'The 2026 Michigan Senate primary win over an establishment House member was a left proof of concept in a working state.',
