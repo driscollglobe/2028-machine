@@ -378,6 +378,7 @@ body.show-adv h2.s.adv{display:block;}
   <div class="ctl adv"><label class="cl">Establishment coordination</label><input type="range" min="0" max="100" value="50" id="pCoord"><span class="cv" id="pCoordOut">50%</span></div>
   <div class="ctl adv"><label class="cl">...or coordination FAILURE (nobody drops)</label><input type="range" min="0" max="100" value="35" id="pCoordFail"><span class="cv" id="pCoordFailOut">35%</span></div>
   <div class="ctl adv"><label class="cl">Random branch-point events</label><input type="range" min="0" max="100" value="40" id="pEvents"><span class="cv" id="pEventsOut">40%</span></div>
+  <div class="ctl adv"><label class="cl">Dropout support transfer</label><input type="range" min="0" max="70" value="35" id="pDrop"><span class="cv" id="pDropOut">35%</span><div class="ctlnote">Share of a departing candidate's strength that moves to pool mates, primary pool at full weight and secondary at half.</div></div>
   <div class="ctl adv"><label class="cl">Debate skill matters</label><input type="range" min="0" max="100" value="50" id="pDebate"><span class="cv" id="pDebateOut">50%</span></div>
  </div>
 </div>
@@ -514,7 +515,7 @@ function nm(id){return CANDS.find(c=>c.id===id).name;}
 function P(id){return +document.getElementById(id).value/100;}
 function V(id){return document.getElementById(id).value;}
 function cfg(){return{pA:P('pAoc'),pH:document.getElementById('pollsHarris').checked?0.95:P('pHarris'),pollsHarris:document.getElementById('pollsHarris').checked,pHslider:P('pHarris'),pN:P('pNewsom'),pOW:P('pOssWin'),pOR:P('pOssRev'),pMaine:P('pMaine'),pTex:P('pTexas'),pMich:P('pMich'),
- pC:P('pCoord'),pCF:P('pCoordFail'),pEv:P('pEvents'),pDb:P('pDebate'),appr:+V('pTrump'),apprMixed:document.getElementById('apprMixed').checked,
+ pC:P('pCoord'),pCF:P('pCoordFail'),pEv:P('pEvents'),pDb:P('pDebate'),pDrop:P('pDrop'),appr:+V('pTrump'),apprMixed:document.getElementById('apprMixed').checked,
  selAoc:V('selAoc'),selTheme:V('selTheme'),selLesson:V('selLesson'),selBlack:V('selBlack'),selLatino:V('selLatino'),calKey:V('selCal'),darling:V('selDarling'),
  field:Object.fromEntries(CANDS.map(c=>[c.id,document.getElementById('tg_'+c.id)?document.getElementById('tg_'+c.id).value:'sample']))};}
 function simulate(C,collect){
@@ -615,7 +616,7 @@ function simulate(C,collect){
    if(POOLOF[c.id]===from)wt=1;else if(POOL2[c.id]===from)wt=0.5;
    if(from2){if(POOLOF[c.id]===from2)wt=Math.max(wt,0.5);else if(POOL2[c.id]===from2)wt=Math.max(wt,0.25);}
    if(wt>0){w[c.id]=wt*str[c.id];tot+=w[c.id];}});
-  if(tot<=0)return;const pot=str[k]*0.35;Object.keys(w).forEach(id=>{str[id]+=pot*w[id]/tot;});
+  if(tot<=0)return;const pot=str[k]*(typeof C.pDrop==='number'?C.pDrop:0.35);if(pot<=0)return;Object.keys(w).forEach(id=>{str[id]+=pot*w[id]/tot;});
  }
  // random branch-point events
  const eventLog=[];
@@ -770,6 +771,7 @@ function buildHeatmap(){
   {key:'Michigan result',apply:(C,hi)=>{C.pMich=hi?1:0;}},
   {key:'Polls right on Harris',apply:(C,hi)=>{C.pollsHarris=hi;C.pH=hi?0.95:C.pHslider;}},
   {key:'Coordination fails',apply:(C,hi)=>{C.pCF=hi?1:0;}},
+  {key:'Dropout transfer',apply:(C,hi)=>{C.pDrop=hi?0.7:0;}},
   {key:'Trump approval high',apply:(C,hi)=>{C.appr=hi?58:33;C.apprMixed=false;}}
  ];
  const watch=['newsom','aoc','harris','ossoff','shapiro','pete','khanna','talarico','elsayed','pritzker','kelly','beshear'];
@@ -1211,7 +1213,7 @@ function bracketFromUrl(){
  runBracket();
 }
 let _frUpd;function queueFront(){clearTimeout(_frUpd);_frUpd=setTimeout(updateFrontrunner,200);}
-['pAoc','pHarris','pNewsom','pOssWin','pOssRev','pMaine','pTexas','pMich','pTrump','pCoord','pCoordFail','pEvents','pDebate'].forEach(id=>document.getElementById(id).addEventListener('input',e=>{document.getElementById(id+'Out').textContent=e.target.value+'%';queueFront();}));
+['pAoc','pHarris','pNewsom','pOssWin','pOssRev','pMaine','pTexas','pMich','pTrump','pCoord','pCoordFail','pEvents','pDebate','pDrop'].forEach(id=>document.getElementById(id).addEventListener('input',e=>{document.getElementById(id+'Out').textContent=e.target.value+'%';queueFront();}));
 document.addEventListener('change',e=>{if(e.target&&e.target.tagName==='SELECT')queueFront();});
 document.getElementById('pollsHarris').addEventListener('change',queueFront);
 document.getElementById('apprMixed').addEventListener('change',e=>{const s=document.getElementById('pTrump'),o=document.getElementById('pTrumpOut');s.disabled=e.target.checked;o.textContent=e.target.checked?'drawn':s.value+'%';queueFront();});
