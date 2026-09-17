@@ -311,7 +311,7 @@ body.show-adv h2.s.adv{display:block;}
 <div class="bpstrip" id="bpstrip">
  <span class="bplabel">Today's turning points</span>
  <button class="bpchip" onclick="cueBranch('aoc')">AOC decision</button>
- <button class="bpchip" onclick="cueBranch('calendar')">DNC calendar</button>
+ <button class="bpchip" onclick="cueBranch('calendar')">NH jumps the line</button>
  <button class="bpchip" onclick="cueBranch('newsom')">Newsom scrutiny</button>
  <button class="bpchip" onclick="cueBranch('georgia')">Georgia result</button>
  <button class="bpchip" onclick="cueBranch('texas')">Texas result</button>
@@ -373,7 +373,7 @@ body.show-adv h2.s.adv{display:block;}
   <div class="ctl adv"><label class="cl">Lesson of 2026</label><select id="selLesson"><option value="mixed" selected>Drawn per run</option><option value="inst">Institutional Democrats won</option><option value="pop">Economic populists won</option><option value="muddle">Both sides claim victory</option><option value="under">Democrats underperformed</option></select></div>
   <div class="ctl adv"><label class="cl">Black Democratic voters</label><select id="selBlack"><option value="mixed" selected>Drawn per run</option><option value="hold">Harris holds the coalition</option><option value="div">Remains divided</option><option value="another">Consolidates behind another</option><option value="gen">Generational realignment</option></select></div>
   <div class="ctl adv"><label class="cl">Latino Democratic voters</label><select id="selLatino"><option value="mixed" selected>Drawn per run</option><option value="aoc">Consolidate behind AOC</option><option value="pop">Break for the Movement Left</option><option value="split">Remain divided</option><option value="soft">Stay soft for Democrats</option></select></div>
-  <div class="ctl"><label class="cl">Early state calendar</label><select id="selCal"><option value="mixed" selected>Drawn per run</option><option value="A">South Carolina first: SC, NH, NV, GA</option><option value="B">Tradition: IA, NH, NV, SC</option><option value="C">Battleground: GA, NC, MI, NV</option><option value="D">Midwest first: MI, IA, NV, SC</option><option value="E">Retail: NH, IA, NV, SC</option></select></div>
+  <div class="ctl"><label class="cl">Early state calendar</label><select id="selCal"><option value="R" selected>DNC calendar: SC, NV, NH, NM, MI, VA</option><option value="NH">New Hampshire jumps the line (state law)</option><option value="IA">Iowa crashes the window</option><option value="mixed">Drawn per run</option></select><div class="ctlnote">The DNC approved this order on August 15, 2026: South Carolina January 22, Nevada February 1, New Hampshire February 8, New Mexico February 15, Michigan February 22, Virginia February 29, Super Tuesday March 7. New Hampshire state law requires it to vote first, and Iowa Democrats have threatened their own contest.</div></div>
   <div class="ctl adv"><label class="cl">Media darling momentum favors</label><select id="selDarling"><option value="mixed">Drawn per run</option><option value="none" selected>No clear darling</option><option value="aoc">AOC</option><option value="ossoff">Ossoff</option><option value="moore">Moore</option><option value="khanna">Khanna</option><option value="murphy">Murphy</option></select></div>
   <div class="ctl adv"><label class="cl">Establishment coordination</label><input type="range" min="0" max="100" value="50" id="pCoord"><span class="cv" id="pCoordOut">50%</span></div>
   <div class="ctl adv"><label class="cl">...or coordination FAILURE (nobody drops)</label><input type="range" min="0" max="100" value="35" id="pCoordFail"><span class="cv" id="pCoordFailOut">35%</span></div>
@@ -431,6 +431,11 @@ const CANDS=[
  {id:'walz',name:'Tim Walz',role:'Gov., Minnesota',age:64,mkt:0.1,run:13,lane:'working',rank:21,debate:1.0,str:'Folksy, soft-left',weak:'Losing VP rarely tops the ticket',base:5,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.20,MI:1.10,GA:0.80,NC:0.90,ST:0.95}},
  {id:'other',name:'Someone else',role:'Not yet declared',age:0,mkt:9.7,run:100,lane:'out',rank:0,debate:1.0,str:'The candidate the moment hasn\u2019t named',weak:'Does not exist yet',base:6,fit:{SC:1.00,NH:1.00,NV:1.00,IA:1.00,MI:1.00,GA:1.00,NC:1.00,ST:1.00}}
 ];
+// New Mexico and Virginia joined the window in the August 2026 DNC calendar. Seed their fits from the
+// nearest existing state, then hand override the candidates where the two states actually differ.
+CANDS.forEach(c=>{c.fit.NM=c.fit.NV;c.fit.VA=c.fit.NC;});
+(function(){const o={harris:{VA:1.20},warnock:{VA:1.25},moore:{VA:1.20},ossoff:{VA:1.10},khanna:{NM:1.20},aoc:{NM:1.30},fain:{NM:1.10},pete:{VA:1.00}};
+ Object.keys(o).forEach(id=>{const c=CANDS.find(x=>x.id===id);if(c)Object.assign(c.fit,o[id]);});})();
 // five pools of the primary electorate. share is the operator's prior for each pool's slice of the vote.
 const POOL_META={
  anchor:{label:'Party Anchor',share:22,def:'Older, institutional, church going Democrats who have decided recent nominations, strongest in South Carolina, the South, and Northern cities with large Black electorates.'},
@@ -477,19 +482,19 @@ const COORD_POOLS=['anchor','fight','suburb','working'];
 const TM={
  newsom:{afford:0.85,ai:1.0,fight:1.3,norm:0.85},aoc:{afford:1.4,ai:1.1,fight:1.2,norm:0.7},sanders:{afford:1.45,ai:1.0,fight:1.15,norm:0.6},harris:{afford:0.8,ai:0.9,fight:0.9,norm:1.1},ossoff:{afford:0.85,ai:1.0,fight:0.95,norm:1.2},shapiro:{afford:0.75,ai:0.9,fight:0.95,norm:1.5},pete:{afford:0.75,ai:1.1,fight:0.95,norm:1.3},pritzker:{afford:0.9,ai:0.9,fight:1.4,norm:0.85},khanna:{afford:1.4,ai:2.3,fight:0.85,norm:0.65},murphy:{afford:1.4,ai:0.95,fight:1.1,norm:1.0},kelly:{afford:0.85,ai:1.0,fight:0.9,norm:1.6},beshear:{afford:0.95,ai:0.85,fight:0.75,norm:1.8},rahm:{afford:0.6,ai:0.85,fight:0.85,norm:1.2},whitmer:{afford:0.95,ai:0.9,fight:1.1,norm:1.3},moore:{afford:0.95,ai:1.0,fight:1.1,norm:1.15},fain:{afford:1.9,ai:1.2,fight:0.85,norm:0.3},elsayed:{afford:1.35,ai:1.0,fight:1.0,norm:0.7},talarico:{afford:1.1,ai:0.95,fight:1.1,norm:1.05},stewart:{afford:1.0,ai:0.95,fight:1.25,norm:0.65},walz:{afford:1.15,ai:0.85,fight:1.0,norm:1.1},warnock:{afford:1.0,ai:0.9,fight:1.0,norm:1.15},other:{afford:1.1,ai:1.1,fight:1.0,norm:1.0}
 };
-const CALS={A:['SC','NH','NV','GA'],B:['IA','NH','NV','SC'],C:['GA','NC','MI','NV'],D:['MI','IA','NV','SC'],E:['NH','IA','NV','SC']};
+const CALS={R:['SC','NV','NH','NM','MI','VA'],NH:['NH','SC','NV','NM','MI','VA'],IA:['IA','NH','SC','NV','NM','MI']};
 const CAL={sc:{harris:1.3,moore:1.2,ossoff:1.1,beshear:1.05,warnock:1.3,pete:0.7,khanna:0.85},battle:{ossoff:1.3,kelly:1.15,beshear:1.15,shapiro:1.1,harris:1.05},retail:{pete:1.4,sanders:1.25,murphy:1.2,talarico:1.15,other:1.2},midwest:{whitmer:1.4,walz:1.3,fain:1.3,elsayed:1.25,pete:1.2,pritzker:1.15}};
-const CALCLASS={A:'sc',C:'battle',E:'retail',D:'midwest',B:null};
-const SN={SC:'South Carolina',NH:'New Hampshire',NV:'Nevada',IA:'Iowa',MI:'Michigan',GA:'Georgia',NC:'North Carolina',ST:'Super Tuesday',LS:'The long spring'};
-const SMON={SC:'January',NH:'January',NV:'February',IA:'February',MI:'February',GA:'February',NC:'February',ST:'March',LS:'April–June'};
-const DELS={SC:55,NH:33,NV:36,IA:40,MI:117,GA:108,NC:116,ST:1500,LS:2200};
+const CALCLASS={R:'sc',NH:'retail',IA:'retail'};
+const SN={SC:'South Carolina',NH:'New Hampshire',NV:'Nevada',NM:'New Mexico',VA:'Virginia',IA:'Iowa',MI:'Michigan',GA:'Georgia',NC:'North Carolina',ST:'Super Tuesday',LS:'The long spring'};
+const SMON={SC:'January',NH:'February',NV:'February',NM:'February',VA:'February',IA:'February',MI:'February',GA:'February',NC:'February',ST:'March',LS:'April–June'};
+const DELS={SC:55,NH:33,NV:36,NM:34,VA:99,IA:40,MI:117,GA:108,NC:116,ST:1500,LS:2200};
 const THL={afford:'affordability and class',ai:'AI and the future of work',fight:'democracy and fighting Trumpism',norm:'competence and electability'};
 const LL={inst:'institutional Democrats won 2026',pop:'economic populists won 2026',muddle:'2026 settled nothing',under:'Democrats underperformed in 2026'};
 // random events: id -> {p, who, desc, eff}
 // turning point presets: the chips, the ?bp= deep links, and the nightly share cards all read this
 const BP_PRESETS={
  aoc:{label:'AOC decision',set:{pAoc:47,selTheme:'afford'}},
- calendar:{label:'DNC calendar',set:{selCal:'A'}},
+ calendar:{label:'NH jumps the line',set:{selCal:'NH'}},
  newsom:{label:'Newsom scrutiny',set:{pNewsom:20}},
  georgia:{label:'Georgia result',set:{pOssWin:85,pOssRev:80},adv:true},
  texas:{label:'Texas result',set:{pTexas:90},adv:true},
@@ -544,7 +549,7 @@ function simulate(C,collect){
  let darling=C.darling;
  if(darling==='mixed'){const r=rng();darling=r<0.35?'none':(r<0.52?'aoc':(r<0.67?'ossoff':(r<0.78?'moore':(r<0.89?'khanna':'murphy'))));}
  let calKey=C.calKey;
- if(calKey==='mixed'){const r=rng();calKey=r<0.34?'A':(r<0.60?'B':(r<0.74?'E':(r<0.87?'C':'D')));}
+ if(calKey==='mixed'){const r=rng();calKey=r<0.70?'R':(r<0.90?'NH':'IA');}
  const inRace={};
  CANDS.forEach(c=>{
   const sel=C.field[c.id];
@@ -774,8 +779,8 @@ function buildHeatmap(){
  const status=document.getElementById('hmStatus');
  const levers=[
   {key:'AOC runs',apply:(C,hi)=>{C.pA=hi?1:0;}},
-  {key:'SC first',apply:(C,hi)=>{C.calKey=hi?'A':'B';}},
-  {key:'NH first',apply:(C,hi)=>{C.calKey=hi?'E':'A';}},
+  {key:'New Hampshire jumps the line',apply:(C,hi)=>{C.calKey=hi?'NH':'R';}},
+  {key:'Iowa crashes the window',apply:(C,hi)=>{C.calKey=hi?'IA':'R';}},
   {key:'AI is the issue',apply:(C,hi)=>{C.selTheme=hi?'ai':'afford';}},
   {key:'Affordability issue',apply:(C,hi)=>{C.selTheme=hi?'afford':'norm';}},
   {key:'Newsom scrutiny',apply:(C,hi)=>{C.pN=hi?1:0;}},
@@ -1064,7 +1069,7 @@ function computePaths(id){
   const scen=[
    {l:'AOC stays out',m:C=>{C.pA=0;}},{l:'AOC runs',m:C=>{C.pA=100/100;C.pA=1;}},
    {l:'Harris passes',m:C=>{C.pH=0;}},{l:'Harris runs',m:C=>{C.pH=1;}},
-   {l:'South Carolina first',m:C=>{C.calKey='A';}},{l:'New Hampshire first',m:C=>{C.calKey='E';}},
+   {l:'the DNC calendar holds',m:C=>{C.calKey='R';}},{l:'New Hampshire jumps the line',m:C=>{C.calKey='NH';}},
    {l:'the race is about AI',m:C=>{C.selTheme='ai';}},{l:'the race is about affordability',m:C=>{C.selTheme='afford';}},
    {l:'the race is about electability',m:C=>{C.selTheme='norm';}},{l:'fighting Trump is the theme',m:C=>{C.selTheme='fight';}},
    {l:'Newsom survives scrutiny',m:C=>{C.pN=1;}},{l:'Newsom fails scrutiny',m:C=>{C.pN=0;}},
