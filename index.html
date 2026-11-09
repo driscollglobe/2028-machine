@@ -346,14 +346,14 @@ body.show-adv h2.s.adv{display:block;}
 
 <h2 class="s">The turning point heatmap</h2>
 <div class="section">
- <div class="shead"><span>What moves whom · 5,000 matched seed runs per lever</span><span class="row" style="gap:8px;"><span class="note" id="hmStatus">not yet built</span><button class="btn go sm" onclick="buildHeatmap()" id="hmBtn">Build heatmap</button></span></div>
- <div class="hm" id="heatmap"><div class="muted">Click "Build heatmap" to compute how much each turning point swings each candidate. This shows what changes the odds, not just the odds themselves.</div></div>
+ <div class="shead"><span>What moves whom · 5,000 matched seed runs per lever</span><span class="row" style="gap:8px;"><span class="note" id="hmStatus">loading the nightly build</span><button class="btn go sm" onclick="buildHeatmap()" id="hmBtn">Recompute with my settings</button></span></div>
+ <div class="hm" id="heatmap"><div class="muted">Loading heatmap.json, built nightly at default settings. Click "Recompute with my settings" to rebuild it from your own settings in the browser.</div></div>
 </div>
 
 <h2 class="s">Turning point rankings</h2>
 <div class="section">
- <div class="shead"><span>The election's most decisive variables · by average swing</span><span class="note" id="rankStatus">built with the heatmap</span></div>
- <div id="rankings"><div class="muted">Build the heatmap above and these rank automatically: the turning points that move the most outcomes, measured in average first-place swing across the field. This ranks the election itself, not the candidates.</div></div>
+ <div class="shead"><span>The election's most decisive variables · by average swing</span><span class="note" id="rankStatus">nightly build</span></div>
+ <div id="rankings"><div class="muted">Loading rankings.json: the turning points that move the most outcomes, measured in average first place swing across the field.</div></div>
 </div>
 
 <h2 class="s">The world</h2>
@@ -513,7 +513,12 @@ const BP_PRESETS={
  calendar:{label:'NH jumps the line',set:{selCal:'NH'}},
  newsom:{label:'Newsom scrutiny',set:{pNewsom:20}},
  ai:{label:'AI economy',set:{selTheme:'ai',pAoc:20}},
- harris:{label:'Harris polls',set:{pollsHarris:true},adv:true}
+ harris:{label:'Harris polls',set:{pollsHarris:true},adv:true},
+ iowa:{label:'Iowa crashes the window',set:{selCal:'IA'}},
+ afford:{label:'Affordability race',set:{selTheme:'afford'}},
+ coordfail:{label:'Coordination fails',set:{pCoordFail:100},adv:true},
+ dropout:{label:'Dropouts transfer',set:{pDrop:70},adv:true},
+ approval:{label:'Trump approval high',set:{pTrump:58,apprMixed:false},adv:true}
 };
 const EVENTS=[
  {k:'newsom',label:'Newsom stumbles in the second debate',mult:0.55,need:c=>c.newsom},
@@ -801,60 +806,76 @@ function play(){
  }
 function toggleTimeline(){const st=document.getElementById('stage');st.hidden=!st.hidden;document.getElementById('tlToggle').textContent=st.hidden?'Show the full timeline':'Hide the timeline';}
 // HEATMAP: for each lever, run matched-seed batches (lever low vs high) and measure each candidate's first-place swing
+// ==HEATMAP== turning point levers. bp is the BP_PRESETS key a chip uses to dramatize the lever.
+// The nightly job (scripts/heatmap.js) and the browser run the same levers, seeds and code.
+const HM_LEVERS=[
+ {key:'AOC runs',bp:'aoc',apply:(C,hi)=>{C.pA=hi?1:0;}},
+ {key:'New Hampshire jumps the line',bp:'calendar',apply:(C,hi)=>{C.calKey=hi?'NH':'R';}},
+ {key:'Iowa crashes the window',bp:'iowa',apply:(C,hi)=>{C.calKey=hi?'IA':'R';}},
+ {key:'AI is the issue',bp:'ai',apply:(C,hi)=>{C.selTheme=hi?'ai':'afford';}},
+ {key:'Affordability issue',bp:'afford',apply:(C,hi)=>{C.selTheme=hi?'afford':'norm';}},
+ {key:'Newsom scrutiny',bp:'newsom',apply:(C,hi)=>{C.pN=hi?1:0;}},
+ {key:'Polls right on Harris',bp:'harris',apply:(C,hi)=>{C.pollsHarris=hi;C.pH=hi?0.95:C.pHslider;}},
+ {key:'Coordination fails',bp:'coordfail',apply:(C,hi)=>{C.pCF=hi?1:0;}},
+ {key:'Dropout transfer',bp:'dropout',apply:(C,hi)=>{C.pDrop=hi?0.7:0;}},
+ {key:'Trump approval high',bp:'approval',apply:(C,hi)=>{C.appr=hi?58:33;C.apprMixed=false;}}
+];
+const HM_WATCH=['newsom','aoc','harris','ossoff','shapiro','pete','khanna','sanders','talarico','elsayed','pritzker','kelly','beshear'];
+const HM_SEED=987654321;
+// MATCHED SEED comparison: each pair starts the world from the same seed with the lever
+// off and again with it on. Some branches (e.g. AOC's endorsement when she stays out) draw
+// extra random numbers, so the streams can diverge after that point. The swing is therefore
+// a matched-seed estimate averaged over the model's other uncertainties, not a strict ceteris
+// paribus hold. 5,000 matched runs per lever for stable rankings.
+function hmConfigs(base,i){
+ const Coff=JSON.parse(JSON.stringify(base));HM_LEVERS[i].apply(Coff,false);
+ const Con=JSON.parse(JSON.stringify(base));HM_LEVERS[i].apply(Con,true);
+ const lo={},hi={};HM_WATCH.forEach(k=>{lo[k]=0;hi[k]=0;});
+ return {Coff,Con,lo,hi};
+}
+function hmPairs(st,i,PAIRS,from,to){
+ for(let d=from;d<to;d++){
+  const s=(HM_SEED+(i*PAIRS+d)*2654435761)>>>0; // distinct, well-spread seed per pair
+  rng=mb(s);const a=fastWin(st.Coff);if(a in st.lo)st.lo[a]++;
+  rng=mb(s);const b=fastWin(st.Con);if(b in st.hi)st.hi[b]++; // identical stream, lever flipped
+ }
+}
+function hmResult(st,i,PAIRS){
+ const sw={};HM_WATCH.forEach(k=>sw[k]=(st.hi[k]-st.lo[k])/PAIRS*100);
+ let mover=null,mv=0;HM_WATCH.forEach(k=>{if(Math.abs(sw[k])>Math.abs(mv)){mv=sw[k];mover=k;}});
+ const avgSwing=HM_WATCH.reduce((a,k)=>a+Math.abs(sw[k]),0)/HM_WATCH.length;
+ return {key:HM_LEVERS[i].key,bp:HM_LEVERS[i].bp,sw,mover,mv,avgSwing};
+}
+// synchronous version for Node
+function computeHeatmap(base,PAIRS){
+ const saved=rng;const out=[];
+ HM_LEVERS.forEach((lev,i)=>{const st=hmConfigs(base,i);hmPairs(st,i,PAIRS,0,PAIRS);out.push(hmResult(st,i,PAIRS));});
+ rng=saved;return out;
+}
 function buildHeatmap(){
  const status=document.getElementById('hmStatus');
- const levers=[
-  {key:'AOC runs',apply:(C,hi)=>{C.pA=hi?1:0;}},
-  {key:'New Hampshire jumps the line',apply:(C,hi)=>{C.calKey=hi?'NH':'R';}},
-  {key:'Iowa crashes the window',apply:(C,hi)=>{C.calKey=hi?'IA':'R';}},
-  {key:'AI is the issue',apply:(C,hi)=>{C.selTheme=hi?'ai':'afford';}},
-  {key:'Affordability issue',apply:(C,hi)=>{C.selTheme=hi?'afford':'norm';}},
-  {key:'Newsom scrutiny',apply:(C,hi)=>{C.pN=hi?1:0;}},
-  {key:'Polls right on Harris',apply:(C,hi)=>{C.pollsHarris=hi;C.pH=hi?0.95:C.pHslider;}},
-  {key:'Coordination fails',apply:(C,hi)=>{C.pCF=hi?1:0;}},
-  {key:'Dropout transfer',apply:(C,hi)=>{C.pDrop=hi?0.7:0;}},
-  {key:'Trump approval high',apply:(C,hi)=>{C.appr=hi?58:33;C.apprMixed=false;}}
- ];
- const watch=['newsom','aoc','harris','ossoff','shapiro','pete','khanna','sanders','talarico','elsayed','pritzker','kelly','beshear'];
  const base=cfg();
- // MATCHED SEED comparison: each pair starts the world from the same seed with the lever
- // off and again with it on. Some branches (e.g. AOC's endorsement when she stays out) draw
- // extra random numbers, so the streams can diverge after that point. The swing is therefore
- // a matched-seed estimate averaged over the model's other uncertainties, not a strict ceteris
- // paribus hold. 5,000 matched runs per lever for stable rankings.
- const PAIRS=QUICK?2500:5000, CHUNK=400, HM_SEED=987654321;
+ const PAIRS=QUICK?2500:5000, CHUNK=400;
  const results=[];
- let i=0, done=0, Coff=null, Con=null, lo=null, hi=null;
+ let i=0, done=0, st=null;
  status.textContent='computing...';
- function startLever(){
-  Coff=JSON.parse(JSON.stringify(base));levers[i].apply(Coff,false);
-  Con=JSON.parse(JSON.stringify(base));levers[i].apply(Con,true);
-  lo={};hi={};watch.forEach(k=>{lo[k]=0;hi[k]=0;});done=0;
- }
  function step(){
   const end=Math.min(done+CHUNK,PAIRS);
-  for(;done<end;done++){
-   const s=(HM_SEED+(i*PAIRS+done)*2654435761)>>>0; // distinct, well-spread seed per pair
-   rng=mb(s);const a=fastWin(Coff);if(a in lo)lo[a]++;
-   rng=mb(s);const b=fastWin(Con);if(b in hi)hi[b]++; // identical stream, lever flipped
-  }
-  status.textContent='computing... lever '+(i+1)+'/'+levers.length+' ('+Math.round(done/PAIRS*100)+'%)';
+  hmPairs(st,i,PAIRS,done,end);done=end;
+  status.textContent='computing... lever '+(i+1)+'/'+HM_LEVERS.length+' ('+Math.round(done/PAIRS*100)+'%)';
   if(done<PAIRS){setTimeout(step,0);return;}
-  const sw={};watch.forEach(k=>sw[k]=(hi[k]-lo[k])/PAIRS*100);
-  let mover=null,mv=0;watch.forEach(k=>{if(Math.abs(sw[k])>Math.abs(mv)){mv=sw[k];mover=k;}});
-  const avgSwing=watch.reduce((a,k)=>a+Math.abs(sw[k]),0)/watch.length;
-  results.push({key:levers[i].key,sw,mover,mv,avgSwing});
+  results.push(hmResult(st,i,PAIRS));
   i++;
-  if(i>=levers.length){
-   renderHeatmap(results,watch);
+  if(i>=HM_LEVERS.length){
+   renderHeatmap(results,HM_WATCH);
    renderRankings(results);
-   status.textContent=(QUICK?'quick run · ':'built · ')+(levers.length*PAIRS).toLocaleString()+' matched seed runs';
+   status.textContent=(QUICK?'quick run · ':'your settings · ')+(HM_LEVERS.length*PAIRS).toLocaleString()+' matched seed runs';
    seed=Date.now()%2147483647;rng=mb(seed); // release the deterministic seed for the rest of the page
    return;
   }
-  startLever();setTimeout(step,0);
+  st=hmConfigs(base,i);done=0;setTimeout(step,0);
  }
- startLever();
+ st=hmConfigs(base,0);
  setTimeout(step,20);
 }
 function renderRankings(results){
@@ -1180,6 +1201,23 @@ function renderReviewed(){
  const dates=CANDS.map(c=>c.reviewed).concat([...document.querySelectorAll('[data-reviewed]')].map(n=>n.dataset.reviewed)).filter(Boolean).sort();
  const f=document.getElementById('priorsDate');if(f&&dates.length)f.textContent=dates[dates.length-1];
 }
+// ==NIGHTLY HEATMAP== heatmap.json and rankings.json are written by scripts/heatmap.js at default settings.
+// The chips are the top seven turning points by average swing, so nobody picks them by hand.
+const CHIP_COUNT=7;
+function renderChips(ranked){
+ const strip=document.getElementById('bpstrip');if(!strip)return;
+ const top=ranked.filter(r=>r.bp&&BP_PRESETS[r.bp]).slice(0,CHIP_COUNT);if(!top.length)return;
+ strip.querySelectorAll('.bpchip').forEach(b=>b.remove());
+ const share=strip.querySelector('.btn');
+ top.forEach(r=>{const b=document.createElement('button');b.className='bpchip';b.textContent=BP_PRESETS[r.bp].label;b.title=r.key+' · average swing '+r.avgSwing.toFixed(1)+' points';b.onclick=()=>cueBranch(r.bp);strip.insertBefore(b,share);});
+}
+function loadHeatmap(){
+ Promise.all(['heatmap.json','rankings.json'].map(f=>fetch(f+'?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null))).then(([H,R])=>{
+  if(H&&Array.isArray(H.results)&&H.results.length){renderHeatmap(H.results,H.watch||HM_WATCH);document.getElementById('hmStatus').textContent='nightly build '+H.date+' · default settings · '+(H.results.length*H.pairs).toLocaleString()+' matched seed runs';}
+  else document.getElementById('hmStatus').textContent='nightly build unavailable';
+  if(R&&Array.isArray(R.ranked)&&R.ranked.length){renderRankings(R.ranked);document.getElementById('rankStatus').textContent='nightly build '+R.date+' · top lever: '+R.ranked[0].key;renderChips(R.ranked);}
+ });
+}
 function loadWire(){
  fetch('wire.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(w=>{if(!w||!Array.isArray(w.items))return;WIRE=w.items;initTicker();}).catch(()=>{});
 }
@@ -1300,7 +1338,7 @@ document.querySelectorAll('.ctl input[type=range]').forEach(r=>{
  const mk=(d,txt)=>{const b=document.createElement('button');b.type='button';b.className='step';b.textContent=txt;b.setAttribute('aria-label',(d>0?'Increase ':'Decrease ')+r.id);b.addEventListener('click',()=>{if(r.disabled)return;const v=Math.max(+r.min,Math.min(+r.max,+r.value+d));r.value=v;r.dispatchEvent(new Event('input',{bubbles:true}));});return b;};
  r.before(mk(-5,'-'));r.after(mk(5,'+'));
 });
-renderSettled();renderReviewed();loadWire();buildCards();loadPolls();loadHistory();tickClock();setInterval(tickClock,30000);buildBracket();paintDefault();deepLink();bracketFromUrl();
+renderSettled();renderReviewed();loadWire();loadHeatmap();buildCards();loadPolls();loadHistory();tickClock();setInterval(tickClock,30000);buildBracket();paintDefault();deepLink();bracketFromUrl();
 // fitted market strengths for the anchor slider (scripts/calibrate_anchor.js, nightly)
 fetch('anchor.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(A=>{if(!A||!A.mstr)return;CANDS.forEach(c=>{if(typeof A.mstr[c.id]==='number')c.mstr=A.mstr[c.id];});if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();}).catch(()=>{});
 // ==LIVE MARKET ANCHORS== fetch nightly-updated markets.json; fall back silently to baked-in values
