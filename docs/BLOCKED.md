@@ -14,8 +14,8 @@ Written 2026-11-09 during the unattended run. All 14 build phases were built and
 * **Phase 7, Substack Notes.** There is no official public API. The unofficial endpoints need your browser session, which I would not automate.
 
 ## Needs a fact checked
-* **Phase 14, citations.** The reporting citations in `backtest-2020/SOURCES.md` were written from memory. Confirm each one and add a link before the backtest runs as a post. Trump approval of 42 for early December 2019 also needs checking against an archived average.
-* **Phase 9, automatic delegates.** The 2028 automatic delegate count is not published. The model uses the 2024 ratio (747 to 3,949) until the 2028 Call gives a number.
+* **Phase 14, citations.** Checked on 2026-11-09, with dated links in `backtest-2020/SOURCES.md`. Two rows remain open. Steyer's Nevada and South Carolina fit (1.3) has no pre-cutoff spending source yet. Trump approval 42 matches FiveThirtyEight's average (41.1 mid-November, 41.9 mid-December), but I did not fetch the archived value for 2019-12-01. One prior broke the blind rule and is fixed: Booker's "missed the December debate" came from 2019-12-12 and now reads as the November standing.
+* **Phase 9, automatic delegates.** The 2028 automatic delegate count is not published. The 2028 convention page still lists total delegates as TBD. The model uses the 2024 ratio (747 to 3,949) until the 2028 Call gives a number. Automatic delegates include Democratic members of Congress and governors, and both grew on 2026-11-03, so expect the real 2028 ratio to come in somewhat higher than 2024's.
 
 ## Can only be verified after merge
 * Phase 6: the approval note updating overnight.
