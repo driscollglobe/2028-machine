@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog | The 2028 Machine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#16171a;--paper:#f5f3ec;--panel:#ffffff;--rule:rgba(20,21,24,.14);--muted:#5c5b55;--faint:#8a897f;--wire:#b8442b;}
+@media (prefers-color-scheme:dark){:root{--ink:#ecebe4;--paper:#15161a;--panel:#1d1e22;--rule:rgba(255,255,255,.15);--muted:#a6a59d;--faint:#76756d;--wire:#e06a4d;}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.6;}
+.wrap{max-width:760px;margin:0 auto;padding:22px 16px 60px;}
+.mast{border-bottom:3px double var(--ink);padding-bottom:.75rem;margin-bottom:.4rem;}
+.globe{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase;}
+h1{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:34px;line-height:1.02;margin:.1rem 0 0;}
+.nav{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin:.4rem 0 1.2rem;display:flex;gap:14px;flex-wrap:wrap;}
+.nav a{color:var(--wire);text-decoration:none;}
+.dek{font-size:16px;color:var(--muted);margin-bottom:1.4rem;}
+.entry{border-top:1px solid var(--rule);padding:1.1rem 0 .4rem;scroll-margin-top:12px;}
+.entry:target{background:var(--panel);box-shadow:0 0 0 12px var(--panel);}
+.entry h2{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px;margin:0 0 .2rem;}
+.entry .d{font-family:'Spline Sans Mono',monospace;font-size:11px;color:var(--faint);letter-spacing:.06em;}
+.entry p{margin:.6rem 0;}
+.foot{font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:var(--faint);margin-top:2rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="mast"><div class="globe">The Driscoll Globe</div><h1>The 2028 Machine: changelog</h1></div>
+<div class="nav"><a href="index.html">The 2028 Machine</a><a href="track.html">Track record</a><a href="methodology.html">How it works</a></div>
+<p class="dek">Every change to how the model works, and the weekly record of what moved. Newest first.</p>
+<div id="log">Loading.</div>
+<p class="foot">THE 2028 MACHINE · THE DRISCOLL GLOBE · SOURCE FILES IN <a href="https://github.com/driscollglobe/2028-machine/tree/main/changelog" style="color:inherit">CHANGELOG/</a></p>
+</div>
+<script>
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+fetch('changelog/index.json?v='+Date.now()).then(r=>r.ok?r.json():[]).then(list=>{
+ const seen={};
+ return Promise.all(list.map(e=>fetch('changelog/'+e.file).then(r=>r.ok?r.text():'').catch(()=>''))).then(texts=>{
+  document.getElementById('log').innerHTML=list.map((e,i)=>{
+   const paras=texts[i].replace(/\r/g,'').split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
+   if(!paras.length)return '';
+   const title=paras.shift();
+   // the bare date is an anchor too, on the newest entry of that day
+   const alt=seen[e.date]?'':'<span id="'+e.date+'"></span>';seen[e.date]=1;
+   return '<div class="entry" id="'+e.id+'">'+alt+'<h2>'+esc(title)+'</h2><div class="d">'+e.date+'</div>'+paras.map(p=>'<p>'+esc(p)+'</p>').join('')+'</div>';
+  }).join('');
+  if(location.hash){const t=document.getElementById(location.hash.slice(1));if(t)t.scrollIntoView();}
+ });
+}).catch(()=>{document.getElementById('log').textContent='The changelog didn’t load.';});
+</script>
+</body>
+</html>

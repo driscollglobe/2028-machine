@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The nightly desk note. DRAFT, KEVIN REVIEWS: every template sentence below is a first pass.
+"""The nightly desk note: a short morning brief built from fixed templates.
 
 Writes one 100 to 140 word paragraph from the day's data using fixed templates. No language
 model is involved. Inputs are markets.json, default.json, history.csv and calls.csv. Outputs:
@@ -7,10 +7,13 @@ model is involved. Inputs are markets.json, default.json, history.csv and calls.
   notes/latest.json     {date, text} for the Desk note box on index.html and the share card
   notes/YYYY-MM-DD.x.txt  a draft post for X, only when X_API_KEY is set. Nothing is ever sent.
 
-Voice rules the templates follow (from the anti-ai-writing house rules):
-  * no em or en dashes, no "not X but Y" turns, no groups of three in rhythm
-  * no rhetorical questions, no quotable kicker; the last sentence is the next thing to watch
-  * numbers, names and dates first; attribute every number to the book or the model
+Voice rules the templates follow (anti-ai-writing house rules, and the publication pass of Nov. 9, 2026):
+  * lead with the story: who moved, how far, on which book. Never open with the model's internals
+  * never name a parameter (anchor, lane crowding, ballots, levers) and never quote the history.csv note
+  * a structural change gets one plain sentence at the end and a link to the changelog, nothing more
+  * editorial dates (Nov. 9), contractions allowed, varied openings
+  * no em or en dashes, no "not X but Y" turns, no groups of three in rhythm, no rhetorical questions,
+    no quotable kicker; the last sentence is the next thing to watch
 Each slot has several phrasings. The pick is seeded by the date, so consecutive days read
 as different sentences even when the numbers barely move.
 
@@ -26,7 +29,7 @@ import sys
 from datetime import date, timedelta
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MIN_WORDS, MAX_WORDS = 100, 140
+MAX_WORDS = 140
 
 NAMES = {"newsom": "Gavin Newsom", "aoc": "Alexandria Ocasio-Cortez", "sanders": "Bernie Sanders",
          "ossoff": "Jon Ossoff", "harris": "Kamala Harris", "shapiro": "Josh Shapiro", "pete": "Pete Buttigieg",
@@ -54,7 +57,10 @@ def pts(x):
     return ("%.1f point" % x) + ("" if x == 1 else "s")
 
 
-def pick(options, key, slot):
+def pick(options, key, slot, rotate=False):
+    if rotate:
+        # walk the options in order by calendar day, so back-to-back notes never open the same way
+        return options[date.fromisoformat(key).toordinal() % len(options)]
     h = int(hashlib.sha256((key + ":" + slot).encode()).hexdigest(), 16)
     return options[h % len(options)]
 
@@ -73,16 +79,34 @@ def num(v):
         return None
 
 
-def build(today, M, D, prev, calls, note=""):
-    """Return the paragraph for one day. prev is the history row before today, or None.
-    note is today's structural note from history.csv, if any."""
+AP_MON = ["Jan.", "Feb.", "March", "April", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."]
+WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"]
+
+
+def ed(iso, year=True):
+    """Editorial date for readers: 2026-11-09 -> Nov. 9, 2026 (or Nov. 9)."""
+    d = date.fromisoformat(iso)
+    return "%s %d" % (AP_MON[d.month - 1], d.day) + (", %d" % d.year if year else "")
+
+
+def since(today, prev_date):
+    gap = (date.fromisoformat(today) - date.fromisoformat(prev_date)).days
+    if gap == 1:
+        return "overnight"
+    return "since " + ed(prev_date, year=False)
+
+
+def build(today, M, D, prev, calls, note="", changes=None):
+    """Return (text, link) for one day. prev is the history row before today, or None.
+    note is today's structural note from history.csv. It is never quoted: readers get one plain
+    sentence at the end and a link to the changelog. link is None or {"text", "href"}."""
     key = today
     ids = [i for i in M["blend"] if i != "other"]
-    S = []  # (priority, sentence); lower priority numbers are kept first when trimming
-    if note:
-        S.append((0, "The model itself changed today (%s), so its moves since yesterday come from that rebuild as much as from the books." % note.strip().rstrip(".")))
+    S = []  # (priority, sentence); lower numbers survive trimming
+    when = since(today, prev["date"]) if prev else "overnight"
+    structural = bool(note and note.strip())
 
-    # 1. the largest market move and which book carried it
+    # 1. the lead: who moved, how far, and on which book
     mover = None
     if prev:
         moves = [(i, M["blend"][i] - num(prev.get("k_" + i))) for i in ids if num(prev.get("k_" + i)) is not None]
@@ -92,12 +116,13 @@ def build(today, M, D, prev, calls, note=""):
     if mover:
         i, d = mover
         up = d > 0
+        p = f1(M["blend"][i])
         S.append((0, pick([
-            "%s had the biggest move in the nomination books since %s, %s %s to %s." % (full(i), prev["date"], "up" if up else "down", pts(d), f1(M["blend"][i])),
-            "The largest change on the board belonged to %s, whose blended price %s %s to %s." % (full(i), "rose" if up else "fell", pts(d), f1(M["blend"][i])),
-            "Traders %s %s overnight, moving the blended price %s to %s." % ("bought" if up else "sold", full(i), pts(d), f1(M["blend"][i])),
-            "%s's price %s by %s overnight and now sits at %s in the blend." % (full(i), "climbed" if up else "slipped", pts(d), f1(M["blend"][i])),
-        ], key, "mover")))
+            "%s had the biggest move in the nomination markets %s, %s %s to %s." % (full(i), when, "up" if up else "down", pts(d), p),
+            "Traders %s %s %s, pushing the blended price %s %s to %s." % ("bought" if up else "sold", full(i), when, "up" if up else "down", pts(d), p),
+            "Nobody moved more %s than %s, who %s %s and now trades at %s." % (when, full(i), "gained" if up else "lost", pts(d), p),
+            "%s, %s's price %s %s to %s, the largest change on the board." % (when[0].upper() + when[1:], full(i), "climbed" if up else "slid", pts(d), p),
+        ], key, "lead", rotate=True)))
         k0, p0 = num(prev.get("kal_" + i)), num(prev.get("poly_" + i))
         k1, p1 = (M.get("kalshi") or {}).get(i), (M.get("polymarket") or {}).get(i)
         if None not in (k0, p0, k1, p1):
@@ -105,115 +130,120 @@ def build(today, M, D, prev, calls, note=""):
             book, other, db, do = ("Kalshi", "Polymarket", dk, dp) if abs(dk) >= abs(dp) else ("Polymarket", "Kalshi", dp, dk)
             if abs(do) < 0.05:
                 S.append((1, pick([
-                    "All of it came from %s, which moved %s while %s did not move." % (book, pts(db), other),
-                    "%s carried the whole move while %s held flat." % (book, other),
+                    "All of it happened on %s; %s didn't budge." % (book, other),
+                    "The move was all %s, with %s holding flat." % (book, other),
                 ], key, "book_one")))
+            elif (db > 0) == (do > 0):
+                S.append((1, pick([
+                    "Most of that came on %s, which moved %s, while %s went the same way by %s." % (book, pts(db), other, pts(do)),
+                    "Both books agreed on the direction, with %s moving %s and %s %s." % (book, pts(db), other, pts(do)),
+                ], key, "book_same")))
             else:
-              S.append((1, pick([
-                "Most of it came from %s, which moved %s while %s moved %s." % (book, pts(db), other, pts(do)),
-                "%s did the work there. It moved %s against %s on %s." % (book, pts(db), pts(do), other),
-                "The move ran through %s (%s), with %s following by %s." % (book, ("+" if db > 0 else "-") + f1(abs(db)), other, pts(do)),
-              ], key, "book")))
-        # what the model did with it
+                S.append((1, "The two books split on it: %s moved %s one way and %s %s the other." % (book, pts(db), other, pts(do))))
+
+    # 2. a run-odds story the price board would miss: a big swing in the odds of entering at all
+    if prev:
+        runs = [(i, M["run"][i] - num(prev.get("run_" + i))) for i in ids
+                if isinstance((M.get("run") or {}).get(i), (int, float)) and num(prev.get("run_" + i)) is not None]
+        runs.sort(key=lambda x: -abs(x[1]))
+        if runs and abs(runs[0][1]) >= 4:
+            ri, rd = runs[0]
+            flat = prev and num(prev.get("k_" + ri)) is not None and abs(M["blend"][ri] - num(prev.get("k_" + ri))) < 0.5
+            tail = (" even though %s's nomination price barely moved" % last(ri)) if flat else ""
+            S.append((1, pick([
+                "Kalshi's market on whether %s runs at all %s %d points, to %d percent,%s." % (last(ri), "jumped" if rd > 0 else "dropped", round(abs(rd)), round(M["run"][ri]), tail),
+                "The odds that %s enters the race %s %d points on Kalshi, to %d percent,%s." % (full(ri), "rose" if rd > 0 else "fell", round(abs(rd)), round(M["run"][ri]), tail),
+            ], key, "run").replace(",.", ".")))
+
+    if not mover and not any(p == 1 for p, _ in S):
+        S.append((0, pick([
+            "A quiet night. No candidate's nomination price moved a tenth of a point on Kalshi or Polymarket.",
+            "The books barely ticked %s; no blended price moved by a tenth of a point." % when,
+        ], key, "quiet")))
+
+    # 3. what the simulations did with it (skipped when the model itself changed; see the last sentence)
+    if mover and not structural:
+        i = mover[0]
         m0, m1 = num(prev.get("m_" + i)), D["first"].get(i)
         if m0 is not None and m1 is not None:
             dm = m1 - m0
-            if abs(dm) < 0.3:
+            if abs(dm) < 0.5:
                 txt = pick([
-                    "The model barely registered it. %s finishes first in %s percent of simulated primaries, against %s yesterday." % (last(i), f1(m1), f1(m0)),
-                    "The machine held steady on %s at %s percent of first place finishes." % (last(i), f1(m1)),
+                    "Our simulations hardly noticed; %s still wins %s percent of them." % (last(i), f1(m1)),
+                    "It didn't change much in the model, where %s finishes first in %s percent of runs." % (last(i), f1(m1)),
                 ], key, "model_flat")
             elif (dm > 0) == (mover[1] > 0):
                 txt = pick([
-                    "The model followed the books and moved %s from %s to %s percent of first place finishes." % (last(i), f1(m0), f1(m1)),
-                    "The machine went the same way, taking %s from %s to %s percent of simulated wins." % (last(i), f1(m0), f1(m1)),
+                    "The model went along, and %s now wins %s percent of simulated primaries, against %s the day before." % (last(i), f1(m1), f1(m0)),
+                    "In the simulations %s went from %s to %s percent of first-place finishes." % (last(i), f1(m0), f1(m1)),
                 ], key, "model_same")
             else:
                 txt = pick([
-                    "The model went the other way. %s's share of simulated wins moved from %s to %s percent." % (last(i), f1(m0), f1(m1)),
-                    "The machine disagreed with the traders and moved %s from %s to %s percent of first place finishes." % (last(i), f1(m0), f1(m1)),
+                    "The model moved the other way, taking %s from %s to %s percent of simulated wins." % (last(i), f1(m0), f1(m1)),
+                    "Our simulations disagreed with the traders: %s went from %s to %s percent of first-place finishes." % (last(i), f1(m0), f1(m1)),
                 ], key, "model_opp")
             S.append((1, txt))
-    else:
-        S.append((0, pick([
-            "The nomination books were quiet overnight. No candidate's blended price moved by a tenth of a point.",
-            "Kalshi and Polymarket held still overnight, with no blended price moving a tenth of a point.",
-        ], key, "quiet")))
 
-    # 2. who leads where
+    # 4. who leads where
     mk = max(ids, key=lambda i: M["blend"][i])
     ml = D["frontrunner"]["id"]
     if mk == ml:
         S.append((2, pick([
-            "%s leads both the market blend at %s and the model at %s percent." % (full(mk), f1(M["blend"][mk]), f1(D["first"][ml])),
-            "The books and the machine agree on the leader. %s is at %s in the blend and wins %s percent of simulated primaries." % (full(mk), f1(M["blend"][mk]), f1(D["first"][ml])),
+            "%s leads both the markets, at %s, and the model, winning %s percent of 20,000 simulated primaries." % (full(mk), f1(M["blend"][mk]), f1(D["first"][ml])),
+            "Markets and model agree on the leader: %s, at %s in the blend and first in %s percent of our runs." % (full(mk), f1(M["blend"][mk]), f1(D["first"][ml])),
         ], key, "lead_same")))
     else:
         S.append((2, pick([
-            "%s leads the blend at %s, while the model has %s finishing first most often, at %s percent." % (full(mk), f1(M["blend"][mk]), full(ml), f1(D["first"][ml])),
-            "The market's leader is %s at %s. The model's is %s, first in %s percent of runs." % (full(mk), f1(M["blend"][mk]), full(ml), f1(D["first"][ml])),
+            "%s leads the markets at %s, but the model likes %s, who wins %s percent of 20,000 simulated primaries." % (full(mk), f1(M["blend"][mk]), full(ml), f1(D["first"][ml])),
+            "The markets have %s on top at %s. In our simulations it's %s, first in %s percent of runs." % (full(mk), f1(M["blend"][mk]), full(ml), f1(D["first"][ml])),
+            "%s wins the most simulated primaries, %s percent, though the betting favorite is %s at %s." % (full(ml), f1(D["first"][ml]), full(mk), f1(M["blend"][mk])),
         ], key, "lead_diff")))
 
-    # 3. convention rate
+    # 5. the convention
     c = D.get("contested")
     if isinstance(c, (int, float)):
-        S.append((2, pick([
-            "Of the 20,000 simulated primaries, %s percent end with nobody holding a pledged majority." % f1(c),
-            "The contested convention rate stands at %s percent of runs." % f1(c),
-            "In %s percent of today's runs the delegate count stops short of a majority." % f1(c),
+        S.append((3, pick([
+            "In %s percent of those runs nobody reaches the convention with a pledged majority." % f1(c),
+            "About %d in 100 simulated primaries end without a pledged majority, which sends the fight to the convention floor." % round(c),
         ], key, "conv")))
 
-    # 4. calls graded today, or the next deadline
+    # 6. calls graded today
     real = [r for r in calls if r.get("status") != "test"]
-    graded = [r for r in real if r.get("resolved_date") == today]
-    for r in graded[:2]:
-        S.append((1, "The ledger graded a call today: %s It came out %s at %s." % (r["text"].rstrip(".") + ".", "right" if r["status"] == "true" else "wrong", r.get("resolved_value") or "no reading")))
-    open_calls = sorted([r for r in real if r.get("status") == "open"], key=lambda r: r["deadline"])
+    for r in [r for r in real if r.get("resolved_date") == today][:2]:
+        S.append((1, "One of our calls came due today. %s It was %s." % (r["text"].rstrip(".") + ".", "right" if r["status"] == "true" else "wrong")))
 
-    # 5. levers resolved in the last week
+    # 7. races settled in the past week
     week = (date.fromisoformat(today) - timedelta(days=7)).isoformat()
     res = [r for r in (D.get("resolved") or []) if week <= r["date"] <= today]
-    if res:
-        words = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"]
-        n = words[len(res)] if len(res) < len(words) else str(len(res))
-        S.append((1, "%s midterm lever%s resolved on %s and now run%s as fixed facts in every simulation." % (n, "s" if len(res) != 1 else "", res[0]["date"], "" if len(res) != 1 else "s")))
-
-    # 6. widest gap (optional filler)
-    gaps = sorted(((i, D["first"].get(i, 0) - M["blend"][i]) for i in ids), key=lambda x: -abs(x[1]))
-    if gaps:
-        gi, gv = gaps[0]
-        S.append((3, pick([
-            "The widest disagreement is on %s, where the model sits %s %s the market." % (full(gi), pts(gv), "above" if gv > 0 else "below"),
-            "%s remains the biggest gap between machine and market, %s %s." % (full(gi), pts(gv), "in the model's favor" if gv > 0 else "in the market's favor"),
-        ], key, "gap")))
-
-    # 7. run market on the mover (optional filler)
-    if mover and isinstance((M.get("run") or {}).get(mover[0]), (int, float)):
-        S.append((3, "Kalshi's run market puts %s's chance of entering the race at %d percent." % (last(mover[0]), round(M["run"][mover[0]]))))
+    if res and not structural:
+        n = WORDS[len(res)].lower() if len(res) < len(WORDS) else str(len(res))
+        S.append((3, "The %s midterm results from %s now count as settled in every run." % (n, ed(res[0]["date"], year=False))))
 
     # 8. close on the next thing to watch
-    if open_calls:
-        r = open_calls[0]
-        close = "The next open call on the ledger comes due %s." % r["deadline"]
-    elif mover:
+    if mover:
         close = pick([
-            "Tomorrow's run will show whether the %s move holds." % last(mover[0]),
-            "The books reopen overnight, and the %s price is the one to check first." % last(mover[0]),
+            "Tonight's prices will show whether the %s move holds." % last(mover[0]),
+            "Watch the %s price first when the books update tonight." % last(mover[0]),
         ], key, "close")
     else:
-        close = "The next reading lands after tomorrow morning's run."
+        open_calls = sorted([r for r in real if r.get("status") == "open"], key=lambda r: r["deadline"])
+        close = ("The next call on our ledger comes due %s." % ed(open_calls[0]["deadline"])) if open_calls else "The next update lands tomorrow morning."
 
-    # fit to 100 to 140 words: keep by priority, keep source order, close always last
+    link = None
+    tail = ""
+    if structural:
+        c = (changes or {}).get(today) or {}
+        tail = " We also changed how the model works today, which accounts for much of its movement."
+        link = {"text": c.get("link") or "What changed", "href": c.get("href") or ("changelog.html#" + today)}
+
     def assemble(keep):
-        return " ".join(s for p, s in S if p <= keep) + " " + close
+        return " ".join(s for p, s in S if p <= keep) + " " + close + tail
 
     for keep in (3, 2, 1, 0):
         text = assemble(keep)
         if len(text.split()) <= MAX_WORDS:
             break
-    if len(text.split()) < MIN_WORDS:
-        text = assemble(3)
-    return text.strip()
+    return text.strip(), link
 
 
 def load(path):
@@ -229,13 +259,21 @@ def calls():
     return read_csv(os.path.join(ROOT, "calls.csv"))
 
 
-def write(today, text):
+def changes():
+    path = os.path.join(ROOT, "notes", "changes.json")
+    return json.load(open(path)) if os.path.exists(path) else {}
+
+
+def write(today, text, link=None):
     out = os.path.join(ROOT, "notes")
     os.makedirs(out, exist_ok=True)
     with open(os.path.join(out, today + ".md"), "w") as f:
-        f.write("Desk note, " + today + "\n\n" + text + "\n")
+        f.write("Desk note, " + ed(today) + "\n\n" + text + "\n")
     with open(os.path.join(out, "latest.json"), "w") as f:
-        json.dump({"date": today, "text": text, "words": len(text.split())}, f, indent=1)
+        out_obj = {"date": today, "text": text, "words": len(text.split())}
+        if link:
+            out_obj["link"] = link
+        json.dump(out_obj, f, indent=1)
         f.write("\n")
     if os.environ.get("X_API_KEY"):
         # draft only: a file for Kevin to read. No request is ever made to X from here.
@@ -249,10 +287,16 @@ def main():
     args = sys.argv[1:]
     H = history()
     if args and args[0] == "--demo":
-        # rebuild notes for the last N history dates from history.csv alone (model shares and blend)
-        n = int(args[1]) if len(args) > 1 else 3
+        # rebuild notes from history.csv alone (model shares, blend, books, run odds). Pass dates, or a count
+        # for the last N days. The convention rate and settled races come from today's default.json.
         D0 = load("default.json")
-        for idx in range(len(H) - n, len(H)):
+        dates = [a for a in args[1:] if "-" in a]
+        if dates:
+            idxs = [i for i, r in enumerate(H) if r["date"] in dates]
+        else:
+            n = int(args[1]) if len(args) > 1 else 3
+            idxs = list(range(len(H) - n, len(H)))
+        for idx in idxs:
             row, prev = H[idx], H[idx - 1]
             M = {"blend": {k[2:]: num(v) for k, v in row.items() if k.startswith("k_") and num(v) is not None},
                  "kalshi": {k[4:]: num(v) for k, v in row.items() if k.startswith("kal_") and num(v) is not None},
@@ -261,8 +305,8 @@ def main():
             first = {k[2:]: num(v) for k, v in row.items() if k.startswith("m_") and num(v) is not None}
             fr = max((i for i in first if i != "other"), key=lambda i: first[i])
             D = {"first": first, "frontrunner": {"id": fr, "share": first[fr]}, "contested": D0.get("contested"), "resolved": D0.get("resolved")}
-            t = build(row["date"], M, D, prev, calls())
-            print("== %s (%d words)\n%s\n" % (row["date"], len(t.split()), t))
+            t, link = build(row["date"], M, D, prev, calls(), row.get("note") or "", changes())
+            print("== %s (%d words)\n%s%s\n" % (ed(row["date"]), len(t.split()), t, (" [" + link["text"] + "](" + link["href"] + ")") if link else ""))
         return
     M = load("markets.json")
     D = load("default.json")
@@ -270,8 +314,8 @@ def main():
     prior = [r for r in H if r["date"] < today]
     prev = prior[-1] if prior else None
     todays = [r for r in H if r["date"] == today]
-    text = build(today, M, D, prev, calls(), (todays[0].get("note") or "") if todays else "")
-    write(today, text)
+    text, link = build(today, M, D, prev, calls(), (todays[0].get("note") or "") if todays else "", changes())
+    write(today, text, link)
     print("desk_note: %s, %d words" % (today, len(text.split())))
     print(text)
 

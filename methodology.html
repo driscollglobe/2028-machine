@@ -17,6 +17,7 @@ h1{font-family:Fraunces,serif;font-size:32px;margin:0 0 4px;}
 h2{font-family:Fraunces,serif;font-size:21px;margin:34px 0 6px;}
 .sub{font-family:'Spline Sans Mono',monospace;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:22px;}
 .draft{border:1px dashed var(--accent);color:var(--accent);padding:8px 12px;font-size:13px;margin-bottom:22px;}
+.note{font-size:14px;color:var(--muted);margin:-8px 0 22px;}
 table{border-collapse:collapse;width:100%;font-size:13px;margin:10px 0 6px;}
 th,td{border-bottom:1px solid var(--rule);padding:6px 8px;text-align:right;font-family:'Spline Sans Mono',monospace;}
 th:first-child,td:first-child{text-align:left;font-family:Inter,sans-serif;}
@@ -33,8 +34,9 @@ a{color:var(--accent);}
 <div class="wrap">
 <div class="nav"><a href="./">The Machine</a><a href="gap.html">The gap</a><a href="track.html">Track record</a></div>
 <h1>How the machine works</h1>
-<div class="sub">One primary, start to finish · seed 5 · books of 2026-11-08</div>
+<div class="sub">One primary, start to finish · seed 5 · market prices of Nov. 8, 2026</div>
 <div class="draft">Draft. Kevin rewrites this prose before it runs. The numbers are final for this seed.</div>
+<p class="note">This run uses the rules in place on Nov. 8, 2026. Since Nov. 9 the field narrows faster: only the top two by delegates stay in after Super Tuesday, a candidate drops out after two contests under 11 percent of the vote, and a crowded lane costs its candidates less (lane crowding 0.05, down from 0.15). The <a href="changelog.html#2026-11-09-publication-pass">changelog</a> has the reason.</p>
 
 <p>The machine plays out the 2028 Democratic primary 20,000 times every morning. Each run is one possible primary. This page follows a single run from the first random draw to the convention. Its seed is 5, which fixes every random number in it. Anyone can rerun it and get the same primary with <code>node scripts/methodology_run.js 5</code>.</p>
 
@@ -50,7 +52,7 @@ a{color:var(--accent);}
 </dl>
 
 <h2>Step 1. The settings</h2>
-<p>This run uses the default settings on 2026-11-08. The anchor is 50. Lane crowding is 0.15. Automatic delegates lean 60 percent toward Party Anchor and Suburb candidates. Trump approval is 38, the Silver Bulletin average that day. Four midterm results are fixed: Ossoff won Georgia, Talarico won Texas, El-Sayed won Michigan, and the Maine Democrat beat Collins.</p>
+<p>This run uses the default settings on Nov. 8, 2026. The anchor is 50. Lane crowding is 0.15. Automatic delegates lean 60 percent toward Party Anchor and Suburb candidates. Trump approval is 38, the Silver Bulletin average that day. Four midterm results are fixed: Ossoff won Georgia, Talarico won Texas, El-Sayed won Michigan, and the Maine Democrat beat Collins.</p>
 
 <h2>Step 2. Base strength</h2>
 <p>The operator strengths add up to 177. The fitted market strengths add up to 100. Each is turned into a share of its own total, the two shares are averaged, and the result is scaled back to 177. Newsom's operator strength is 25 and his market strength is 7.52, so his base is 19.16. Ossoff is 12 and 5.71, so his base is 11.05. El-Sayed is 8 and 3.30, so 6.92. Wes Moore is 4 and 3.45, so 5.05.</p>
