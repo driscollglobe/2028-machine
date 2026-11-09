@@ -50,7 +50,7 @@ jobs:
       - name: Fit market strengths for the anchor slider
         run: node scripts/calibrate_anchor.js
 
-      - name: Run the 20,000 simulation baseline
+      - name: Run the 50,000 simulation baseline
         env:
           NOTE: ${{ github.event.inputs.note }}
         run: node scripts/baseline.js

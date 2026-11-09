@@ -14,7 +14,7 @@ const HISTORY = path.join(ROOT, 'history.csv');
 const DEFAULT = path.join(ROOT, 'default.json');
 const WIRE = path.join(ROOT, 'wire.json');
 const wire = require('./wire');
-const RUNS = 20000;
+const RUNS = +(process.env.RUNS || 50000); // 50,000 since 2026-11-09: about 4 seconds locally, and about 37 percent less seed noise than 20,000
 
 const sim = core.load();
 const CANDS = sim.CANDS;
@@ -57,6 +57,8 @@ const def = {
   unresolved: res.unresolved,
   ballots: res.ballots,
   frontrunner: { id: order[0], share: share[order[0]] },
+  // first and second within 2 points: the page, card, wire and desk note name both (index.html twoWay)
+  two_way: sim.twoWay(order.map(id => ({ id, first: share[id] }))),
   first: share,
   range: res.range || {},
   dist: res.dist || {},

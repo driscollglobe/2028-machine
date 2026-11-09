@@ -325,7 +325,7 @@ body.show-adv h2.s.adv{display:block;}
 <div class="hero">
  <div class="hero-num" id="heroShare">&nbsp;</div>
  <div class="hero-range" id="heroRange"></div>
- <div class="hero-date" id="heroDate">Share of 20,000 simulated primaries won</div>
+ <div class="hero-date" id="heroDate">Share of 50,000 simulated primaries won</div>
  <div class="hero-note" id="heroNote"></div>
 </div>
 
@@ -679,6 +679,12 @@ function daysToSC(){const t=CLOCK.today||new Date().toISOString().slice(0,10);re
 function clockFrac(days){const D0=isoDay(CLOCK.sc)-isoDay(CLOCK.start);return Math.max(0,Math.min(1,(days-1)/(D0-1)));}
 function clockEvents(days){const f=clockFrac(days);return CLOCK.eventsEnd+(1-CLOCK.eventsEnd)*f;}
 function clockSpread(days){const f=clockFrac(days);return CLOCK.spreadEnd+(SIMRULES.priorSpread-CLOCK.spreadEnd)*f;}
+// ==TWO-WAY RACE== When first and second place are within TWO_WAY_PTS of each other, that gap is inside seed
+// noise, so nobody is named the leader: the hero, the default share card, the wire's model line and the desk note
+// all name both. twoWay takes rows sorted by share, each {id, first}, and returns [first id, second id] or null.
+// The nightly job writes the answer to default.json (two_way) and every reader of default.json uses that.
+const TWO_WAY_PTS=2;
+function twoWay(rows){const r=(rows||[]).filter(x=>x.id!=='other');return r.length>1&&r[0].first-r[1].first<TWO_WAY_PTS?[r[0].id,r[1].id]:null;}
 // ==DRAWN PRIORS== 2026-11-09 (drawn-priors). Our operator strengths and pool shares are estimates, so every run
 // draws them. Each candidate's strength is multiplied by a lognormal draw with median 1 and one sigma of
 // spread (0.30 means x1.30 or /1.30). Each pool's share of the electorate takes its own draw of the same size,
@@ -1175,7 +1181,7 @@ function run10k(){
   const rows=CANDS.filter(c=>c.id!=='other').map(c=>({id:c.id,name:c.name,first:(maj[c.id]+lead[c.id])/TOTAL*100,majp:maj[c.id]/TOTAL*100,leadp:lead[c.id]/TOTAL*100,range:dist?[dist[c.id].p10,dist[c.id].p90]:null})).sort((a,b)=>b.first-a.first);
   const bpct={};Object.keys(ballots).forEach(k=>bpct[k]=Math.round(ballots[k]/TOTAL*1000)/10);
   document.getElementById('aggBody').innerHTML=renderAggregate(rows,TOTAL,Math.round(contested/TOTAL*100),bpct);
-  setHero(rows[0].name,Math.round(rows[0].first),'Wins the most of '+TOTAL.toLocaleString()+' simulated primaries with your settings',rows[0].range);
+  heroFromRows(rows,(twoWay(rows)?'Within two points of each other in ':'Wins the most of ')+TOTAL.toLocaleString()+' simulated primaries with your settings');
  }
  setTimeout(chunk,20);
 }
@@ -1228,7 +1234,8 @@ function paintDefault(){
   DEF.pending=false;
   if(!d||!d.first||!d.order){fallbackDefault();return;}
   DEF.data=d;DEF.painted=true;
-  setHero(nm(d.frontrunner.id),Math.round(d.frontrunner.share),'Wins the most of '+d.runs.toLocaleString()+' simulated primaries, run on '+edDate(d.date,false)+' market prices',d.range&&d.range[d.frontrunner.id]);
+  {const hrows=d.order.filter(id=>id!=='other').map(id=>({id,first:d.first[id],range:d.range&&d.range[id]}));const two=d.two_way===undefined?twoWay(hrows):d.two_way;
+   heroFromRows(hrows,(two?'Within two points of each other in ':'Wins the most of ')+d.runs.toLocaleString()+' simulated primaries, run on '+edDate(d.date,false)+' market prices',two);}
   setModelRank(d.first);
   const agg=document.getElementById('aggregate');agg.style.display='block';agg.classList.remove('open');
   agg.innerHTML='<div class="shead"><span>Who finishes first · '+d.runs.toLocaleString()+' simulated primaries</span><span class="note">Run overnight '+edDate(d.date,false)+' · change any control to run your own</span></div><div id="aggBody"></div>';
@@ -1359,10 +1366,20 @@ function updateFrontrunner(){
  rng=savedRng;
  let bk=null,bv=-1;for(const k in w){if(w[k]>bv){bv=w[k];bk=k;}}
  const fs={};CANDS.forEach(c=>fs[c.id]=Math.round((w[c.id]||0)/tot*1000)/10);setModelRank(fs);
- if(bk)setHero(nm(bk),Math.round(bv/tot*100),'Wins the most of '+N.toLocaleString()+' simulated primaries with your settings');
+ if(bk){const hrows=Object.keys(w).map(id=>({id,first:w[id]/tot*100})).filter(x=>x.id!=='other').sort((a,b)=>b.first-a.first);if(hrows.length)heroFromRows(hrows,(twoWay(hrows)?'Within two points of each other in ':'Wins the most of ')+N.toLocaleString()+' simulated primaries with your settings');}
 }
 function rangeTxt(r){return r&&r.length===2?Math.round(r[0])+' to '+Math.round(r[1]):'';}
 function setHero(name,pct,label,range){document.getElementById('heroShare').textContent=name+' '+pct+'%';const hr=document.getElementById('heroRange');if(hr)hr.textContent=range?'likely '+rangeTxt(range):'';if(label)document.getElementById('heroDate').textContent=label;}
+// the hero from a sorted result list: one name, or both when twoWay says the top two are inside the noise
+function heroFromRows(rows,label,two){
+ two=two===undefined?twoWay(rows):two;
+ if(!two){const r=rows[0];setHero(nm(r.id),Math.round(r.first),label,r.range);return;}
+ const a=rows.find(x=>x.id===two[0]),b=rows.find(x=>x.id===two[1]);
+ document.getElementById('heroShare').textContent=lastName(a.id)+' and '+lastName(b.id);
+ const hr=document.getElementById('heroRange');
+ if(hr)hr.textContent='A two-way race: '+lastName(a.id)+' '+Math.round(a.first)+'%'+(a.range?', likely '+rangeTxt(a.range):'')+'; '+lastName(b.id)+' '+Math.round(b.first)+'%'+(b.range?', likely '+rangeTxt(b.range):'');
+ if(label)document.getElementById('heroDate').textContent=label;
+}
 function lastName(id){const c=CANDS.find(x=>x.id===id);return c&&c.short?c.short:nm(id).split(' ').slice(-1)[0];}
 function resetField(){CANDS.forEach(c=>{const e=document.getElementById('tg_'+c.id);if(e)e.value='sample';});updateFrontrunner();}
 const SITE='https://driscollglobe.github.io/2028-machine/';

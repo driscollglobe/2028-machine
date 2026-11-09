@@ -11,7 +11,7 @@ const core = require('../scripts/simcore');
 const P = require('./priors');
 
 const HERE = __dirname;
-const RUNS = +(process.env.RUNS || 20000);
+const RUNS = +(process.env.RUNS || 50000);
 const PAIRS = +(process.env.PAIRS || 5000);
 const SEED = core.seedFrom('2019-12-01');
 const PROV = 'PROVISIONAL UNTIL KEVIN REVIEWS THE BLIND PRIORS';
@@ -30,10 +30,17 @@ P.CANDS.forEach(c => { market[c.id] = 0; });
 pi.forEach(r => { if (r.id) market[r.id] = parseFloat(r.last_trade) / piTotal * 100; });
 market.other = 100 - P.CANDS.filter(c => c.id !== 'other').reduce((t, c) => t + market[c.id], 0);
 
-// polls: equal-weight mean of national polls ending 2019-11-01 to 2019-12-01
-const polls = csv('polls_2019-11.csv');
+// polls: the site's weighted average (pollavg.js, pollsters.csv) as of 2019-12-01. Display only, as in 2028.
+const PA = require('../pollavg.js');
+const polls = csv('polls_2019-11.csv').map(r => Object.assign({ geography: 'national' }, r));
+const pw = PA.weighted(polls, PA.parsePollsters(fs.readFileSync(path.join(HERE, '..', 'pollsters.csv'), 'utf8')), '2019-12-01', P.WATCH);
 const poll = {};
-P.WATCH.forEach(id => { const v = polls.map(r => parseFloat(r[id])).filter(isFinite); poll[id] = v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; });
+P.WATCH.forEach(id => { poll[id] = typeof pw.avg[id] === 'number' ? pw.avg[id] : null; });
+
+// the long-shot correction the 2028 model applies to each book before it anchors (index.html longshot)
+const named = {};
+P.CANDS.forEach(c => { if (c.id !== 'other') named[c.id] = market[c.id]; });
+const corrected = core.load(path.join(HERE, '..', 'index.html')).longshot(named);
 
 const DATA = { CANDS: P.CANDS.map(c => Object.assign({ mkt: market[c.id] }, c)), POOLS: P.POOLS, POOL2: P.POOL2, TM: P.TM, CALS: P.CALS, DELS: P.DELS, WATCH: P.WATCH };
 const INJECT = `
@@ -43,6 +50,10 @@ CANDS.length = 0; __D.CANDS.forEach(c => CANDS.push(c));
 Object.assign(POOLS, __D.POOLS); Object.keys(POOLS).forEach(p => POOLS[p].forEach(id => POOLOF[id] = p));
 Object.assign(POOL2, __D.POOL2); Object.assign(TM, __D.TM); Object.assign(CALS, __D.CALS); Object.assign(DELS, __D.DELS);
 // RESOLVED stays: its levers only touch 2028 ids (and Maine only the lesson draw, which is fixed here).
+// The clock: 2019-12-01 sits 90 days before South Carolina on 2020-02-29. The window keeps the 2028 span
+// (439 days from the start of the narrowing to South Carolina), so 90 days out narrows exactly as it will in 2028.
+CLOCK.sc = '2020-02-29'; CLOCK.today = '2019-12-01';
+CLOCK.start = new Date(Date.parse('2020-02-29T00:00:00Z') - 439 * 86400000).toISOString().slice(0, 10);
 EVENTS.length = 0;
 HM_WATCH.length = 0; __D.WATCH.forEach(id => HM_WATCH.push(id));
 HM_LEVERS.length = 0;
@@ -70,7 +81,7 @@ const ids = P.CANDS.map(c => c.id);
 
 // fit market strengths so anchor 100 reproduces the PredictIt book, as the nightly job does for 2028
 const fitSim = fresh();
-const fit = core.fitAnchor(fitSim, market, { seed: core.seedFrom('2019-12-01:anchor') });
+const fit = core.fitAnchor(fitSim, corrected, { seed: core.seedFrom('2019-12-01:anchor') });
 
 function run(anchor) {
   const sim = fresh();
@@ -79,6 +90,8 @@ function run(anchor) {
   return { sim, res: core.runMany(sim, sim.cfg(), RUNS, SEED) };
 }
 const def = run(50), op = run(0), mk = run(100);
+const MODEL_DATE = '2026-11-09';
+const C0 = Object.assign(def.sim.cfg(), { stateCap: def.sim.SIMRULES.stateCap, leak: def.sim.SIMRULES.transferLeak });
 const hm = def.sim.computeHeatmap(def.sim.cfg(), PAIRS).map(r => ({ key: r.key, avgSwing: r.avgSwing, mover: r.mover, mv: r.mv })).sort((a, b) => b.avgSwing - a.avgSwing);
 
 const order = ids.filter(id => id !== 'other').sort((a, b) => def.res.first[b] - def.res.first[a]);
@@ -89,9 +102,9 @@ fs.writeFileSync(path.join(HERE, 'results.csv'), ['candidate,predictit,poll_avg,
 
 const b = def.res.ballots, bl = k => (b[k] || 0).toFixed(1);
 let md = `# The 2028 Machine, run on 2020 as of 2019-12-01\n\n**${PROV}.**\n\n`;
-md += `${RUNS.toLocaleString('en-US')} simulated primaries using the 2028 Machine's own code. Market anchor: PredictIt on 2019-11-25, the last archived snapshot before 2019-12-01, normalized to 100. Polls: ${polls.length} national polls ending 2019-11-01 to 2019-12-01, equal weight. Priors written blind from reporting before 2019-12-01 (SOURCES.md). Anchor 50, lane crowding 0.15, conventions resolved. The fitted market strengths reproduce PredictIt within ${fit.distance} points.\n\n`;
-md += `## Default top five\n\n| | Candidate | PredictIt | Poll avg | Machine | Operator priors only | Market fit only |\n|---|---|---|---|---|---|---|\n`;
-rows.forEach((r, i) => { md += `| ${i + 1} | ${r.name} | ${r.predictit.toFixed(1)} | ${r.poll === '' ? '' : r.poll.toFixed(1)} | ${r.model.toFixed(1)} | ${r.operator_only.toFixed(1)} | ${r.market_only.toFixed(1)} |\n`; });
+md += `${RUNS.toLocaleString('en-US')} simulated primaries using the 2028 Machine's own code. Market anchor: PredictIt on 2019-11-25, the last archived snapshot before 2019-12-01, normalized to 100. Polls: ${pw.used} national polls ending 2019-11-01 to 2019-12-01, weighted the way the site weights them today. Priors written blind from reporting before 2019-12-01 (SOURCES.md). Run on the model as of ${MODEL_DATE}: the PredictIt book gets the long-shot correction before it anchors the model, priors are drawn per run, no single contest multiplies a candidate by more than ${C0.stateCap}, and the clock reads ${C0.days} days to South Carolina (event rate ${(C0.pEv * 100).toFixed(1)}, prior spread ${(C0.spread * 100).toFixed(1)} percent). Anchor 50, lane crowding ${(C0.crowd).toFixed(2)}, dropout transfer ${(C0.pDrop * 100).toFixed(0)} percent with ${(C0.leak * 100).toFixed(0)} percent leaking to the field, conventions resolved. The fitted market strengths reproduce the corrected PredictIt book within ${fit.distance} points.\n\n`;
+md += `## Default top five\n\n| | Candidate | PredictIt | Corrected | Poll avg | Machine | Likely | Operator priors only | Market fit only |\n|---|---|---|---|---|---|---|---|---|\n`;
+rows.forEach((r, i) => { md += `| ${i + 1} | ${r.name} | ${r.predictit.toFixed(1)} | ${r1(corrected[r.id] || 0).toFixed(1)} | ${r.poll === '' ? '' : r.poll.toFixed(1)} | ${r.model.toFixed(1)} | ${def.res.range ? Math.round(def.res.range[r.id][0]) + ' to ' + Math.round(def.res.range[r.id][1]) : ''} | ${r.operator_only.toFixed(1)} | ${r.market_only.toFixed(1)} |\n`; });
 md += `\nWhat happened: Joe Biden won the nomination. He lost Iowa, New Hampshire and Nevada, won South Carolina on 2020-02-29, and took Super Tuesday after Buttigieg and Klobuchar dropped out and endorsed him.\n\n`;
 md += `## Turning point rankings\n\nAverage swing in first place share across the field when each lever flips, ${PAIRS.toLocaleString('en-US')} matched seed pairs per lever.\n\n| | Turning point | Average swing | Biggest mover |\n|---|---|---|---|\n`;
 hm.forEach((h, i) => { md += `| ${i + 1} | ${h.key} | ${h.avgSwing.toFixed(2)} | ${nm(h.mover)} ${h.mv > 0 ? '+' : ''}${h.mv.toFixed(1)} |\n`; });
