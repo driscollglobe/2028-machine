@@ -35,6 +35,10 @@ a{color:var(--accent);}
 <h1 style="font-size:20px">Latest readings</h1>
 <table id="tbl"></table>
 <p class="note">Solid lines are what the 2028 Machine believes at its default settings, re-run every morning on that day's market anchors. Dashed lines are the blended nomination price on Kalshi and Polymarket. The gap between a solid line and its dashed twin is the model's standing disagreement with the market, logged daily so that when the primary happens there is a public record of what this machine believed and when. Back to <a href="index.html">the Machine</a>.</p>
+<h1 style="font-size:20px" id="leadlag">Who moved first</h1>
+<div class="sub">Model versus market, same-direction moves of half a point or more, lags of one to three days</div>
+<table id="llTbl"></table>
+<p class="note" id="llNote">For each candidate, a model move counts as first when the market makes a same-direction move of at least 0.5 points one to three days later. It counts as after when the market made that move one to three days earlier. Same-day matches are counted separately, since the model reruns on that morning's prices and usually moves with them. Day pairs that span a gap in history.csv, and days that carry a structural note (a model rebuild), are left out. A move with matching market moves both before and after is split half and half. Market never followed means the market made no matching move within three days either way. Losing days stay in the table.</p>
 <h1 style="font-size:20px" id="calls">Calls</h1>
 <div class="sub" id="callRec">loading calls.csv</div>
 <table id="callTbl"></table>
@@ -104,6 +108,39 @@ fetch('calls.csv?v='+Date.now()).then(r=>r.ok?r.text():null).then(t=>{
  const res=r=>r.status==='open'?Math.max(0,callDaysLeft(r.deadline))+' days left':(r.status==='test'?'test, not counted':(r.status==='true'?'Right':'Wrong')+' on '+r.resolved_date+(r.resolved_value!==''?' at '+r.resolved_value:''));
  document.getElementById('callTbl').innerHTML='<tr><th>Call</th><th>Made</th><th>Metric</th><th>Deadline</th><th>Result</th></tr>'+
   all.map(r=>'<tr><td>'+callEsc(r.text)+'</td><td>'+r.date_made+'</td><td>'+callEsc(r.metric+' '+r.operator+' '+r.threshold)+'</td><td>'+r.deadline+'</td><td>'+res(r)+'</td></tr>').join('');
+});
+// ==LEAD LAG== built from history.csv alone
+function leadLag(text){
+ const lines=text.replace(/\r/g,'').trim().split('\n');const head=lines[0].split(',');const col={};head.forEach((h,i)=>col[h]=i);
+ const rows=lines.slice(1).map(l=>l.split(','));
+ const ids=head.filter(h=>h.startsWith('m_')).map(h=>h.slice(2)).filter(id=>id!=='other'&&('k_'+id) in col);
+ const T=0.5,LAGS=[1,2,3];
+ const day=d=>Math.round(new Date(d+'T12:00:00Z').getTime()/86400000);
+ const note=r=>col.note!==undefined&&(r[col.note]||'').trim()!=='';
+ // daily moves keyed by day number; only consecutive days, never across a structural note
+ const mv={};ids.forEach(id=>mv[id]={m:{},k:{}});
+ for(let i=1;i<rows.length;i++){
+  const a=rows[i-1],b=rows[i];if(day(b[0])-day(a[0])!==1||note(b))continue;
+  ids.forEach(id=>{const m0=parseFloat(a[col['m_'+id]]),m1=parseFloat(b[col['m_'+id]]),k0=parseFloat(a[col['k_'+id]]),k1=parseFloat(b[col['k_'+id]]);
+   if(isFinite(m0)&&isFinite(m1))mv[id].m[day(b[0])]=m1-m0;if(isFinite(k0)&&isFinite(k1))mv[id].k[day(b[0])]=k1-k0;});
+ }
+ const big=x=>typeof x==='number'&&Math.abs(x)>=T, same=(x,y)=>Math.sign(x)===Math.sign(y);
+ return ids.map(id=>{
+  let first=0,after=0,same0=0,alone=0,n=0;
+  Object.keys(mv[id].m).forEach(ds=>{const d=+ds,x=mv[id].m[d];if(!big(x))return;n++;
+   const k=L=>mv[id].k[d+L];
+   if(big(k(0))&&same(x,k(0))){same0++;return;}
+   const lead=LAGS.some(L=>big(k(L))&&same(x,k(L))), lag=LAGS.some(L=>big(k(-L))&&same(x,k(-L)));
+   if(lead&&!lag)first++;else if(lag&&!lead)after++;else if(lead&&lag){first+=0.5;after+=0.5;}else alone++;});
+  return {id,n,first,after,same0,alone};
+ }).filter(r=>r.n>0).sort((a,b)=>b.n-a.n);
+}
+fetch('history.csv?v='+Date.now()).then(r=>r.text()).then(t=>{
+ const res=leadLag(t),fmt=x=>Number.isInteger(x)?x:x.toFixed(1);
+ const tot=res.reduce((a,r)=>({first:a.first+r.first,after:a.after+r.after,same0:a.same0+r.same0,alone:a.alone+r.alone,n:a.n+r.n}),{first:0,after:0,same0:0,alone:0,n:0});
+ document.getElementById('llTbl').innerHTML='<tr><th>Candidate</th><th>Model moves</th><th>Model first</th><th>Model after</th><th>Same day</th><th>Market never followed</th></tr>'+
+  res.map(r=>'<tr><td>'+label(r.id)+'</td><td>'+r.n+'</td><td>'+fmt(r.first)+'</td><td>'+fmt(r.after)+'</td><td>'+r.same0+'</td><td>'+r.alone+'</td></tr>').join('')+
+  '<tr><td><b>All</b></td><td><b>'+tot.n+'</b></td><td><b>'+fmt(tot.first)+'</b></td><td><b>'+fmt(tot.after)+'</b></td><td><b>'+tot.same0+'</b></td><td><b>'+tot.alone+'</b></td></tr>';
 });
 </script>
 </body>
