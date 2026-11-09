@@ -45,7 +45,7 @@ AOC runs: AOC +42.5. NH jumps the line: Ossoff -9.1. Iowa: Ossoff -13.7. AI: AOC
 ## Waiting on Kevin
 * Review and merge #22, then #23 to #28 in order.
 * On the day it lands, run the nightly workflow by hand with a `note` (no commas), so history.csv marks the structural change. The final regeneration leaves history.csv to that run.
-* "Transfer share" in the knob list was read as the secondary pool transfer weight (0.5, now `SIMRULES.pool2Weight`), since dropout transfer (35) and field leak (30) are listed separately. Say if you meant something else.
+* Settled 2026-11-09: "transfer share" in the knob list is the secondary pool transfer weight (0.5, now `SIMRULES.pool2Weight`). Kevin confirmed.
 
 ## Known loose ends
 * Three levers still move one candidate more than 25 points: AOC runs (AOC 42.5), Affordability (AOC 30.2), Newsom scrutiny (Newsom 25.6). Kevin scoped the 25-point rule to the calendar levers.
