@@ -1,30 +1,57 @@
 # Status
 
-Updated 2026-11-09, evening. The post-midterm stack (PRs #4 to #19) is merged into main. The publication pass is open as one PR on `publication-pass`, based on main. Nothing else is in flight.
+Updated 2026-11-09, night. Phase 2 (make the model defensible to a Silver-style reader) is six stacked PRs. Nothing is merged. Each PR's base is the one before it, and the first sits on #22 (footer-crowding-note), which is also still open.
 
-## Default run on the 2026-11-09 books (20,000 runs, anchor 50, publication-pass branch)
-| | First place |
-|---|---|
-| Ossoff | 35.0 |
-| Newsom | 16.4 |
-| AOC | 15.5 |
-| Harris | 13.7 |
-| Khanna | 4.7 |
+## Stack order
+| # | PR | Branch | Base |
+|---|---|---|---|
+| 1 | #23 Iowa swing | `iowa-swing` | `footer-crowding-note` (#22) |
+| 2 | #24 Drawn priors | `drawn-priors` | `iowa-swing` |
+| 3 | #25 Long-shot correction | `longshot` | `drawn-priors` |
+| 4 | #26 Weighted polls | `weighted-polls` | `longshot` |
+| 5 | #27 The clock | `clock` | `weighted-polls` |
+| 6 | #28 Freeze the knobs, plus the final regeneration | `freeze-knobs` | `clock` |
 
-11.8 percent of runs reach the convention without a pledged majority (37.7 before). Ballot breakdown: 88.2 first ballot, 6.3 second, 3.1 third, 1.5 fourth, 1.0 plurality.
+Merge in that order: #22 first, then #23 to #28. The final regeneration (default.json, wire.json, heatmap, rankings, cards, share pages, desk note, methodology page, notes/changes.json) is the last commit on `freeze-knobs`.
 
-## What the publication pass changed
-* Calls C1 to C3 replaced before locking: AOC above Ossoff in the blend, Ossoff run odds 85, Harris poll gap under 10, all by 2027-06-30. New metric forms: `a-b` differences and `gap.<id>` (default.json `gap`).
-* Lane crowding 0.15 to 0.05. Khanna falls to 4.7 with his base back at 5 (it was briefly 0.5 earlier on 2026-11-09).
-* Field rules (`SIMRULES` in index.html): top two after Super Tuesday (was three), dropout line 0.11 (was 0.07; 0.09 when coordination fails, was 0.05). Coordination and transfer defaults unchanged. methodology_run.js pins the old rules and crowding for the seed 5 example.
-* Bracket box: "No accounts. Saving adds your numbers, anonymously, to the Globe readers column." The footer line about reader brackets stays, since the worker is live.
-* Reader-facing dates are editorial. ISO stays in data, code, URLs and changelog.html.
-* Byline, plain captions, dateline review stamps, a wire with no parameter names, a desk note that leads with who moved.
-* Model changes reach readers through notes/changes.json (one plain sentence each) and changelog.html. The history.csv note column stays internal shorthand.
+## Default top five, 2026-11-09 books, 20,000 runs
+| | Before the stack (main plus #22) | After the stack |
+|---|---|---|
+| 1 | Ossoff 29.3 | AOC 24.1, likely 14 to 35 |
+| 2 | AOC 20.4 | Ossoff 23.7, likely 13 to 37 |
+| 3 | Newsom 19.0 | Newsom 18.6, likely 8 to 32 |
+| 4 | Harris 11.4 | Khanna 7.8, likely 6 to 10 |
+| 5 | Khanna 5.7 | Harris 5.7, likely 3 to 10 |
+
+There were no ranges before the stack. "Likely" is the 10th to 90th percentile across 200 prior draws.
+
+Convention rate (runs that reach the convention without a pledged majority): 11.3 before, 11.2 after. Ballots after: 88.8 first, 5.4 second, 2.4 third, 0.9 fourth, 2.5 plurality.
+
+Step by step: #23 AOC 25.0, Ossoff 22.7, Newsom 18.3, Khanna 9.6, Harris 5.0 (10.6). #24 Ossoff 24.1, AOC 23.4, Newsom 17.5, Khanna 9.2, Harris 5.3 (10.1). #25 AOC 24.1, Ossoff 23.7, Newsom 18.6, Khanna 7.8, Harris 5.7 (11.2). #26 to #28 leave it unchanged.
+
+## Iowa swing
+| | Before | After #23 | After the stack |
+|---|---|---|---|
+| Heatmap, Buttigieg, Iowa crashes the window | +71.1 | +11.0 | +12.0 |
+| Heatmap, biggest mover on the Iowa row | Buttigieg +71.1 | Ossoff -13.1 | Ossoff -13.7 |
+| Heatmap, Buttigieg, NH jumps the line | +55.7 | +7.6 | +7.7 |
+| iowa_trace.js swing (4,000 matched seeds) | 71.2 | 22.2 | 11.0 |
+
+Momentum was not the driver (with it off the old swing was 72.5). The calendar bonus applied all season and the 1.5 Iowa and NH fits were. Kevin chose a 1.2 cap on any one contest's multiplier, with the calendar bonus in the early window only.
+
+## Biggest mover per heatmap row, after the stack
+AOC runs: AOC +42.5. NH jumps the line: Ossoff -9.1. Iowa: Ossoff -13.7. AI: AOC -15.1. Affordability: AOC +30.2. Newsom scrutiny: Newsom +25.6. Polls right on Harris: Harris +16.5. Coordination fails: AOC +1.9. Dropout transfer: Ossoff +19.5. Trump approval high: AOC -13.1.
 
 ## Waiting on Kevin
-Merge PR #20 before midnight ET on 2026-11-09. After that, main's old calls C1 to C3 lock and the calls lock check fails on the push to main.
+* Review and merge #22, then #23 to #28 in order.
+* On the day it lands, run the nightly workflow by hand with a `note` (no commas), so history.csv marks the structural change. The final regeneration leaves history.csv to that run.
+* "Transfer share" in the knob list was read as the secondary pool transfer weight (0.5, now `SIMRULES.pool2Weight`), since dropout transfer (35) and field leak (30) are listed separately. Say if you meant something else.
 
 ## Known loose ends
+* Three levers still move one candidate more than 25 points: AOC runs (AOC 42.5), Affordability (AOC 30.2), Newsom scrutiny (Newsom 25.6). Kevin scoped the 25-point rule to the calendar levers.
+* The ranges are wider than the "22 to 36" example in the brief. A 30 percent sigma on strength is a big draw because first-place share rises roughly with strength to the fifth power. The clock narrows it to 10 percent by the eve of South Carolina.
+* With drawn priors, seed noise on a point estimate is about a point. AOC and Ossoff swap first place on different seeds. The default card now reads default.json so the page and the card agree.
+* Call C3 (Harris poll minus market gap under 10) is now graded against the weighted poll average. Today's gap is 15.4 (15.6 on the old method).
+* index.html now loads one external script, pollavg.js, shared with gap.html and the nightly job. The sim stays inline.
+* The 2020 backtest (backtest-2020/) runs the current sim, which now has drawn priors, a state cap and the clock. It was not rerun.
 * `notes.json` on the gap page is hand-written and stale.
-* The desk note demo uses today's convention rate for every past day.

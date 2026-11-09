@@ -1,7 +1,7 @@
 {
  "2026-11-09": {
-  "text": "We rebuilt the model after the midterms, settling four races it used to treat as open questions and letting the field narrow faster once the voting starts.",
-  "href": "changelog.html#2026-11-09-post-midterm",
+  "text": "We rebuilt the model after the midterms, and it now shows how sure it is: every share comes with a likely range, and the range narrows as South Carolina nears.",
+  "href": "changelog.html#2026-11-09-drawn-priors",
   "link": "What changed"
  }
 }
