@@ -58,13 +58,13 @@ tr.hl td{background:var(--wire-soft);}
  <table id="tbl"><thead><tr>
   <th data-k="name">Candidate</th><th data-k="poll">Poll average</th><th data-k="mkt">Market blend</th><th data-k="gap" class="on">Gap</th><th data-k="run">Run odds</th><th class="note">Note</th>
  </tr></thead><tbody></tbody></table>
- <div class="legend">Poll average is an equal weight mean of national Democratic primary polls from the last 30 days (polls.csv). Market blend is the simple average of the Kalshi and Polymarket nomination prices (markets.json, updated nightly). Gap is poll minus market in points. Run odds are from the Kalshi run market. Notes are hand written in notes.json.</div>
+ <div class="legend">Poll average is an equal weight mean of national Democratic primary polls from the last 30 days. Market blend is the simple average of the Kalshi and Polymarket nomination prices, updated nightly. Gap is poll minus market in points. Run odds are from the Kalshi run market. Notes are mine.</div>
  <div class="getdata">Get the data: <a href="https://github.com/driscollglobe/2028-machine/blob/main/polls.csv">polls.csv</a><a href="https://github.com/driscollglobe/2028-machine/blob/main/history.csv">history.csv</a></div>
 </div>
 
 <h2 class="s">Every poll on file</h2>
 <div class="section">
- <div class="shead"><span>polls.csv in full · national Democratic primary ballots · empty cells mean the poll did not test that candidate</span><span id="pollcount"></span></div>
+ <div class="shead"><span>Every poll on file · national Democratic primary ballots · empty cells mean the poll did not test that candidate</span><span id="pollcount"></span></div>
  <table id="polltbl"><thead></thead><tbody></tbody></table>
  <div class="getdata">Get the data: <a href="https://github.com/driscollglobe/2028-machine/blob/main/polls.csv">polls.csv</a><a href="https://github.com/driscollglobe/2028-machine/blob/main/history.csv">history.csv</a></div>
 </div>
@@ -73,6 +73,8 @@ tr.hl td{background:var(--wire-soft);}
 <script>
 const NAMES={newsom:'Gavin Newsom',aoc:'AOC',sanders:'Bernie Sanders',ossoff:'Jon Ossoff',harris:'Kamala Harris',shapiro:'Josh Shapiro',pete:'Pete Buttigieg',pritzker:'JB Pritzker',khanna:'Ro Khanna',murphy:'Chris Murphy',kelly:'Mark Kelly',beshear:'Andy Beshear',rahm:'Rahm Emanuel',whitmer:'Gretchen Whitmer',moore:'Wes Moore',warnock:'Raphael Warnock',talarico:'James Talarico',elsayed:'Abdul El-Sayed',stewart:'Jon Stewart',fain:'Shawn Fain',walz:'Tim Walz',booker:'Cory Booker',gallego:'Ruben Gallego',slotkin:'Elissa Slotkin',vanhollen:'Chris Van Hollen',other:'Someone else'};
 const WINDOW_DAYS=30;
+const AP_MON=['Jan.','Feb.','March','April','May','June','July','Aug.','Sept.','Oct.','Nov.','Dec.'];
+function edDate(d,y){const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(d||'');if(!m)return d||'';return AP_MON[+m[2]-1]+' '+(+m[3])+(y===false?'':', '+m[1]);}
 let ROWS=[],sortKey='gap',sortAsc=false;
 function parseCSV(text){
  const lines=text.replace(/\r/g,'').split('\n').filter(l=>l.trim().length);
@@ -98,14 +100,14 @@ Promise.all([get('polls.csv','text'),get('markets.json','json'),get('notes.json'
  const pollRows=csv?parseCSV(csv):[];
  const polls=csv?pollAverages(pollRows):{avg:{},n:{},used:0};
  renderPollTable(pollRows);
- if(M&&M.date){const b=document.getElementById('updBadge');if(b)b.textContent='Updated '+M.date;}
+ if(M&&M.date){const b=document.getElementById('updBadge');if(b)b.textContent='Updated '+edDate(M.date);}
  const blend=M&&M.blend?M.blend:{};const run=M&&M.run?M.run:{};
  notes=notes||{};
  ROWS=Object.keys(NAMES).filter(id=>id!=='other'&&(typeof blend[id]==='number'||typeof polls.avg[id]==='number')).map(id=>{
   const mkt=typeof blend[id]==='number'?blend[id]:null,poll=typeof polls.avg[id]==='number'?polls.avg[id]:null;
   return {id,name:NAMES[id],poll,mkt,gap:(poll===null||mkt===null)?null:Math.round((poll-mkt)*10)/10,run:typeof run[id]==='number'?Math.round(run[id]):null,note:notes[id]||''};
  });
- document.getElementById('status').textContent=polls.used+' poll'+(polls.used===1?'':'s')+' in window · markets '+(M&&M.date?M.date:'baked in');
+ document.getElementById('status').textContent=polls.used+' poll'+(polls.used===1?'':'s')+' in the last 30 days · markets as of '+(M&&M.date?edDate(M.date,false):'the last saved prices');
  render();
  const hl=location.hash.replace('#','');if(hl){const tr=document.getElementById('row_'+hl);if(tr){tr.classList.add('hl');tr.scrollIntoView({block:'center'});}}
 });
@@ -115,7 +117,7 @@ function renderPollTable(rows){
  const last=id=>NAMES[id].split(' ').slice(-1)[0];
  document.querySelector('#polltbl thead').innerHTML='<tr>'+meta.map(m=>'<th class="hd">'+m[1]+'</th>').join('')+ids.map(id=>'<th>'+last(id)+'</th>').join('')+'</tr>';
  const sorted=rows.slice().sort((a,b)=>(b.field_end||'').localeCompare(a.field_end||''));
- document.querySelector('#polltbl tbody').innerHTML=sorted.map(r=>'<tr>'+meta.map(m=>'<td class="hd">'+(r[m[0]]||'')+'</td>').join('')+ids.map(id=>'<td>'+(r[id]===undefined?'':r[id])+'</td>').join('')+'</tr>').join('');
+ document.querySelector('#polltbl tbody').innerHTML=sorted.map(r=>'<tr>'+meta.map(m=>'<td class="hd">'+(/^field_/.test(m[0])?edDate(r[m[0]]||''):(r[m[0]]||''))+'</td>').join('')+ids.map(id=>'<td>'+(r[id]===undefined?'':r[id])+'</td>').join('')+'</tr>').join('');
  document.getElementById('pollcount').textContent=rows.length+' poll'+(rows.length===1?'':'s');
 }
 function fmt(v,signed){if(v===null)return '<span class="down" style="color:var(--faint)">n/a</span>';return signed?((v>0?'+':'')+v.toFixed(1)):v.toFixed(1);}

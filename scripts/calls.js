@@ -5,7 +5,9 @@
 // A call resolves true the first day its condition holds, and false at its deadline if it never held.
 // Rows with status "test" are examples: never graded, never counted, and free to edit or delete.
 // Metrics: run.<id> (Kalshi run price), market.<id> (blend), kalshi.<id>, poly.<id>, model.<id>
-// (default run first place share), model.contested.
+// (default run first place share), model.contested, gap.<id> (30-day poll average minus blend, from
+// default.json's gap block). A metric can also be the difference of two, written a-b, for example
+// market.aoc-market.ossoff.
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -41,6 +43,11 @@ function cell(v) { v = v === undefined || v === null ? '' : String(v); return /[
 function toCSV(rows) { return [HEAD.join(',')].concat(rows.map(r => HEAD.map(h => cell(r[h])).join(','))).join('\n') + '\n'; }
 
 function metricValue(metric, data) {
+  const parts = String(metric).split('-');
+  if (parts.length === 2) {
+    const a = metricValue(parts[0], data), b = metricValue(parts[1], data);
+    return a === null || b === null ? null : Math.round((a - b) * 10) / 10;
+  }
   const [kind, id] = String(metric).split('.');
   const M = data.markets || {}, D = data.def || {};
   const pick = o => (o && typeof o[id] === 'number') ? o[id] : null;
@@ -48,6 +55,7 @@ function metricValue(metric, data) {
   if (kind === 'market') return pick(M.blend);
   if (kind === 'kalshi') return pick(M.kalshi);
   if (kind === 'poly') return pick(M.polymarket);
+  if (kind === 'gap') return pick(D.gap);
   if (kind === 'model') return id === 'contested' ? (typeof D.contested === 'number' ? D.contested : null) : pick(D.first);
   return null;
 }
@@ -59,7 +67,7 @@ function validate(r) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(r.deadline)) errs.push('deadline not ISO');
   if (!OPS[r.operator]) errs.push('operator must be one of ' + Object.keys(OPS).join(' '));
   if (!isFinite(parseFloat(r.threshold))) errs.push('threshold not a number');
-  if (!/^(run|market|kalshi|poly|model)\.[a-z]+$/.test(r.metric)) errs.push('metric not recognized: ' + r.metric);
+  if (!/^(run|market|kalshi|poly|model|gap)\.[a-z]+(-(run|market|kalshi|poly|model|gap)\.[a-z]+)?$/.test(r.metric)) errs.push('metric not recognized: ' + r.metric);
   if (!['open', 'true', 'false', 'test'].includes(r.status)) errs.push('status must be open, true, false or test');
   return errs.length ? r.id + ': ' + errs.join('; ') : null;
 }

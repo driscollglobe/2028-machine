@@ -34,13 +34,13 @@ a{color:var(--accent);}
 <div class="legend" id="legend"></div>
 <h1 style="font-size:20px">Latest readings</h1>
 <table id="tbl"></table>
-<p class="note">Solid lines are what the 2028 Machine believes at its default settings, re-run every morning on that day's market anchors. Dashed lines are the blended nomination price on Kalshi and Polymarket. The gap between a solid line and its dashed twin is the model's standing disagreement with the market, logged daily so that when the primary happens there is a public record of what this machine believed and when. Back to <a href="index.html">the Machine</a>.</p>
+<p class="note">Solid lines are what the 2028 Machine believes at its default settings, re-run every morning on that day's market prices. Dashed lines are the blended nomination price on Kalshi and Polymarket. The gap between a solid line and its dashed twin is the model's standing disagreement with the market, logged daily so that when the primary happens there is a public record of what this machine believed and when. Back to <a href="index.html">the Machine</a>.</p>
 <h1 style="font-size:20px" id="leadlag">Who moved first</h1>
 <div class="sub">Model versus market, same-direction moves of half a point or more, lags of one to three days</div>
 <table id="llTbl"></table>
 <p class="note" id="llNote">For each candidate, a model move counts as first when the market makes a same-direction move of at least 0.5 points one to three days later. It counts as after when the market made that move one to three days earlier. Same-day matches are counted separately, since the model reruns on that morning's prices and usually moves with them. Day pairs that span a gap in history.csv, and days that carry a structural note (a model rebuild), are left out. A move with matching market moves both before and after is split half and half. Market never followed means the market made no matching move within three days either way. Losing days stay in the table.</p>
 <h1 style="font-size:20px" id="calls">Calls</h1>
-<div class="sub" id="callRec">loading calls.csv</div>
+<div class="sub" id="callRec">Loading</div>
 <table id="callTbl"></table>
 <p class="note">Every call is a dated claim with a metric, a threshold and a deadline. It resolves true the first day the condition holds and false at its deadline if it never does. A build check fails if anyone edits the terms of a call made before today, so git history is the receipt. Test rows are examples and never count. <a href="https://github.com/driscollglobe/2028-machine/blob/main/calls.csv">calls.csv</a></p>
 </div>
@@ -49,6 +49,8 @@ a{color:var(--accent);}
 const NAMES={newsom:'Newsom',aoc:'AOC',sanders:'Sanders',ossoff:'Ossoff',harris:'Harris',shapiro:'Shapiro',pete:'Buttigieg',pritzker:'Pritzker',khanna:'Khanna',murphy:'Murphy',kelly:'Kelly',beshear:'Beshear',rahm:'Emanuel',whitmer:'Whitmer',moore:'Moore',warnock:'Warnock',talarico:'Talarico',elsayed:'El-Sayed',stewart:'Stewart',fain:'Fain',walz:'Walz',booker:'Booker',gallego:'Gallego',slotkin:'Slotkin',vanhollen:'Van Hollen',other:'Someone else'};
 const PALETTE=['#1f5fa8','#8a1f11','#2e7d4f','#b8860b','#6a4c93','#c2410c','#0f766e','#7c2d12','#4338ca','#9d174d'];
 const TOP=8;
+const AP_MON=['Jan.','Feb.','March','April','May','June','July','Aug.','Sept.','Oct.','Nov.','Dec.'];
+function edDate(d,y){const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(d||'');if(!m)return d||'';return AP_MON[+m[2]-1]+' '+(+m[3])+(y===false?'':', '+m[1]);}
 let IDS=[],COLORS={};
 function label(id){return NAMES[id]||id;}
 fetch('history.csv?v='+Date.now()).then(r=>r.text()).then(txt=>{
@@ -74,7 +76,7 @@ function draw(d){
  ctx.strokeStyle='#e5dfd3';ctx.fillStyle='#8a8272';ctx.font='11px Spline Sans Mono';
  for(let g=0;g<=max;g+=10){ctx.beginPath();ctx.moveTo(P.l,y(g));ctx.lineTo(W-P.r,y(g));ctx.stroke();ctx.fillText(g+'%',6,y(g)+4);}
  const step=Math.max(1,Math.floor(d.length/8));
- d.forEach((r,i)=>{if(i%step===0||i===d.length-1)ctx.fillText(r.date.slice(5),x(i)-14,H-8);});
+ d.forEach((r,i)=>{if(i%step===0||i===d.length-1)ctx.fillText(edDate(r.date,false),x(i)-16,H-8);});
  IDS.forEach(id=>{
   ctx.strokeStyle=COLORS[id];ctx.lineWidth=2;ctx.setLineDash([]);
   ctx.beginPath();let started=false;d.forEach((r,i)=>{const v=r.m[id];if(isNaN(v)){started=false;return;}started?ctx.lineTo(x(i),y(v)):ctx.moveTo(x(i),y(v));started=true;});ctx.stroke();
@@ -102,12 +104,12 @@ function callEsc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 function callDaysLeft(d){return Math.round((new Date(d+'T12:00:00')-new Date(new Date().toISOString().slice(0,10)+'T12:00:00'))/86400000);}
 function callRecord(rows){const g=rows.filter(r=>r.status==='true'||r.status==='false');return g.filter(r=>r.status==='true').length+' for '+g.length;}
 fetch('calls.csv?v='+Date.now()).then(r=>r.ok?r.text():null).then(t=>{
- if(!t){document.getElementById('callRec').textContent='calls.csv unavailable';return;}
+ if(!t){document.getElementById('callRec').textContent='The calls ledger didn\u2019t load.';return;}
  const all=parseQuotedCSV(t),real=all.filter(r=>r.status!=='test');
  document.getElementById('callRec').textContent='Record: '+callRecord(real)+' · '+real.filter(r=>r.status==='open').length+' open';
- const res=r=>r.status==='open'?Math.max(0,callDaysLeft(r.deadline))+' days left':(r.status==='test'?'test, not counted':(r.status==='true'?'Right':'Wrong')+' on '+r.resolved_date+(r.resolved_value!==''?' at '+r.resolved_value:''));
+ const res=r=>r.status==='open'?Math.max(0,callDaysLeft(r.deadline))+' days left':(r.status==='test'?'test, not counted':(r.status==='true'?'Right':'Wrong')+' on '+edDate(r.resolved_date)+(r.resolved_value!==''?' at '+r.resolved_value:''));
  document.getElementById('callTbl').innerHTML='<tr><th>Call</th><th>Made</th><th>Metric</th><th>Deadline</th><th>Result</th></tr>'+
-  all.map(r=>'<tr><td>'+callEsc(r.text)+'</td><td>'+r.date_made+'</td><td>'+callEsc(r.metric+' '+r.operator+' '+r.threshold)+'</td><td>'+r.deadline+'</td><td>'+res(r)+'</td></tr>').join('');
+  all.map(r=>'<tr><td>'+callEsc(r.text)+'</td><td>'+edDate(r.date_made)+'</td><td>'+callEsc(r.metric+' '+r.operator+' '+r.threshold)+'</td><td>'+edDate(r.deadline)+'</td><td>'+res(r)+'</td></tr>').join('');
 });
 // ==LEAD LAG== built from history.csv alone
 function leadLag(text){

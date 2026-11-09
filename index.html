@@ -33,6 +33,8 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',-appl
 @media(max-width:740px){.mast .wh{display:block;height:44px;order:3;width:100%;margin:.5rem auto 0;}}
 .mast-l .globe{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase;}
 .mast-l h1{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:34px;line-height:1.02;margin:.1rem 0 0;}
+.byline{font-family:'Inter',system-ui,sans-serif;font-size:13px;color:var(--muted);margin-top:.35rem;}
+.byline b{color:var(--ink);font-weight:600;}
 .mast-r{font-family:'Spline Sans Mono',monospace;font-size:11px;color:var(--muted);text-align:right;line-height:1.5;}
 .subrule{display:flex;justify-content:space-between;font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:1.1rem;}
 /* ticker */
@@ -225,6 +227,8 @@ body.show-adv .ctl.adv{display:flex;}
 .cstable th{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:500;text-align:right;padding:2px 8px;}
 .cstable td{padding:3px 8px;text-align:right;border-top:1px solid var(--rule);white-space:nowrap;}
 .cstable th:first-child,.cstable td:first-child{text-align:left;font-family:'Inter',sans-serif;}
+#callsBody .cstable td:first-child{white-space:normal;min-width:180px;}
+@media(max-width:740px){.mast-r{display:none;}}
 .cstable .book{text-align:left;color:var(--muted);font-size:11px;}
 .cstable .nottracked{text-align:center;color:var(--faint);font-style:italic;font-family:'Inter',sans-serif;font-size:11.5px;}
 .csmorelink{display:inline-block;margin-top:8px;font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--wire);text-decoration:none;}
@@ -278,7 +282,9 @@ body.show-adv .ctl.adv{display:flex;}
 .desknote .dnlabel span{color:var(--faint);margin-left:6px;}
 .desknote p{margin:0;font-size:14.5px;line-height:1.5;}
 .spark{display:block;margin-top:2px;color:var(--wire);}
-.rv{font-family:'Spline Sans Mono',monospace;font-size:9.5px;color:var(--faint);letter-spacing:.04em;margin-left:6px;white-space:nowrap;}
+.rv{display:inline-block;font-family:'Inter',system-ui,sans-serif;font-size:10px;font-variant:small-caps;letter-spacing:.06em;color:var(--faint);margin-left:8px;white-space:nowrap;}
+.desknote a,.hero-note a,.csnote a{color:inherit;text-decoration:underline;text-underline-offset:2px;}
+.hero-note a{font-family:'Inter',system-ui,sans-serif;font-size:14px;margin-left:4px;}
 .settled .rs{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:7px 0;border-top:1px solid var(--rule);}
 .settled .rs:first-child{border-top:0;}
 .settled .rl{font-weight:600;}
@@ -305,22 +311,24 @@ body.show-adv h2.s.adv{display:block;}
  <div class="mast-l">
   <div class="globe">The Driscoll Globe</div>
   <h1>The 2028 Machine</h1>
+  <div class="byline">By <b>Kevin Driscoll</b> · The Driscoll Globe · Updated nightly<span id="bylineDate"></span></div>
  </div>
  <svg class="wh" viewBox="0 0 360 92" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The White House"><g fill="var(--ink)"><rect x="6" y="82" width="348" height="4"/><rect x="16" y="50" width="328" height="32"/><rect x="10" y="45" width="340" height="6" rx="1"/><rect x="20" y="40" width="3" height="6"/><rect x="36" y="40" width="3" height="6"/><rect x="52" y="40" width="3" height="6"/><rect x="68" y="40" width="3" height="6"/><rect x="84" y="40" width="3" height="6"/><rect x="100" y="40" width="3" height="6"/><rect x="116" y="40" width="3" height="6"/><rect x="132" y="40" width="3" height="6"/><rect x="148" y="40" width="3" height="6"/><rect x="164" y="40" width="3" height="6"/><rect x="180" y="40" width="3" height="6"/><rect x="196" y="40" width="3" height="6"/><rect x="212" y="40" width="3" height="6"/><rect x="228" y="40" width="3" height="6"/><rect x="244" y="40" width="3" height="6"/><rect x="260" y="40" width="3" height="6"/><rect x="276" y="40" width="3" height="6"/><rect x="292" y="40" width="3" height="6"/><rect x="308" y="40" width="3" height="6"/><rect x="324" y="40" width="3" height="6"/><rect x="340" y="40" width="3" height="6"/><rect x="150" y="38" width="60" height="44"/><polygon points="146,40 180,22 214,40"/><rect x="178.5" y="6" width="2" height="18"/><rect x="180.5" y="6" width="13" height="7"/></g><g fill="var(--paper)"><rect x="157" y="46" width="3.5" height="34"/><rect x="168" y="46" width="3.5" height="34"/><rect x="179" y="46" width="3.5" height="34"/><rect x="190" y="46" width="3.5" height="34"/><rect x="201" y="46" width="3.5" height="34"/></g><rect x="174" y="62" width="12" height="18" fill="var(--ink)"/><g fill="var(--paper)"><rect x="26.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="40.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="54.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="68.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="82.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="96.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="110.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="124.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="138.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="210.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="224.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="238.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="252.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="266.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="280.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="294.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="308.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="322.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="26.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="40.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="54.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="68.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="82.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="96.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="110.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="124.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="138.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="210.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="224.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="238.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="252.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="266.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="280.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="294.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="308.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="322.0" y="71.0" width="7.0" height="7.0" rx="0.6"/></g></svg>
  <div class="mast-r">2028 DEMOCRATIC PRIMARY<br>SIMULATION DESK<br><span id="clock">&nbsp;</span><br><span class="badge" id="updBadge">Updated nightly</span></div>
 </div>
-<div class="nav"><a href="gap.html">The gap: polls vs markets</a><a href="track.html">Track record</a><a href="methodology.html">How it works</a><a href="https://driscollglobe.substack.com">The Driscoll Globe</a></div>
+<div class="nav"><a href="gap.html">The gap: polls vs markets</a><a href="track.html">Track record</a><a href="methodology.html">How it works</a><a href="changelog.html">Changelog</a><a href="https://driscollglobe.substack.com">The Driscoll Globe</a></div>
 
-<div class="desknote" id="deskNote" hidden><div class="dnlabel">Desk note <span id="deskDate"></span></div><p id="deskText"></p></div>
 <div class="ticker"><span class="tlabel">WIRE</span><span class="tickwrap"><span class="tscroll" id="ticker"></span></span></div>
 
 <div class="hero">
  <div class="hero-num" id="heroShare">&nbsp;</div>
- <div class="hero-date" id="heroDate">Model share at default settings · 20,000 primaries</div>
+ <div class="hero-date" id="heroDate">Share of 20,000 simulated primaries won</div>
  <div class="hero-note" id="heroNote"></div>
 </div>
 
-<div id="aggregate" class="section"><div class="shead"><span>Model result</span><span class="note">loading default.json</span></div><div id="aggBody" class="muted">Loading the precomputed default run.</div></div>
+<div class="desknote" id="deskNote" hidden><div class="dnlabel">Desk note <span id="deskDate"></span></div><p id="deskText"></p></div>
+
+<div id="aggregate" class="section"><div class="shead"><span>Who finishes first</span><span class="note">loading</span></div><div id="aggBody" class="muted">Loading last night's run.</div></div>
 
 <div class="bpstrip" id="bpstrip">
  <span class="bplabel">Today's turning points</span>
@@ -352,14 +360,14 @@ body.show-adv h2.s.adv{display:block;}
 
 <h2 class="s">The turning point heatmap</h2>
 <div class="section">
- <div class="shead"><span>What moves whom · 5,000 matched seed runs per lever</span><span class="row" style="gap:8px;"><span class="note" id="hmStatus">loading the nightly build</span><button class="btn go sm" onclick="buildHeatmap()" id="hmBtn">Recompute with my settings</button></span></div>
- <div class="hm" id="heatmap"><div class="muted">Loading heatmap.json, built nightly at default settings. Click "Recompute with my settings" to rebuild it from your own settings in the browser.</div></div>
+ <div class="shead"><span>What moves whom · each turning point tested on and off in 5,000 paired runs</span><span class="row" style="gap:8px;"><span class="note" id="hmStatus">loading</span><button class="btn go sm" onclick="buildHeatmap()" id="hmBtn">Recompute with my settings</button></span></div>
+ <div class="hm" id="heatmap"><div class="muted">Loading the heatmap, built overnight at the default settings. Click "Recompute with my settings" to rebuild it from your own.</div></div>
 </div>
 
 <h2 class="s">Turning point rankings</h2>
 <div class="section">
- <div class="shead"><span>The election's most decisive variables · by average swing</span><span class="note" id="rankStatus">nightly build</span></div>
- <div id="rankings"><div class="muted">Loading rankings.json: the turning points that move the most outcomes, measured in average first place swing across the field.</div></div>
+ <div class="shead"><span>The turning points that move the most outcomes</span><span class="note" id="rankStatus">loading</span></div>
+ <div id="rankings"><div class="muted">Loading the rankings: each turning point, measured by how far it shifts first-place finishes across the field.</div></div>
 </div>
 
 <h2 class="s">The world</h2>
@@ -367,8 +375,8 @@ body.show-adv h2.s.adv{display:block;}
 <div class="modetoggle"><button class="seg on" id="segBasic" onclick="setMode('basic')">Basic</button><button class="seg" id="segAdv" onclick="setMode('advanced')">Advanced</button><span class="note">Basic shows the five biggest levers. Advanced reveals everything, including your bracket.</span></div>
 <div class="cols2">
  <div class="section anchorbox">
-  <div class="shead">Anchor</div>
-  <div class="ctl"><label class="cl">Anchor</label><input type="range" min="0" max="100" value="50" id="pAnchor"><span class="cv" id="pAnchorOut">50%</span><div class="ctlnote" data-reviewed="2026-11">At 0 the model runs on operator strengths alone. At 100 base strength is the Kalshi and Polymarket blend. Levers, pools, calendar and convention run on top either way.</div></div>
+  <div class="shead">How much to trust the markets</div>
+  <div class="ctl"><label class="cl">Market weight</label><input type="range" min="0" max="100" value="50" id="pAnchor"><span class="cv" id="pAnchorOut">50%</span><div class="ctlnote" data-reviewed="2026-11">At 0 the model runs on my own read of each candidate. At 100 it starts from the Kalshi and Polymarket prices. Everything else on this page runs on top either way.</div></div>
  </div>
  <div class="section">
   <div class="shead">Candidate gates</div>
@@ -381,7 +389,7 @@ body.show-adv h2.s.adv{display:block;}
  </div>
  <div class="section">
   <div class="shead">Environment</div>
-  <div class="ctl adv"><label class="cl">Trump approval (late 2027)</label><input type="range" min="30" max="60" value="38" id="pTrump"><span class="cv" id="pTrumpOut">38%</span><label class="dpr"><input type="checkbox" id="apprMixed">Drawn per run</label><div class="ctlnote" id="apprNote">Default is the latest public approval average, pulled nightly. Silver Bulletin 2026-09-10: approve 38.5.</div></div>
+  <div class="ctl adv"><label class="cl">Trump approval (late 2027)</label><input type="range" min="30" max="60" value="38" id="pTrump"><span class="cv" id="pTrumpOut">38%</span><label class="dpr"><input type="checkbox" id="apprMixed">Drawn per run</label><div class="ctlnote" id="apprNote">Default is the latest public approval average, pulled nightly. Silver Bulletin, Sept. 10, 2026: 38.5 percent approve.</div></div>
   <div class="ctl"><label class="cl">What 2028 is about</label><select id="selTheme"><option value="mixed" selected>Drawn per run</option><option value="afford">Affordability and class</option><option value="ai">AI and the future of work</option><option value="fight">Democracy and fighting Trumpism</option><option value="norm">Competence and electability</option></select></div>
   <div class="ctl adv"><label class="cl">Lesson of 2026</label><select id="selLesson"><option value="mixed">Drawn per run</option><option value="inst">Institutional Democrats won</option><option value="pop">Economic populists won</option><option value="muddle" selected>Both sides claim victory</option></select></div>
   <div class="ctl adv"><label class="cl">Black Democratic voters</label><select id="selBlack"><option value="mixed" selected>Drawn per run</option><option value="hold">Harris holds the coalition</option><option value="div">Remains divided</option><option value="another">Consolidates behind another</option><option value="gen">Generational realignment</option></select></div>
@@ -412,9 +420,9 @@ body.show-adv h2.s.adv{display:block;}
 <div class="section changestrip" id="changestrip"><div class="shead"><span id="csTitle">Since yesterday</span><span class="row" style="gap:5px;"><button class="seg on" id="csDay" onclick="setChangeMode('day')">Latest change</button><button class="seg" id="csLaunch" onclick="setChangeMode('launch')">Since launch</button></span></div><div id="csBody" class="muted">Loading history.csv</div></div>
 
 <h2 class="s">Calls</h2>
-<div class="section" id="calls"><div class="shead"><span>Dated claims, graded nightly against the books and the model</span><span class="note" id="callRecord">loading calls.csv</span></div><div id="callsBody" class="muted">Loading calls.csv</div><div class="legend">A call resolves true the first day its condition holds and false at its deadline if it never does. Past calls cannot be edited; a build check enforces it. <a href="track.html#calls">Full ledger</a></div></div>
+<div class="section" id="calls"><div class="shead"><span>Dated claims, graded nightly against the books and the model</span><span class="note" id="callRecord">loading</span></div><div id="callsBody" class="muted">Loading the calls.</div><div class="legend">A call resolves true the first day its condition holds and false at its deadline if it never does. Past calls cannot be edited; a build check enforces it. <a href="track.html#calls">Full ledger</a></div></div>
 
-<p class="foot">THE 2028 MACHINE · A MODEL BUILT FROM ONE OPERATOR'S PRIORS, NOT A FORECAST · THE STRENGTHS ARE ARGUABLE ON PURPOSE; THE VALUE IS WHAT MOVES THE OUTCOME, NOT THE HEADLINE ODDS · PRIORS REVIEWED THROUGH <span id="priorsDate">2026-09</span> · MARKET ANCHORS UPDATED NIGHTLY FROM KALSHI AND POLYMARKET · POLLS PULLED NIGHTLY FROM PUBLIC AGGREGATORS · READER BRACKETS ARE ANONYMOUS AND AGGREGATED. NOTHING IDENTIFIES YOU. · NEWS ATTENTION IS A GOOGLE NEWS COUNT, SHOWN FOR CONTEXT AND NOT USED IN THE MODEL · POOL ASSIGNMENTS AND SHARES ARE OPERATOR PRIORS, NOT MEASURED VOTER DATA · THE DRISCOLL GLOBE · POLITICAL SYSTEMS DESK</p>
+<p class="foot">THE 2028 MACHINE · A MODEL BUILT FROM ONE OPERATOR'S PRIORS, NOT A FORECAST · THE STRENGTHS ARE ARGUABLE ON PURPOSE; THE VALUE IS WHAT MOVES THE OUTCOME, NOT THE HEADLINE ODDS · PRIORS REVIEWED THROUGH <span id="priorsDate">SEPT. 2026</span> · MARKET PRICES UPDATED NIGHTLY FROM KALSHI AND POLYMARKET · POLLS PULLED NIGHTLY FROM PUBLIC AGGREGATORS · READER BRACKETS ARE ANONYMOUS AND AGGREGATED. NOTHING IDENTIFIES YOU. · NEWS ATTENTION IS A GOOGLE NEWS COUNT, SHOWN FOR CONTEXT AND NOT USED IN THE MODEL · POOL ASSIGNMENTS AND SHARES ARE OPERATOR PRIORS, NOT MEASURED VOTER DATA · THE DRISCOLL GLOBE · POLITICAL SYSTEMS DESK</p>
 <div class="modal-bg" id="modalBg" onclick="closeModal(event)">
  <div class="modal" id="modalBox" onclick="event.stopPropagation()">
   <button class="modal-x" onclick="closeModal()">×</button>
@@ -431,11 +439,11 @@ const CANDS=[
  {id:'aoc',reviewed:'2026-09',name:'AOC',role:'Rep., New York',age:39,mkt:17.7,run:66,lane:'movement',rank:2,debate:1.06,str:'Best communicator in the party',weak:'Must choose: president or Senate',base:16,fit:{SC:0.80,NH:1.15,NV:1.25,IA:1.00,MI:1.10,GA:0.90,NC:0.90,ST:1.05}},
  {id:'harris',reviewed:'2026-09',name:'Kamala Harris',role:'Former VP',age:64,mkt:8.1,run:78,lane:'anchor',rank:4,debate:0.8,str:'Universal name ID, Black voters',weak:'Shaky on her feet, 2024 baggage',base:14,fit:{SC:1.60,NH:0.70,NV:1.10,IA:0.70,MI:0.90,GA:1.30,NC:1.10,ST:1.05}},
  {id:'sanders',reviewed:'2026-09',name:'Bernie Sanders',role:'Sen., Vermont',age:87,mkt:0.4,run:8,lane:'movement',rank:19,debate:1.0,str:'Founder of the lane; the list, the money, the loyalty',weak:'87 on election day and has said his time has passed',base:10,fit:{SC:0.70,NH:1.40,NV:1.20,IA:1.10,MI:1.10,GA:0.80,NC:0.90,ST:1.00}},
- {id:'ossoff',reviewed:'2026-11',name:'Jon Ossoff',role:'Sen., Georgia',age:41,mkt:16.6,run:71,lane:'suburb',rank:9,debate:1.0,str:'Viral speeches, swing-state wins; won reelection 2026-11-03',weak:'Imitative; disavowed running',base:12,fit:{SC:1.30,NH:0.90,NV:0.95,IA:0.90,MI:0.95,GA:1.80,NC:1.20,ST:1.00}},
+ {id:'ossoff',reviewed:'2026-11',name:'Jon Ossoff',role:'Sen., Georgia',age:41,mkt:16.6,run:71,lane:'suburb',rank:9,debate:1.0,str:'Viral speeches, swing-state wins; won reelection Nov. 3, 2026',weak:'Imitative; disavowed running',base:12,fit:{SC:1.30,NH:0.90,NV:0.95,IA:0.90,MI:0.95,GA:1.80,NC:1.20,ST:1.00}},
  {id:'shapiro',reviewed:'2026-09',name:'Josh Shapiro',role:'Gov., Pennsylvania',age:55,mkt:5.6,run:73,lane:'suburb',rank:7,debate:1.0,str:'Wins the tipping-point state',weak:'No early-state launchpad',base:9,fit:{SC:0.85,NH:1.10,NV:0.95,IA:0.95,MI:1.00,GA:0.95,NC:1.15,ST:1.00}},
  {id:'pete',reviewed:'2026-09',name:'Pete Buttigieg',role:'Former Sec.',age:46,mkt:5.6,run:86,lane:'suburb',rank:5,debate:1.15,str:'Elite communicator, donor network',weak:'Weak with Black voters',base:10,fit:{SC:0.50,NH:1.50,NV:0.90,IA:1.50,MI:1.30,GA:0.70,NC:0.95,ST:1.00}},
  {id:'pritzker',reviewed:'2026-09',name:'JB Pritzker',role:'Gov., Illinois',age:63,mkt:1.4,run:77,lane:'fight',rank:8,debate:0.9,str:'Bottomless money, real machine',weak:'Billionaire in an anti-elite cycle',base:7,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.05,MI:1.05,GA:0.85,NC:0.90,ST:1.00}},
- {id:'khanna',reviewed:'2026-09',name:'Ro Khanna',role:'Rep., California',age:52,mkt:1.9,run:78,lane:'movement',rank:6,debate:1.0,str:'Built for an AI-and-jobs election',weak:'Limited national base',base:5,fit:{SC:0.70,NH:1.00,NV:1.10,IA:1.20,MI:1.05,GA:0.80,NC:0.85,ST:1.05}},
+ {id:'khanna',reviewed:'2026-11',name:'Ro Khanna',role:'Rep., California',age:52,mkt:1.9,run:78,lane:'movement',rank:6,debate:1.0,str:'Built for an AI-and-jobs election',weak:'Limited national base',base:0.5,fit:{SC:0.70,NH:1.00,NV:1.10,IA:1.20,MI:1.05,GA:0.80,NC:0.85,ST:1.05}},
  {id:'murphy',reviewed:'2026-09',name:'Chris Murphy',role:'Sen., Connecticut',age:55,mkt:0.6,run:60,lane:'suburb',rank:10,debate:1.1,str:'Economic message from inside the Senate',weak:'No national base yet',base:5,fit:{SC:0.80,NH:1.20,NV:0.90,IA:0.95,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
  {id:'kelly',reviewed:'2026-09',name:'Mark Kelly',role:'Sen., Arizona',age:64,mkt:3.1,run:65,lane:'suburb',rank:11,debate:0.9,str:'Astronaut, veteran, swing-state',weak:'Low base energy',base:6,fit:{SC:0.90,NH:1.00,NV:1.30,IA:0.95,MI:1.00,GA:0.95,NC:1.15,ST:1.00}},
  {id:'beshear',reviewed:'2026-09',name:'Andy Beshear',role:'Gov., Kentucky',age:50,mkt:3.1,run:87,lane:'anchor',rank:12,debate:1.05,str:'Wins deep-red turf, likeable',weak:'No natural coalition',base:5,fit:{SC:1.10,NH:0.90,NV:0.90,IA:1.30,MI:1.00,GA:1.05,NC:1.20,ST:0.95}},
@@ -463,9 +471,9 @@ CANDS.forEach(c=>{c.fit.NM=c.fit.NV;c.fit.VA=c.fit.NC;});
 // Levers the 2026 midterms settled. A resolved lever renders locked with a badge, has no slider,
 // and the sim reads it as a constant through P(). outcome is 0 or 100.
 const RESOLVED={
- pOssWin:{label:'Ossoff wins Georgia',date:'2026-11-03',outcome:100,note:'Jon Ossoff beat Mike Collins. AP call 2026-11-03. Roughly 59 to 41, unofficial.',source_url:'https://www.opb.org/article/2026/11/03/democrat-jon-ossoff-wins-reelection-to-u-s-senate-from-georgia/'},
- pTexas:{label:'Talarico wins Texas',date:'2026-11-03',outcome:100,note:'James Talarico beat Ken Paxton. AP call 2026-11-03. First Democratic statewide win in Texas since 1994.',source_url:'https://www.michiganpublic.org/2026-11-03/democrat-james-talarico-wins-texas-senate-seat'},
- pMich:{label:'El-Sayed wins Michigan',date:'2026-11-03',outcome:100,note:'Abdul El-Sayed beat Mike Rogers. AP call 2:27 a.m. 2026-11-04.',source_url:'https://www.clickondetroit.com/news/local/2026/11/04/abdul-el-sayed-wins-michigan-us-senate-race-ap-projects/'},
+ pOssWin:{label:'Ossoff wins Georgia',date:'2026-11-03',outcome:100,note:'Jon Ossoff beat Mike Collins. AP call Nov. 3. Roughly 59 to 41, unofficial.',source_url:'https://www.opb.org/article/2026/11/03/democrat-jon-ossoff-wins-reelection-to-u-s-senate-from-georgia/'},
+ pTexas:{label:'Talarico wins Texas',date:'2026-11-03',outcome:100,note:'James Talarico beat Ken Paxton. AP call Nov. 3. First Democratic statewide win in Texas since 1994.',source_url:'https://www.michiganpublic.org/2026-11-03/democrat-james-talarico-wins-texas-senate-seat'},
+ pMich:{label:'El-Sayed wins Michigan',date:'2026-11-03',outcome:100,note:'Abdul El-Sayed beat Mike Rogers. AP call 2:27 a.m. Nov. 4.',source_url:'https://www.clickondetroit.com/news/local/2026/11/04/abdul-el-sayed-wins-michigan-us-senate-race-ap-projects/'},
  pMaine:{label:'Maine Democrat beats Collins',date:'2026-11-03',outcome:100,note:'Troy Jackson beat Susan Collins. AP call. Roughly 54 to 46 with 86 percent counted.',source_url:'https://www.kptv.com/2026/11/04/maine-sen-susan-collins-concedes-democrat-troy-jackson-ending-her-run-sixth-term/'}
 };
 const POOL_META={
@@ -879,7 +887,7 @@ function play(){
     +'<div class="sh-actions"><button class="btn sm" onclick=\'copyShare('+JSON.stringify(JSON.stringify(shareTxt))+')\'>Copy result</button></div></div>';
    document.getElementById('onehead').innerHTML=sc;document.getElementById('onehead').classList.remove('muted');
    runs++;bpFired+=bpThisRun;if(!s.majority)contestedCount++;
-   document.getElementById('oneStatus').textContent=runs+' run'+(runs===1?'':'s')+' · '+Math.round(contestedCount/runs*100)+'% contested · '+bpThisRun+' turning point'+(bpThisRun===1?'':'s')+' this run';
+   document.getElementById('oneStatus').textContent=runs+' run'+(runs===1?'':'s')+' · '+Math.round(contestedCount/runs*100)+'% without a pledged majority · '+bpThisRun+' turning point'+(bpThisRun===1?'':'s')+' this run';
   }
  });
  }
@@ -948,7 +956,7 @@ function buildHeatmap(){
   if(i>=HM_LEVERS.length){
    renderHeatmap(results,HM_WATCH);
    renderRankings(results);
-   status.textContent=(QUICK?'quick run · ':'your settings · ')+(HM_LEVERS.length*PAIRS).toLocaleString()+' matched seed runs';
+   status.textContent=(QUICK?'Quick version from your settings · ':'Rebuilt from your settings · ')+(HM_LEVERS.length*PAIRS).toLocaleString()+' matched runs';
    seed=Date.now()%2147483647;rng=mb(seed); // release the deterministic seed for the rest of the page
    return;
   }
@@ -966,7 +974,7 @@ function renderRankings(results){
  });
  h+='</div><div class="legend">Average swing is how many percentage points a turning point moves the typical candidate\u2019s first place rate when it flips. Higher means the whole field bends around that one decision. This is the election measured as a system of choices.</div>';
  document.getElementById('rankings').innerHTML=h;
- document.getElementById('rankStatus').textContent='ranked · top lever: '+sorted[0].key;
+ document.getElementById('rankStatus').textContent='Ranked from your settings';
 }
 function renderHeatmap(results,watch){
  const maxAbs=Math.max(...results.flatMap(r=>watch.map(k=>Math.abs(r.sw[k]))))||1;
@@ -1059,7 +1067,7 @@ function run10k(){
  const agg=document.getElementById('aggregate');
  agg.style.display='block';
  const TOTAL=simBudget(10000), CHUNK=1000;
- const title='Model result · '+(QUICK&&TOTAL<10000?'<span class="quick">quick run</span> · ':'')+TOTAL.toLocaleString()+' primaries · current settings';
+ const title='Who finishes first · '+(QUICK&&TOTAL<10000?'<span class="quick">quick run</span> · ':'')+TOTAL.toLocaleString()+' primaries with your settings';
  agg.classList.remove('open');agg.innerHTML='<div class="shead"><span>'+title+'</span><span class="note" id="aggStatus">running...</span></div><div id="aggBody"><div class="muted">Simulating...</div></div>';
  const C=cfg();
  const maj={},lead={};CANDS.forEach(c=>{maj[c.id]=0;lead[c.id]=0;});
@@ -1072,7 +1080,7 @@ function run10k(){
   const rows=CANDS.filter(c=>c.id!=='other').map(c=>({id:c.id,name:c.name,first:(maj[c.id]+lead[c.id])/TOTAL*100,majp:maj[c.id]/TOTAL*100,leadp:lead[c.id]/TOTAL*100})).sort((a,b)=>b.first-a.first);
   const bpct={};Object.keys(ballots).forEach(k=>bpct[k]=Math.round(ballots[k]/TOTAL*1000)/10);
   document.getElementById('aggBody').innerHTML=renderAggregate(rows,TOTAL,Math.round(contested/TOTAL*100),bpct);
-  setHero(rows[0].name,Math.round(rows[0].first),'Model share at current settings · '+TOTAL.toLocaleString()+' primaries');
+  setHero(rows[0].name,Math.round(rows[0].first),'Wins the most of '+TOTAL.toLocaleString()+' simulated primaries with your settings');
  }
  setTimeout(chunk,20);
 }
@@ -1125,10 +1133,10 @@ function paintDefault(){
   DEF.pending=false;
   if(!d||!d.first||!d.order){fallbackDefault();return;}
   DEF.data=d;DEF.painted=true;
-  setHero(nm(d.frontrunner.id),Math.round(d.frontrunner.share),'Model share at default settings · '+d.runs.toLocaleString()+' primaries · '+longDate(d.date));
+  setHero(nm(d.frontrunner.id),Math.round(d.frontrunner.share),'Wins the most of '+d.runs.toLocaleString()+' simulated primaries, run on '+edDate(d.date,false)+' market prices');
   setModelRank(d.first);
   const agg=document.getElementById('aggregate');agg.style.display='block';agg.classList.remove('open');
-  agg.innerHTML='<div class="shead"><span>Model result · '+d.runs.toLocaleString()+' primaries · default settings</span><span class="note">precomputed '+d.date+' · change any control to simulate live</span></div><div id="aggBody"></div>';
+  agg.innerHTML='<div class="shead"><span>Who finishes first · '+d.runs.toLocaleString()+' simulated primaries</span><span class="note">Run overnight '+edDate(d.date,false)+' · change any control to run your own</span></div><div id="aggBody"></div>';
   paintDefaultRows();
   renderBracketResult(null);
  }).catch(()=>{DEF.pending=false;fallbackDefault();});
@@ -1139,8 +1147,13 @@ function paintDefaultRows(){
  const rows=d.order.filter(id=>id!=='other').map(id=>({id,name:nm(id),first:d.first[id],majp:d.majority[id]||0,leadp:d.lead[id]||0}));
  document.getElementById('aggBody').innerHTML=renderAggregate(rows,d.runs,Math.round(d.contested),d.ballots);
 }
-function fallbackDefault(){updateFrontrunner();const t=contestedTicker();if(t)initTicker(t);document.getElementById('aggBody').innerHTML='<div class="muted">default.json is not available. Click Run 10,000 primaries for the distribution.</div>';}
-function longDate(d){return d;} // dates stay ISO everywhere a reader sees them
+function fallbackDefault(){updateFrontrunner();const t=contestedTicker();if(t)initTicker(t);document.getElementById('aggBody').innerHTML='<div class="muted">Last night\u2019s run didn\u2019t load. Click Run 10,000 primaries to run it here.</div>';}
+// Reader-facing dates are editorial (AP months): edDate('2026-11-09') is 'Nov. 9, 2026', edDate(d,false) is 'Nov. 9',
+// edMonth('2026-11') is 'Nov. 2026'. ISO stays in the data files, code and URLs.
+const AP_MON=['Jan.','Feb.','March','April','May','June','July','Aug.','Sept.','Oct.','Nov.','Dec.'];
+function edDate(d,withYear){const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(d||'');if(!m)return d||'';return AP_MON[+m[2]-1]+' '+(+m[3])+(withYear===false?'':', '+m[1]);}
+function edMonth(d){const m=/^(\d{4})-(\d{2})/.exec(d||'');return m?AP_MON[+m[2]-1]+' '+m[1]:(d||'');}
+function longDate(d){return edDate(d);}
 function copyShare(txt){
  const t=JSON.parse(txt);
  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>{},()=>{fallbackCopy(t);});}
@@ -1203,7 +1216,7 @@ function openDossier(id){
  const coalition=(POOL_META[c.lane]||POOL_META.out).def+(POOL_WHY[id]?' '+POOL_WHY[id]:'');
  let h='<div class="md-head">'+pic+'<div><div class="md-name">'+c.name+'</div><div class="md-meta">'+c.role+' · age '+c.age+' in 2028 · '+laneL+'</div></div></div>';
  h+='<div class="md-odds"><span>market <b>'+c.mkt+'%</b></span><span>runs <b>'+c.run+'%</b></span><span>my rank <b>#'+c.rank+'</b></span></div>';
- const rv=c.reviewed?'<span class="rv">reviewed '+c.reviewed+'</span>':'';
+ const rv=c.reviewed?'<span class="rv">Reviewed '+edMonth(c.reviewed)+'</span>':'';
  h+='<div class="md-sec"><h4>Strength</h4><p>'+c.str+rv+'</p></div>';
  h+='<div class="md-sec"><h4>Weakness</h4><p>'+c.weak+rv+'</p></div>';
  h+='<div class="md-sec"><h4>Likely coalition</h4><p>'+coalition+'</p></div>';
@@ -1251,7 +1264,7 @@ function updateFrontrunner(){
  rng=savedRng;
  let bk=null,bv=-1;for(const k in w){if(w[k]>bv){bv=w[k];bk=k;}}
  const fs={};CANDS.forEach(c=>fs[c.id]=Math.round((w[c.id]||0)/tot*1000)/10);setModelRank(fs);
- if(bk)setHero(nm(bk),Math.round(bv/tot*100),'Model share at current settings · '+N.toLocaleString()+' primaries · fixed seed');
+ if(bk)setHero(nm(bk),Math.round(bv/tot*100),'Wins the most of '+N.toLocaleString()+' simulated primaries with your settings');
 }
 function setHero(name,pct,label){document.getElementById('heroShare').textContent=name+' '+pct+'%';if(label)document.getElementById('heroDate').textContent=label;}
 function lastName(id){const c=CANDS.find(x=>x.id===id);return c&&c.short?c.short:nm(id).split(' ').slice(-1)[0];}
@@ -1267,39 +1280,49 @@ function contestedTicker(){
   const C=cfg();const N=3000;let c=0;const saved=rng;rng=mb(19481102);
   for(let i=0;i<N;i++){if(!simulate(C,false).majority)c++;}
   rng=saved;
-  return Math.round(c/N*100)+'% OF SIMULATED PRIMARIES END IN A CONTESTED CONVENTION (CURRENT DEFAULTS)';
+  return Math.round(c/N*100)+'% OF SIMULATED PRIMARIES REACH THE CONVENTION WITHOUT A PLEDGED MAJORITY';
  }catch(e){return null;}
 }
 function initTicker(extra){const items=WIRE.concat(extra?[extra]:[]);if(!items.length)return;const s=items.join('<span class="tsep">/</span>');document.getElementById('ticker').innerHTML=s+'<span class="tsep">/</span>'+s;}
-function tickClock(){const d=new Date();document.getElementById('clock').textContent=d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}
+function tickClock(){const d=new Date();document.getElementById('clock').textContent=AP_MON[d.getMonth()]+' '+d.getDate()+', '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
 /*==SIM_CORE_END==*/
 // ==DAILY CHANGE STRIP== reads history.csv (written nightly by scripts/baseline.js)
 const HIST={rows:[],mode:'day'};
 function loadHistory(){
  fetch('history.csv?v='+Date.now()).then(r=>r.ok?r.text():null).then(t=>{
-  if(!t){document.getElementById('csBody').textContent='history.csv unavailable';return;}
+  if(!t){document.getElementById('csBody').textContent='The daily history didn\u2019t load.';return;}
   HIST.rows=parseCSV(t).filter(r=>r.date);
-  renderChangeStrip();renderHeroNote();
- }).catch(()=>{document.getElementById('csBody').textContent='history.csv unavailable';});
+  return fetch('notes/changes.json?v='+Date.now()).then(r=>r.ok?r.json():{}).catch(()=>({})).then(c=>{CHANGES=c||{};renderChangeStrip();renderHeroNote();});
+ }).catch(()=>{document.getElementById('csBody').textContent='The daily history didn\u2019t load.';});
 }
-// the line under the headline: the newest non-empty note in history.csv from the last seven days
+// The line under the headline. history.csv notes are internal shorthand, so readers never see them. A reader
+// sentence for each model change lives in notes/changes.json, keyed by date; a note row without one gets a
+// generic sentence. Both link to the changelog page.
+let CHANGES={};
+function changeText(date){
+ const c=CHANGES[date];
+ const href='changelog.html#'+date;
+ if(c&&c.text)return {text:c.text,href:c.href||href,link:c.link||'What changed'};
+ return {text:'We changed how the model works on '+edDate(date,false)+', so part of any move that day came from the model, not the markets.',href,link:'What changed'};
+}
+function changeHtml(date,lead){const c=changeText(date);return (lead?'<b>'+edDate(date,false)+'</b> ':'')+callEsc(c.text)+' <a href="'+c.href+'">'+c.link+'</a>';}
 function renderHeroNote(){
  const el=document.getElementById('heroNote');if(!el)return;
  const cutoff=new Date(Date.now()-7*86400000).toISOString().slice(0,10);
  const r=HIST.rows.slice().reverse().find(x=>(x.note||'').trim()&&x.date>=cutoff);
- el.textContent=r?r.date+'. '+r.note.trim():'';
+ el.innerHTML=r?changeHtml(r.date,false):'';
 }
 // ==WHAT 2026 SETTLED== resolved levers render locked, no slider
 function renderSettled(){
  const el=document.getElementById('settledBody');if(!el)return;
  el.innerHTML=Object.keys(RESOLVED).map(id=>{const r=RESOLVED[id];
-  return '<div class="rs"><span class="rl">'+r.label+'</span><span class="rb">Resolved '+r.date+'</span><span class="cv">'+r.outcome+'%</span><div class="rn">'+r.note+' <a href="'+r.source_url+'" target="_blank" rel="noopener">Source</a></div></div>';}).join('');
+  return '<div class="rs"><span class="rl">'+r.label+'</span><span class="rb">Settled '+edDate(r.date,false)+'</span><span class="cv">'+r.outcome+'%</span><div class="rn">'+r.note+' <a href="'+r.source_url+'" target="_blank" rel="noopener">Source</a></div></div>';}).join('');
 }
 // reviewed stamps on lever notes, and the footer date from the newest stamp anywhere
 function renderReviewed(){
- document.querySelectorAll('.ctlnote[data-reviewed]').forEach(n=>{if(!n.querySelector('.rv'))n.insertAdjacentHTML('beforeend','<span class="rv">reviewed '+n.dataset.reviewed+'</span>');});
+ document.querySelectorAll('.ctlnote[data-reviewed]').forEach(n=>{if(!n.querySelector('.rv'))n.insertAdjacentHTML('beforeend','<span class="rv">Reviewed '+edMonth(n.dataset.reviewed)+'</span>');});
  const dates=CANDS.map(c=>c.reviewed).concat([...document.querySelectorAll('[data-reviewed]')].map(n=>n.dataset.reviewed)).filter(Boolean).sort();
- const f=document.getElementById('priorsDate');if(f&&dates.length)f.textContent=dates[dates.length-1];
+ const f=document.getElementById('priorsDate');if(f&&dates.length)f.textContent=edMonth(dates[dates.length-1]).toUpperCase();
 }
 // ==NIGHTLY HEATMAP== heatmap.json and rankings.json are written by scripts/heatmap.js at default settings.
 // The chips are the top seven turning points by average swing, so nobody picks them by hand.
@@ -1313,9 +1336,9 @@ function renderChips(ranked){
 }
 function loadHeatmap(){
  Promise.all(['heatmap.json','rankings.json'].map(f=>fetch(f+'?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null))).then(([H,R])=>{
-  if(H&&Array.isArray(H.results)&&H.results.length){renderHeatmap(H.results,H.watch||HM_WATCH);document.getElementById('hmStatus').textContent='nightly build '+H.date+' · default settings · '+(H.results.length*H.pairs).toLocaleString()+' matched seed runs';}
-  else document.getElementById('hmStatus').textContent='nightly build unavailable';
-  if(R&&Array.isArray(R.ranked)&&R.ranked.length){renderRankings(R.ranked);document.getElementById('rankStatus').textContent='nightly build '+R.date+' · top lever: '+R.ranked[0].key;renderChips(R.ranked);}
+  if(H&&Array.isArray(H.results)&&H.results.length){renderHeatmap(H.results,H.watch||HM_WATCH);document.getElementById('hmStatus').textContent='Built overnight '+edDate(H.date,false)+' from '+(H.results.length*H.pairs).toLocaleString()+' matched runs at the default settings';}
+  else document.getElementById('hmStatus').textContent='Overnight build unavailable. Click Recompute to build it here';
+  if(R&&Array.isArray(R.ranked)&&R.ranked.length){renderRankings(R.ranked);document.getElementById('rankStatus').textContent='Built overnight '+edDate(R.date,false)+' at the default settings';renderChips(R.ranked);}
  });
 }
 // ==CALLS== calls.csv is graded nightly by scripts/calls.js
@@ -1325,17 +1348,17 @@ function callDaysLeft(d){return Math.round((new Date(d+'T12:00:00')-new Date(new
 function callRecord(rows){const g=rows.filter(r=>r.status==='true'||r.status==='false');return g.filter(r=>r.status==='true').length+' for '+g.length;}
 function loadCalls(){
  fetch('calls.csv?v='+Date.now()).then(r=>r.ok?r.text():null).then(t=>{
-  const el=document.getElementById('callsBody');if(!t){el.textContent='calls.csv unavailable';return;}
+  const el=document.getElementById('callsBody');if(!t){el.textContent='The calls ledger didn\u2019t load.';return;}
   const all=parseQuotedCSV(t), rows=all.filter(r=>r.status!=='test'), tests=all.filter(r=>r.status==='test');
   document.getElementById('callRecord').textContent='Record: '+callRecord(rows);
   const open=rows.filter(r=>r.status==='open').sort((a,b)=>a.deadline<b.deadline?-1:1);
   const done=rows.filter(r=>r.status==='true'||r.status==='false').sort((a,b)=>a.resolved_date<b.resolved_date?1:-1).slice(0,5);
   let h='';
-  if(open.length)h+='<table class="cstable"><tr><th>Open call</th><th>Deadline</th><th>Days left</th></tr>'+open.map(r=>'<tr><td style="text-align:left">'+callEsc(r.text)+'</td><td>'+r.deadline+'</td><td>'+Math.max(0,callDaysLeft(r.deadline))+'</td></tr>').join('')+'</table>';
-  if(done.length)h+='<table class="cstable"><tr><th>Graded call</th><th>Result</th><th>On</th></tr>'+done.map(r=>'<tr><td style="text-align:left">'+callEsc(r.text)+'</td><td class="'+(r.status==='true'?'up':'down')+'">'+(r.status==='true'?'Right':'Wrong')+'</td><td>'+r.resolved_date+'</td></tr>').join('')+'</table>';
+  if(open.length)h+='<table class="cstable"><tr><th>Open call</th><th>Deadline</th><th>Days left</th></tr>'+open.map(r=>'<tr><td style="text-align:left">'+callEsc(r.text)+'</td><td>'+edDate(r.deadline)+'</td><td>'+Math.max(0,callDaysLeft(r.deadline))+'</td></tr>').join('')+'</table>';
+  if(done.length)h+='<table class="cstable"><tr><th>Graded call</th><th>Result</th><th>On</th></tr>'+done.map(r=>'<tr><td style="text-align:left">'+callEsc(r.text)+'</td><td class="'+(r.status==='true'?'up':'down')+'">'+(r.status==='true'?'Right':'Wrong')+'</td><td>'+edDate(r.resolved_date)+'</td></tr>').join('')+'</table>';
   if(!h)h='<div class="muted">No calls on the record yet.'+(tests.length?' The ledger holds '+tests.length+(tests.length>1?' test rows, which never count.':' test row, which never counts.'):'')+'</div>';
   el.innerHTML=h;el.classList.remove('muted');
- }).catch(()=>{document.getElementById('callsBody').textContent='calls.csv unavailable';});
+ }).catch(()=>{document.getElementById('callsBody').textContent='The calls ledger didn\u2019t load.';});
 }
 // ==APPROVAL== approval.json is written nightly by scripts/fetch_approval.py. It sets the lever's default;
 // the lever stays draggable. A reader's own value (from a preset or a drag) is never overwritten.
@@ -1343,7 +1366,7 @@ let APPR_TOUCHED=false;
 function loadApproval(){
  fetch('approval.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(A=>{
   if(!A||typeof A.value!=='number')return;
-  const n=document.getElementById('apprNote');if(n)n.textContent='Default is the '+A.source+' average, '+A.date+': approve '+A.approve.toFixed(1)+'. Pulled nightly.';
+  const n=document.getElementById('apprNote');if(n)n.textContent='Default is the '+A.source+' average as of '+edDate(A.date)+': '+A.approve.toFixed(1)+' percent approve. Updated nightly.';
   if(APPR_TOUCHED)return;
   const e=document.getElementById('pTrump'),o=document.getElementById('pTrumpOut');
   const v=Math.max(+e.min,Math.min(+e.max,A.value));
@@ -1352,7 +1375,7 @@ function loadApproval(){
 }
 // ==DESK NOTE== notes/latest.json is written nightly by scripts/desk_note.py from templates
 function loadDeskNote(){
- fetch('notes/latest.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(n=>{if(!n||!n.text)return;document.getElementById('deskText').textContent=n.text;document.getElementById('deskDate').textContent=n.date;document.getElementById('deskNote').hidden=false;}).catch(()=>{});
+ fetch('notes/latest.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(n=>{if(!n||!n.text)return;const dt=document.getElementById('deskText');dt.textContent=n.text;if(n.link&&n.link.href){dt.insertAdjacentHTML('beforeend',' <a href="'+n.link.href+'">'+callEsc(n.link.text||'What changed')+'</a>');}document.getElementById('deskDate').textContent=edDate(n.date);document.getElementById('deskNote').hidden=false;}).catch(()=>{});
 }
 function loadWire(){
  fetch('wire.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(w=>{if(!w||!Array.isArray(w.items))return;WIRE=w.items;initTicker();}).catch(()=>{});
@@ -1365,15 +1388,15 @@ function stripLabel(base,last){
  const d0=new Date(base.date+'T12:00:00'),d1=new Date(last.date+'T12:00:00');
  const days=Math.round((d1-d0)/86400000);
  if(days===1)return 'Since yesterday';
- return 'Since '+base.date;
+ return 'Since '+edDate(base.date,false);
 }
 function renderChangeStrip(){
  const body=document.getElementById('csBody'),title=document.getElementById('csTitle');
  const rows=HIST.rows;
- if(rows.length<2){body.innerHTML='<b>First run</b> · the strip fills in once history.csv has two rows.';title.textContent='Latest change';return;}
+ if(rows.length<2){body.innerHTML='<b>First day</b> · this fills in after the second overnight update.';title.textContent='Latest change';return;}
  const last=rows[rows.length-1];
  const base=HIST.mode==='launch'?rows[0]:rows[rows.length-2];
- title.textContent=(HIST.mode==='launch'?'Since launch':stripLabel(base,last))+' · '+base.date+' to '+last.date;
+ title.textContent=(HIST.mode==='launch'?'Since launch':stripLabel(base,last))+' · '+edDate(base.date,base.date.slice(0,4)!==last.date.slice(0,4)?undefined:false)+' to '+edDate(last.date,false);
  const ids=CANDS.map(c=>c.id).filter(id=>id!=='other'&&numOr(last['k_'+id])!==null);
  const top=ids.slice().sort((a,b)=>numOr(last['k_'+b])-numOr(last['k_'+a])).slice(0,8);
  const items=top.map(id=>{
@@ -1396,7 +1419,7 @@ function renderChangeStrip(){
    else book='both books '+sgn(x.kal);
   }
   h+='<tr'+(i>=6?' class="csmore" hidden':'')+'><td><span class="pooldot" style="background:var(--p-'+(POOLOF[x.id]||'out')+')"></span>'+nm(x.id)+'</td>';
-  if(x.dk===null&&x.dm===null)h+='<td colspan="2" class="nottracked">not tracked in '+baseMonth+'</td>';
+  if(x.dk===null&&x.dm===null)h+='<td colspan="2" class="nottracked">not tracked in '+edMonth(baseMonth)+'</td>';
   else h+='<td class="'+(x.dk===null?'':cls(x.dk))+'">'+(x.dk===null?'':sgn(x.dk))+'</td><td class="'+(x.dm===null?'':cls(x.dm))+'">'+(x.dm===null?'':sgn(x.dm))+'</td>';
   if(hasBook)h+='<td class="book">'+book+'</td>';
   if(hasRun)h+='<td class="'+(x.dr===null?'':cls(x.dr))+'">'+(x.dr===null?'':sgn(x.dr))+'</td>';
@@ -1404,11 +1427,11 @@ function renderChangeStrip(){
  });
  h+='</table>';
  if(items.length>6)h+='<a class="csmorelink" href="#" onclick="event.preventDefault();document.querySelectorAll(\'#csBody .csmore\').forEach(r=>r.hidden=!r.hidden);this.textContent=this.textContent===\'Show more\'?\'Show fewer\':\'Show more\';">Show more</a>';
- if(!hasBook&&!hasRun)h+='<div class="legend">Book detail and run odds begin with the next nightly row.</div>';
+ if(!hasBook&&!hasRun)h+='<div class="legend">Book detail and run odds start with the next overnight update.</div>';
  h+='<div class="legend">Market is the Kalshi and Polymarket blend, model is first place share at default settings, both in points.</div>';
  // structural notes: any row after the base that carries one explains a jump the books did not cause
  const bi=rows.indexOf(base);
- rows.slice(bi+1).filter(r=>(r.note||'').trim()).forEach(r=>{h+='<div class="csnote"><b>'+r.date+'</b> '+r.note.trim()+'</div>';});
+ rows.slice(bi+1).filter(r=>(r.note||'').trim()).forEach(r=>{h+='<div class="csnote">'+changeHtml(r.date,true)+'</div>';});
  body.innerHTML=h;
 }
 // ==YOUR BRACKET== reader priors for the top six by market, encoded in the URL as ?me=
@@ -1502,7 +1525,7 @@ fetch('markets.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(M=>{
  });
  // AOC and Harris run probabilities live on the sliders, so the run market sets those too
  [['pAoc','aoc'],['pHarris','harris']].forEach(([sl,id])=>{const r=M.run?M.run[id]:undefined;const el=document.getElementById(sl);if(el&&typeof r==='number'){el.value=Math.round(r);const o=document.getElementById(sl+'Out');if(o)o.textContent=Math.round(r)+'%';}});
- if(M.date){const b=document.getElementById('updBadge');if(b)b.textContent='Updated '+M.date;const sd=document.getElementById('stDate');if(sd)sd.textContent='Markets '+M.date;}
+ if(M.date){const b=document.getElementById('updBadge');if(b)b.textContent='Updated '+edDate(M.date);const sd=document.getElementById('stDate');if(sd)sd.textContent='Markets as of '+edDate(M.date,false);const by=document.getElementById('bylineDate');if(by)by.textContent=' · Last updated '+edDate(M.date);}
  refreshOdds();renderPollBoard();paintDefaultRows();if(!BR.touched)buildBracket();
  if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();
 }).catch(()=>{});

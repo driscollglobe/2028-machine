@@ -1,4 +1,4 @@
 id,date_made,text,metric,operator,threshold,deadline,status,resolved_date,resolved_value
-C1,2026-11-09,AOC's blended market price reaches 20 by 2027-06-30.,market.aoc,>=,20,2027-06-30,open,,
-C2,2026-11-09,Ossoff's blended market price falls below 20 by 2027-06-30.,market.ossoff,<,20,2027-06-30,open,,
-C3,2026-11-09,Talarico's Kalshi run odds reach 30 percent by 2027-12-31.,run.talarico,>=,30,2027-12-31,open,,
+C1,2026-11-09,"AOC's blended market price is above Ossoff's on any day on or before June 30, 2027.",market.aoc-market.ossoff,>,0,2027-06-30,open,,
+C2,2026-11-09,"Ossoff's Kalshi run odds reach 85 on or before June 30, 2027.",run.ossoff,>=,85,2027-06-30,open,,
+C3,2026-11-09,"Harris's poll minus market gap is under 10 on any day on or before June 30, 2027.",gap.harris,<,10,2027-06-30,open,,

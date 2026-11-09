@@ -22,6 +22,7 @@ function resolvePlaywright() {
   throw new Error('playwright module not found; npm install playwright (or set PLAYWRIGHT_MODULE_DIR)');
 }
 
+const { edDate } = require('./eddate');
 function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
 
 function cardHtml(title, sub, rows, date) {
@@ -46,7 +47,7 @@ function cardHtml(title, sub, rows, date) {
     + '<div class="globe">The Driscoll Globe</div><h1>The 2028 Machine</h1>'
     + '<div class="sub">' + esc(sub) + '</div><div><span class="lever">' + esc(title) + '</span></div>'
     + bars
-    + '<div class="foot"><span>' + esc(date) + ' · ' + RUNS.toLocaleString() + ' SIMULATED PRIMARIES</span><span>' + SITE_LABEL + '</span></div>'
+    + '<div class="foot"><span>' + esc(edDate(date).toUpperCase()) + ' · ' + RUNS.toLocaleString() + ' SIMULATED PRIMARIES</span><span>' + SITE_LABEL + '</span></div>'
     + '</div></body></html>';
 }
 
@@ -57,7 +58,7 @@ function writeSharePage(job, rows, date) {
   fs.mkdirSync(SHARE, { recursive: true });
   const target = SITE + '?bp=' + job.key;
   const img = SITE + 'cards/' + job.key + '.png';
-  const desc = job.title + ': ' + rows.map(r => r.name + ' ' + r.pct.toFixed(1) + '%').join(', ') + ' (' + date + ').';
+  const desc = job.title + ': ' + rows.map(r => r.name + ' ' + r.pct.toFixed(1) + '%').join(', ') + ' (' + edDate(date) + ').';
   const html = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>The 2028 Machine: ' + esc(job.title) + '</title>\n'
     + '<meta property="og:title" content="The 2028 Machine: ' + esc(job.title) + '">\n'
     + '<meta property="og:description" content="' + esc(desc) + '">\n'
@@ -81,7 +82,7 @@ async function main() {
   const cand = id => sim.CANDS.find(c => c.id === id);
   const lastName = id => cand(id).short || cand(id).name.split(' ').slice(-1)[0];
   const presets = sim.BP_PRESETS;
-  const jobs = [{ key: 'default', title: 'Default settings', sub: 'Who finishes first when the market sets the odds' }]
+  const jobs = [{ key: 'default', title: 'Where it stands', sub: 'Who finishes first in 20,000 simulated primaries' }]
     .concat(Object.keys(presets).map(k => ({ key: k, title: presets[k].label, sub: 'What changes when this turning point flips' })));
 
   fs.mkdirSync(OUT, { recursive: true });
@@ -130,8 +131,8 @@ function noteCardHtml(n) {
     + 'p{font-size:' + size + 'px;line-height:1.42;margin:0;}'
     + '.foot{margin-top:auto;display:flex;justify-content:space-between;font-family:Menlo,Consolas,monospace;font-size:16px;letter-spacing:.08em;color:#5c5b55;border-top:3px double #16171a;padding-top:12px;}'
     + '</style></head><body><div class="card"><div class="globe">The Driscoll Globe</div><h1>The 2028 Machine</h1>'
-    + '<div><span class="lever">Desk note ' + esc(n.date) + '</span></div><p>' + esc(n.text) + '</p>'
-    + '<div class="foot"><span>' + esc(n.date) + ' · TEMPLATED FROM THE NIGHTLY DATA</span><span>' + SITE_LABEL + '</span></div></div></body></html>';
+    + '<div><span class="lever">Desk note · ' + esc(edDate(n.date)) + '</span></div><p>' + esc(n.text) + '</p>'
+    + '<div class="foot"><span>THE 2028 MACHINE · UPDATED NIGHTLY</span><span>' + SITE_LABEL + '</span></div></div></body></html>';
 }
 
 main().catch(e => { console.error(e); process.exit(1); });

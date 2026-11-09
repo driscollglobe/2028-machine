@@ -85,3 +85,16 @@ test('the committed ledger validates', () => {
   assert.ok(rows.length >= 1);
   rows.forEach(r => assert.strictEqual(C.validate(r), null));
 });
+test('difference metrics and the poll gap read from the nightly data', () => {
+  const d = { markets: { blend: { aoc: 15.2, ossoff: 26.3 }, run: { ossoff: 70 } }, def: { gap: { harris: 14.6 } } };
+  assert.strictEqual(C.metricValue('market.aoc-market.ossoff', d), -11.1);
+  assert.strictEqual(C.metricValue('gap.harris', d), 14.6);
+  assert.strictEqual(C.metricValue('gap.newsom', d), null);
+  assert.strictEqual(C.metricValue('market.aoc-market.nobody', d), null);
+  const rows = C.parseCSV([C.HEAD.join(','),
+    'X,2026-11-09,AOC above Ossoff,market.aoc-market.ossoff,>,0,2027-06-30,open,,',
+    'Y,2026-11-09,Harris gap under 10,gap.harris,<,10,2027-06-30,open,,'].join('\n'));
+  rows.forEach(r => assert.strictEqual(C.validate(r), null));
+  C.grade(rows, { markets: { blend: { aoc: 27, ossoff: 26 } }, def: { gap: { harris: 9.9 } } }, '2026-12-01');
+  assert.deepStrictEqual(rows.map(r => r.status), ['true', 'true']);
+});

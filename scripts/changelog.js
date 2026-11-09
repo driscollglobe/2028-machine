@@ -24,6 +24,14 @@ function joinList(parts) {
   return parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1];
 }
 
+// changelog/index.json lists every entry, newest first, for changelog.html. The page keeps ISO dates.
+function writeIndex() {
+  const files = fs.readdirSync(OUTDIR).filter(f => /^\d{4}-\d{2}-\d{2}.*\.md$/.test(f)).sort().reverse();
+  const list = files.map(f => ({ id: f.replace(/\.md$/, ''), date: f.slice(0, 10), file: f }));
+  fs.writeFileSync(path.join(OUTDIR, 'index.json'), JSON.stringify(list, null, 1) + '\n');
+}
+if (process.argv[2] === '--index') { writeIndex(); process.exit(0); }
+
 const rows = parseCSV(fs.readFileSync(HISTORY, 'utf8')).filter(r => r.date);
 if (!rows.length) throw new Error('history.csv has no rows');
 const last = rows[rows.length - 1];
@@ -89,4 +97,5 @@ fs.mkdirSync(OUTDIR, { recursive: true });
 const file = path.join(OUTDIR, last.date + '.md');
 fs.writeFileSync(file, md);
 console.log('wrote changelog/' + last.date + '.md');
+writeIndex();
 console.log(md);

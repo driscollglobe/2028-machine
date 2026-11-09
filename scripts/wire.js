@@ -1,8 +1,10 @@
 // Wire templates. Short lines built from markets.json, default.json, history.csv and the
 // resolved levers in index.html. baseline.js calls wireItems() nightly and writes wire.json.
 // The Phase 7 desk note is meant to reuse these helpers. Node 20, no packages.
-// House rules: ISO dates, no em or en dashes, no prices typed by hand.
+// House rules: editorial dates (Nov. 9), no em or en dashes, no prices typed by hand, and no ticker item
+// names a model parameter (anchor, lever, lane crowding, ballots).
 'use strict';
+const { edDate } = require('./eddate');
 
 const NUMWORD = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
 
@@ -35,7 +37,7 @@ const T = {
     const { M, ids, name } = ctx;
     const top = topBy(M.blend, ids, 3);
     if (top.length < 3) return null;
-    return 'BLEND: ' + top.map(id => name(id) + ' ' + f1(M.blend[id])).join(', ');
+    return 'MARKET BLEND: ' + top.map(id => name(id) + ' ' + f1(M.blend[id])).join(', ');
   },
   modelLeader(ctx) {
     const { D, name } = ctx;
@@ -57,8 +59,9 @@ const T = {
       const a = parseFloat(prev['k_' + id]), b = M.blend[id];
       return (isFinite(a) && typeof b === 'number') ? { id, d: b - a } : null;
     }).filter(Boolean).sort((a, b) => Math.abs(b.d) - Math.abs(a.d))[0];
-    if (!mv || Math.abs(mv.d) < 0.05) return 'THE BLEND DID NOT MOVE SINCE ' + prev.date;
-    return 'BIGGEST MOVE SINCE ' + prev.date + ': ' + name(mv.id) + ' ' + signed(mv.d) + ' TO ' + f1(M.blend[mv.id]);
+    const since = upper(edDate(prev.date, false));
+    if (!mv || Math.abs(mv.d) < 0.05) return 'THE MARKET BLEND DID NOT MOVE SINCE ' + since;
+    return 'BIGGEST MOVE SINCE ' + since + ': ' + name(mv.id) + ' ' + signed(mv.d) + ' TO ' + f1(M.blend[mv.id]);
   },
   topRun(ctx) {
     const { D, ids, name, cands } = ctx;
@@ -72,7 +75,7 @@ const T = {
   contested(ctx) {
     const { D } = ctx;
     if (!D || typeof D.contested !== 'number') return null;
-    return f1(D.contested) + '% OF SIMULATED PRIMARIES END IN A CONTESTED CONVENTION (DEFAULT SETTINGS)';
+    return f1(D.contested) + '% OF SIMULATED PRIMARIES REACH THE CONVENTION WITHOUT A PLEDGED MAJORITY';
   },
   resolved(ctx) {
     const { R } = ctx;
@@ -83,10 +86,10 @@ const T = {
     const date = Object.keys(byDate).sort().pop();
     const list = byDate[date];
     const n = NUMWORD[list.length] || String(list.length);
-    return upper(n) + ' MIDTERM LEVERS RESOLVED ' + date + ': ' + list.map(r => upper(r.label)).join(', ') + '. THE MODEL NOW TREATS THEM AS FACT';
+    return upper(n) + ' MIDTERM RACES SETTLED ' + upper(edDate(date, false)) + ': ' + list.map(r => upper(r.label)).join(', ') + '. THE MODEL NOW TREATS THEM AS FACT';
   },
   anchors(ctx) {
-    return 'MARKET ANCHORS BLEND KALSHI AND POLYMARKET, UPDATED NIGHTLY · LAST UPDATE ' + ctx.M.date;
+    return 'MARKET PRICES BLEND KALSHI AND POLYMARKET, UPDATED NIGHTLY · LAST UPDATE ' + upper(edDate(ctx.M.date));
   }
 };
 
