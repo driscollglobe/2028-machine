@@ -1,0 +1,65 @@
+{
+ "lane_crowding": {
+  "label": "Lane crowding",
+  "control": "pCrowd",
+  "value": 0.05,
+  "date": "2026-11-09",
+  "reason": "Each extra candidate in a pool trims everyone in it a little; at 0.15 a third candidate cost 23 percent, more than anything in the data supports, and 0.05 costs about 9."
+ },
+ "transfer_share": {
+  "label": "Secondary pool transfer share",
+  "rule": "pool2Weight",
+  "value": 0.5,
+  "date": "2026-09-10",
+  "reason": "When a candidate drops out, rivals whose second home is the same pool count half as much as rivals whose first home is."
+ },
+ "field_leak": {
+  "label": "Field leak",
+  "rule": "transferLeak",
+  "value": 0.3,
+  "date": "2026-11-09",
+  "reason": "Not every voter follows a departing candidate to a pool mate, so 30 percent of the transfer goes to the whole field in proportion to strength."
+ },
+ "coordination": {
+  "label": "Establishment coordination",
+  "control": "pCoord",
+  "value": 0.5,
+  "date": "2026-06-14",
+  "reason": "Even odds that the strongest establishment pool consolidates behind its delegate leader after the early states, raised when Trump is strong."
+ },
+ "coordination_failure": {
+  "label": "Coordination failure",
+  "control": "pCoordFail",
+  "value": 0.35,
+  "date": "2026-06-14",
+  "reason": "About one run in three the establishment never consolidates, nobody steps aside, and candidates hang on to a lower vote share."
+ },
+ "delegate_lean": {
+  "label": "Automatic delegate lean",
+  "control": "pAutoLean",
+  "value": 0.6,
+  "date": "2026-11-09",
+  "reason": "Automatic delegates are party insiders, so 60 percent of their votes from the second ballot go to Party Anchor and Suburb candidates still standing."
+ },
+ "debate_skill": {
+  "label": "Debate skill",
+  "control": "pDebate",
+  "value": 0.5,
+  "date": "2026-06-14",
+  "reason": "Half of the debating edge or weakness of each of the top four finishers carries into their strength after every contest."
+ },
+ "random_branch_rate": {
+  "label": "Random branch-point events",
+  "control": "pEvents",
+  "value": 0.4,
+  "date": "2026-06-14",
+  "reason": "Four runs in ten get one surprise event before the field forms; this is today's rate, and the clock lowers it to a quarter by South Carolina."
+ },
+ "dropout_transfer": {
+  "label": "Dropout support transfer",
+  "control": "pDrop",
+  "value": 0.35,
+  "date": "2026-09-10",
+  "reason": "About a third of a departing candidate's strength moves on to the candidates still running; the rest of their voters scatter or stay home."
+ }
+}
