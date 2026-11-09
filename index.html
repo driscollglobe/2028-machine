@@ -454,7 +454,7 @@ const CANDS=[
  {id:'rahm',reviewed:'2026-09',name:'Rahm Emanuel',role:'Former Amb./Mayor',age:68,mkt:3.1,run:85,lane:'fight',rank:13,debate:1.0,str:'Money, message, relentless',weak:'Wrong era; base despises him',base:2,fit:{SC:0.70,NH:1.40,NV:0.80,IA:0.90,MI:0.95,GA:0.75,NC:0.85,ST:0.95}},
  {id:'whitmer',reviewed:'2026-09',name:'Gretchen Whitmer',role:'Gov., Michigan',age:57,mkt:0.7,run:27,lane:'suburb',rank:14,debate:1.0,str:'Rust Belt brand',weak:'Looks like she passed',base:6,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.10,MI:1.70,GA:0.85,NC:0.95,ST:1.00}},
  {id:'moore',reviewed:'2026-09',name:'Wes Moore',role:'Gov., Maryland',age:50,mkt:2.0,run:70,lane:'anchor',rank:15,debate:1.05,str:'Generational, compelling bio',weak:'Thin executive record',base:4,fit:{SC:1.25,NH:0.80,NV:0.95,IA:0.85,MI:0.95,GA:1.10,NC:1.10,ST:1.00}},
- {id:'warnock',reviewed:'2026-09',name:'Raphael Warnock',role:'Sen., Georgia',age:59,mkt:0.7,run:35,lane:'anchor',rank:16,debate:1.1,str:'Heir to Black institutional support',weak:'Overshadowed by Ossoff',base:4,fit:{SC:1.45,NH:0.80,NV:0.95,IA:0.85,MI:0.95,GA:1.40,NC:1.15,ST:1.00}},
+ {id:'warnock',reviewed:'2026-09',name:'Raphael Warnock',role:'Sen., Georgia',age:59,mkt:0.7,run:35,lane:'anchor',rank:16,debate:1.1,str:'Heir to Black institutional support',weak:'Overshadowed by Ossoff',heirIfOut:{ids:['harris','ossoff'],mult:3},base:4,fit:{SC:1.45,NH:0.80,NV:0.95,IA:0.85,MI:0.95,GA:1.40,NC:1.15,ST:1.00}},
  {id:'talarico',reviewed:'2026-11',name:'James Talarico',role:'Sen.-elect, Texas',age:36,mkt:2.1,run:15,lane:'fight',rank:17,debate:1.1,str:'Viral, young, surprising',weak:'No infrastructure',base:8,fit:{SC:1.05,NH:0.80,NV:0.95,IA:0.95,MI:0.90,GA:0.95,NC:1.00,ST:1.10}},
  {id:'elsayed',reviewed:'2026-11',name:'Abdul El-Sayed',role:'Sen.-elect, Michigan',age:44,mkt:2.0,run:40,runIfAocOut:70,lane:'movement',rank:18,debate:1.05,str:'Sanders lineage, Michigan Senate platform',weak:'Untested nationally; splits the left with AOC',base:8,fit:{SC:0.70,NH:1.00,NV:1.10,IA:1.00,MI:1.60,GA:0.75,NC:0.85,ST:1.00}},
  {id:'stewart',reviewed:'2026-09',name:'Jon Stewart',role:'Broadcaster',age:65,mkt:0.4,run:12,lane:'out',rank:19,debate:1.2,str:'Attention, anti-elite credibility',weak:'66 on election day; wants influence not the job',base:5,fit:{SC:0.60,NH:1.10,NV:1.00,IA:0.90,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
@@ -857,6 +857,10 @@ function simulate(C,collect){
   else if(pool==='out')b*=lO;
   else b*=lI;
   if(c.id==='other')b*=(aoc?1:1.5);
+   // heirIfOut (operator, 2026-11-09): when every candidate listed stays out, this candidate's strength is
+   // multiplied by mult. Warnock inherits the Georgia and Black-voter lane when Harris and Ossoff both pass: x3.
+   // The nightly market fit sees the rule too, so at market weight 100 he still matches his market price.
+   if(c.heirIfOut&&c.heirIfOut.ids.every(k=>!inRace[k]))b*=c.heirIfOut.mult;
   if(black==='hold'&&harris){if(c.id==='harris')b*=1.45;if(c.id==='moore')b*=0.7;if(c.id==='pete')b*=0.6;}
   if(black==='another'&&c.id===blackBene)b*=1.3;
   if(black==='gen'){if(c.id==='aoc')b*=1.2;if(c.id==='moore')b*=1.25;if(c.id==='ossoff')b*=1.15;if(c.id==='harris')b*=0.75;}
