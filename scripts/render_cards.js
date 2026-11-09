@@ -107,7 +107,31 @@ async function main() {
     console.log('wrote cards/' + job.key + '.png: ' + rows.map(r => r.id + ' ' + r.pct).join(', '));
     if (job.key !== 'default') writeSharePage(job, rows, M.date);
   }
+  // the desk note card, 1200x675, when desk_note.py has written today's note
+  const notePath = path.join(ROOT, 'notes', 'latest.json');
+  if (fs.existsSync(notePath)) {
+    const n = JSON.parse(fs.readFileSync(notePath, 'utf8'));
+    const np = await browser.newPage({ viewport: { width: 1200, height: 675 } });
+    await np.setContent(noteCardHtml(n), { waitUntil: 'load' });
+    await np.screenshot({ path: path.join(OUT, 'desk-note.png'), type: 'png' });
+    console.log('wrote cards/desk-note.png for ' + n.date);
+  }
   await browser.close();
+}
+
+function noteCardHtml(n) {
+  const size = n.text.length > 820 ? 23 : 25;
+  return '<!DOCTYPE html><html><head><meta charset="utf-8"><style>'
+    + 'body{margin:0;width:1200px;height:675px;background:#f5f3ec;color:#16171a;font-family:Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden;}'
+    + '.card{box-sizing:border-box;width:1200px;height:675px;padding:50px 64px;display:flex;flex-direction:column;}'
+    + '.globe{font-family:Georgia,serif;font-weight:700;font-size:18px;letter-spacing:.2em;text-transform:uppercase;}'
+    + 'h1{font-family:Georgia,serif;font-weight:700;font-size:40px;margin:6px 0 18px;}'
+    + '.lever{display:inline-block;font-family:Menlo,Consolas,monospace;font-size:15px;letter-spacing:.12em;text-transform:uppercase;background:#b8442b;color:#fff;padding:5px 12px;border-radius:6px;margin-bottom:18px;}'
+    + 'p{font-size:' + size + 'px;line-height:1.42;margin:0;}'
+    + '.foot{margin-top:auto;display:flex;justify-content:space-between;font-family:Menlo,Consolas,monospace;font-size:16px;letter-spacing:.08em;color:#5c5b55;border-top:3px double #16171a;padding-top:12px;}'
+    + '</style></head><body><div class="card"><div class="globe">The Driscoll Globe</div><h1>The 2028 Machine</h1>'
+    + '<div><span class="lever">Desk note ' + esc(n.date) + '</span></div><p>' + esc(n.text) + '</p>'
+    + '<div class="foot"><span>' + esc(n.date) + ' · TEMPLATED FROM THE NIGHTLY DATA</span><span>' + SITE_LABEL + '</span></div></div></body></html>';
 }
 
 main().catch(e => { console.error(e); process.exit(1); });

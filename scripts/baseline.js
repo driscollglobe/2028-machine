@@ -42,7 +42,8 @@ const def = {
   lead: res.lead,
   order: order,
   mkt: Object.fromEntries(CANDS.map(c => [c.id, c.mkt])),
-  run: runProb
+  run: runProb,
+  resolved: Object.keys(sim.RESOLVED || {}).map(k => ({ id: k, label: sim.RESOLVED[k].label, date: sim.RESOLVED[k].date, outcome: sim.RESOLVED[k].outcome }))
 };
 fs.writeFileSync(DEFAULT, JSON.stringify(def, null, 1) + '\n');
 
