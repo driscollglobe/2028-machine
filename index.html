@@ -358,7 +358,7 @@ body.show-adv h2.s.adv{display:block;}
 <div class="section">
  <div class="shead"><span>Hover a card for the dossier · set In/Out to override the market</span><button class="btn sm" onclick="resetField()">Reset field</button></div>
  <div class="cardgrid" id="cardgrid"></div>
- <div class="pollnote">Poll average weights national Democratic primary polls from the last 90 days by how recent they are (a poll counts half as much every 30 days), by sample size, and by pollster. Harvard CAPS Harris samples all Democrats rather than likely primary voters and runs hot on Harris, so its Harris number is taken down 15 points and the poll counts at 0.7 of a normal one. Polls measure name recognition this far out. Markets drive the model. The gap is the story.</div>
+ <div class="pollnote">Poll average weights national Democratic primary polls from the last 90 days by how recent they are (a poll counts half as much every 30 days), by sample size, and by pollster. Harvard CAPS Harris samples all Democrats rather than likely primary voters and runs hot on Harris, so its Harris number is taken down 15 points and the poll counts at 0.7 of a normal one. Polls this far out track name recognition, and the model now adjusts for it: a candidate fewer voters know runs at a discount that shrinks as news coverage grows. Markets drive the model. The gap is the story.</div>
 </div>
 
 <h2 class="s">The turning point heatmap</h2>
@@ -586,7 +586,7 @@ function convention(dels,C){
 // window, not on Super Tuesday or the long spring. Before, Iowa crashing the window moved Buttigieg 72 points:
 // x1.4 under the Iowa calendar against x0.7 under the DNC order, on every contest through June, on top of 1.5
 // fits in Iowa and New Hampshire. Momentum (momWin, momSecond, momCap) was traced and is not the driver.
-const SIMRULES={lateField:2,winnow:0.11,winnowFail:0.09,transferLeak:0.3,momWin:1.28,momSecond:1.10,momCap:2.4,stateCap:1.2,calEarly:true,priorSpread:0.30,priorBatch:100,pool2Weight:0.5};
+const SIMRULES={lateField:2,winnow:0.11,winnowFail:0.09,transferLeak:0.3,momWin:1.28,momSecond:1.10,momCap:2.4,stateCap:1.2,calEarly:true,priorSpread:0.30,priorBatch:100,pool2Weight:0.5,nidR:0.047,nidFav:0.5,nidBase:0.15,nidSlope:0.05,nidCap:0.6,nidNewsCap:3,nidFavClamp:0.5};
 // pool2Weight: a candidate whose secondary pool is the departing candidate's pool gets this weight in a transfer,
 // against 1 for a primary pool mate (and pool2Weight squared for secondary to secondary). knobs.json sets it.
 const DELS={SC:55,NH:33,NV:36,NM:34,VA:99,IA:40,MI:117,GA:108,NC:116,ST:1500,LS:2200};
@@ -633,9 +633,10 @@ function V(id){return document.getElementById(id).value;}
 // so that a = 100 at default settings reproduces the blend. Raw prices are the fallback. Prices are win
 // probabilities, and the sim's momentum and winnowing turn a strength lead into a bigger win share, so raw
 // prices overshoot the leader.
-function anchorBases(a,prior){
+function anchorBases(a,prior,months){
  const B={};
- const ob=c=>c.base*(prior&&prior[c.id]>0?prior[c.id]:1); // operator strength, drawn when a prior draw is passed
+ // operator strength: drawn when a prior draw is passed, discounted by name ID at months from the markets date
+ const ob=c=>c.base*(prior&&prior[c.id]>0?prior[c.id]:1)*(typeof months==='number'?nidMultAt(c.id,months):1);
  const sb=CANDS.reduce((t,c)=>t+c.base,0), sd=CANDS.reduce((t,c)=>t+ob(c),0);
  if(!(a>0)){CANDS.forEach(c=>B[c.id]=sb*ob(c)/sd);return B;}
  const mv=c=>Math.max(0,typeof c.mstr==='number'?c.mstr:(typeof c.madj==='number'?c.madj:c.mkt));
@@ -679,6 +680,49 @@ function daysToSC(){const t=CLOCK.today||new Date().toISOString().slice(0,10);re
 function clockFrac(days){const D0=isoDay(CLOCK.sc)-isoDay(CLOCK.start);return Math.max(0,Math.min(1,(days-1)/(D0-1)));}
 function clockEvents(days){const f=clockFrac(days);return CLOCK.eventsEnd+(1-CLOCK.eventsEnd)*f;}
 function clockSpread(days){const f=clockFrac(days);return CLOCK.spreadEnd+(SIMRULES.priorSpread-CLOCK.spreadEnd)*f;}
+// ==NAME ID== 2026-11-09 (name-id). Voters can't pick someone they haven't heard of, so operator strength runs at a
+// discount for candidates few people know, and the discount shrinks as news attention grows them.
+//   starting name ID: heard_of from nameid.csv (Economist/YouGov, newest wave per candidate) as a fraction, or
+//     with no YouGov entry, nidBase + nidSlope * attention score, capped at nidCap, and marked estimated
+//   each month: x += nidR * score/10 * news_index * (1 - x), news_index = the candidate's 7-day Google News
+//     count over the field median, capped at nidNewsCap. In closed form after m months:
+//     x = 1 - (1 - x0) * (1 - nidR * score/10 * news_index) ^ m
+//   operator strength x sqrt(name ID) x (1 + nidFav * net favorable among Democrats, clamped to +-nidFavClamp)
+// This multiplies the operator side before the anchor blend, so the market side is untouched. The clock sets
+// the months: from the markets date to each contest's date in CAL_DATES, by position in the calendar.
+// "Someone else" takes the median multiplier of the named field.
+const CAL_DATES={early:['2028-01-22','2028-02-01','2028-02-08','2028-02-15','2028-02-22','2028-02-29'],ST:'2028-03-07',LS:'2028-05-02'};
+const NAMEID={on:false,x0:{},k:{},fav:{},est:{},src:{},score:{},news:{},cache:{}};
+function nameIdSetup(nameRows,scoreRows,attnRows){
+ const N=NAMEID;N.on=true;N.x0={};N.k={};N.fav={};N.est={};N.src={};N.score={};N.news={};N.cache={};
+ const by={};(nameRows||[]).forEach(r=>{if(r.id)by[r.id]=r;});
+ (scoreRows||[]).forEach(r=>{const x=parseFloat(r.score);if(r.id&&isFinite(x))N.score[r.id]={score:x,reviewed:r.reviewed||''};});
+ // news: mean daily count over the rows that have one, times 7, over the field median; capped
+ const rows=(attnRows||[]).slice(-7),wk={};
+ CANDS.forEach(c=>{const v=rows.map(r=>parseFloat(r[c.id])).filter(x=>isFinite(x));if(v.length)wk[c.id]=v.reduce((a,b)=>a+b,0)/v.length*7;});
+ const vals=Object.values(wk).sort((a,b)=>a-b),med=vals.length?(vals.length%2?vals[(vals.length-1)/2]:(vals[vals.length/2-1]+vals[vals.length/2])/2):0;
+ CANDS.forEach(c=>{
+  if(c.id==='other')return;
+  const sc=N.score[c.id]?N.score[c.id].score:1;
+  const idx=med>0&&typeof wk[c.id]==='number'?Math.min(SIMRULES.nidNewsCap,wk[c.id]/med):1;
+  N.news[c.id]=idx;
+  const r=by[c.id],h=r?parseFloat(r.heard_of):NaN,f=r?parseFloat(r.net_fav_dem):NaN;
+  if(isFinite(h)){N.x0[c.id]=Math.max(0.01,Math.min(1,h/100));N.est[c.id]=false;N.src[c.id]={date:r.date,source:r.source};}
+  else{N.x0[c.id]=Math.min(SIMRULES.nidCap,SIMRULES.nidBase+SIMRULES.nidSlope*sc);N.est[c.id]=true;N.src[c.id]=null;}
+  N.fav[c.id]=isFinite(f)?Math.max(-SIMRULES.nidFavClamp,Math.min(SIMRULES.nidFavClamp,f/100)):0;
+  N.k[c.id]=Math.max(0,Math.min(1,SIMRULES.nidR*sc/10*idx));
+ });
+}
+function nidAt(id,months){const x0=NAMEID.x0[id];if(typeof x0!=='number')return 1;return 1-(1-x0)*Math.pow(1-(NAMEID.k[id]||0),Math.max(0,months));}
+function nidMultAt(id,months){
+ if(!NAMEID.on)return 1;
+ const key=months.toFixed(4);let m=NAMEID.cache[key];
+ if(!m){m={};const v=[];CANDS.forEach(c=>{if(c.id==='other')return;m[c.id]=Math.sqrt(nidAt(c.id,months))*(1+SIMRULES.nidFav*(NAMEID.fav[c.id]||0));v.push(m[c.id]);});
+  v.sort((a,b)=>a-b);m.other=v.length?(v.length%2?v[(v.length-1)/2]:(v[v.length/2-1]+v[v.length/2])/2):1;NAMEID.cache[key]=m;}
+ return typeof m[id]==='number'?m[id]:1;
+}
+function monthsTo(date){const t=CLOCK.today||new Date().toISOString().slice(0,10);return Math.max(0,(isoDay(date)-isoDay(t))/30.44);}
+function contestDate(st,seq){if(st==='ST'||st==='LS')return CAL_DATES[st];const i=seq.indexOf(st);return CAL_DATES.early[Math.max(0,Math.min(CAL_DATES.early.length-1,i))];}
 // ==TWO-WAY RACE== When first and second place are within TWO_WAY_PTS of each other, that gap is inside seed
 // noise, so nobody is named the leader: the hero, the default share card, the wire's model line and the desk note
 // all name both. twoWay takes rows sorted by share, each {id, first}, and returns [first id, second id] or null.
@@ -721,7 +765,10 @@ function cfg(){const days=daysToSC();return{days,spread:clockSpread(days),crowd:
 function simulate(C,collect){
  const N=collect?1:1; // single run when narrating
  const prior=C.prior||drawPrior(C.spread);
- const B=anchorBases(typeof C.anchor==='number'?C.anchor:0,prior);
+ const aW=typeof C.anchor==='number'?C.anchor:0;
+ // name ID is measured at each contest; B is the blend at the first one (always the first early date), Bt at later ones (see contest)
+ const nidOn=NAMEID.on, m0=nidOn?monthsTo(CAL_DATES.early[0]):undefined;
+ const B=anchorBases(aW,prior,m0), Bt={};
  const appr=C.apprMixed?(33+(rng()+rng())/2*25):C.appr, panic=Math.min(1,Math.max(0,(appr-35)/30));
  const TH={afford:0.48-0.18*panic,fight:0.16+0.20*panic,norm:0.14+0.12*panic,ai:0.22-0.14*panic};
  const aoc=rng()<C.pA, harris=rng()<C.pH, nsurv=rng()<C.pN;
@@ -867,6 +914,9 @@ function simulate(C,collect){
  function board(){return Object.keys(dels).map(k=>({k,d:dels[k]})).filter(x=>x.d>0).sort((a,b)=>b.d-a.d).slice(0,5);}
  function contest(st,limitTo){
   const sc={};let tot=0;
+  // name ID keeps growing through the season: strength at this contest over strength at the first, before the 0.6 power
+  const nidGrow={};
+  if(nidOn){const d=contestDate(st,seq),key=st+':'+d;if(!Bt[key])Bt[key]=anchorBases(aW,prior,monthsTo(d));CANDS.forEach(c=>{nidGrow[c.id]=B[c.id]>0?Math.pow(Bt[key][c.id]/B[c.id],0.6):1;});}
   CANDS.forEach(c=>{
    if(!alive[c.id])return;if(limitTo&&!limitTo.includes(c.id))return;
    let f=c.fit[st==='LS'?'ST':st];
@@ -875,6 +925,7 @@ function simulate(C,collect){
    if(st==='NV'&&((latino==='aoc'&&c.id==='aoc')||(latino==='pop'&&POOLOF[c.id]==='movement')))f*=1.15;
    else if(st==='NV'&&latino==='pop'&&POOL2[c.id]==='movement')f*=1.075;
    if(SIMRULES.stateCap)f=Math.min(SIMRULES.stateCap,Math.max(1/SIMRULES.stateCap,f));
+   if(nidOn&&B[c.id]>0){const g=nidGrow[c.id];if(g!==1&&g>0)f*=g;}
    let v=str[c.id]*f*mom[c.id]*Math.exp(gnoise()*0.42);
    if(!isFinite(v)||v<0)v=0;
    sc[c.id]=v;tot+=v;
@@ -1121,7 +1172,7 @@ function oddsRow(c){
  const gapTxt=x.gap===null?'<b>&nbsp;</b>':'<b class="gap '+(x.gap>=0?'pos':'neg')+'">'+fmtGap(x.gap)+'</b>';
  return '<span'+(typeof c.madj==='number'?' title="Corrected for long-shot bias: '+c.madj.toFixed(1)+'%. The model anchors to the corrected price."':'')+'><i>market</i><b>'+x.mkt.toFixed(1)+'%</b></span><span><i>poll</i>'+pollTxt+'</span><span><i>gap</i>'+gapTxt+'</span>';
 }
-function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=oddsRow(c);const r=document.getElementById('runrow_'+c.id);if(r)r.innerHTML='<span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+attnCell(c);});}
+function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=oddsRow(c);const r=document.getElementById('runrow_'+c.id);if(r)r.innerHTML='<span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+nidCell(c)+attnCell(c);});}
 function renderPollBoard(){
  const body=document.getElementById('pollboardBody');if(!body)return;
  const top=CANDS.filter(c=>c.id!=='other').slice().sort((a,b)=>b.mkt-a.mkt).slice(0,6);
@@ -1156,7 +1207,7 @@ function buildCards(){
    +pic
    +'<div class="nm">'+c.name+'</div><div class="meta">'+c.role+' · '+c.age+' in \u201928</div>'
    +'<div class="odds polls" id="odds_'+c.id+'">'+oddsRow(c)+'</div>'
-   +'<div class="odds pair" id="runrow_'+c.id+'"><span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+attnCell(c)+'</div>'
+   +'<div class="odds pair" id="runrow_'+c.id+'"><span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+nidCell(c)+attnCell(c)+'</div>'
    +'<span class="lane '+c.lane+'" title="'+poolTip(c).replace(/"/g,'&quot;')+'">'+tagLabel(c)+'</span>'
    +'<div class="sw"><b>Strength:</b> '+c.str+'<br><b>Weakness:</b> '+c.weak+'</div>'
    +'<a class="gaplink" href="gap.html#'+c.id+'" onclick="event.stopPropagation()">Polls vs market</a></div>';
@@ -1223,6 +1274,10 @@ function spark(v){
  const pts=vals.map((x,i)=>((vals.length<2?w/2:i*w/(vals.length-1)).toFixed(1))+','+(h-1-x/mx*(h-2)).toFixed(1)).join(' ');
  return '<svg class="spark" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" aria-hidden="true"><polyline points="'+pts+'" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>';
 }
+// name ID on the field card: measured, with date and source on hover, or estimated from the attention score
+function nidCell(c){if(!NAMEID.on||typeof NAMEID.x0[c.id]!=='number')return '';const x=Math.round(NAMEID.x0[c.id]*100),src=NAMEID.src[c.id];
+ const tip=NAMEID.est[c.id]?'No Economist/YouGov reading yet. Estimated from our attention score of '+(NAMEID.score[c.id]?NAMEID.score[c.id].score:1)+' out of 10.':'Share who have heard enough to rate them. Economist/YouGov, '+edDate(src.date)+'. '+src.source;
+ return '<span title="'+tip.replace(/"/g,'&quot;')+'"><i>known by'+(NAMEID.est[c.id]?', estimated':'')+'</i><b>'+x+'%</b></span>';}
 function attnCell(c){const a=ATTN[c.id];if(!a)return '';const tot=a.v.reduce((s,x)=>s+(x||0),0);return '<span title="Google News results, last '+a.days+' days; not in the model'+(a.cap?'; a day at 100 means 100 or more':'')+'"><i>news, '+a.days+'d</i><b>'+tot+(a.cap?'+':'')+'</b>'+spark(a.v)+'</span>';}
 function mmm(c){const f=MODEL_FIRST[c.id];if(typeof f!=='number')return '';const g=Math.round((f-c.mkt)*10)/10;return '<span title="model share minus market price"><i>model vs mkt</i><b class="gap '+(g>=0?'pos':'neg')+'">'+(g>0?'+':'')+g.toFixed(1)+'</b></span>';}
 function setModelRank(first){MODEL_FIRST=first||{};const ids=CANDS.filter(c=>c.id!=='other').map(c=>c.id).sort((a,b)=>(first[b]||0)-(first[a]||0));MODEL_RANK={};ids.forEach((id,i)=>MODEL_RANK[id]=i+1);refreshOdds();}
@@ -1319,8 +1374,10 @@ function openDossier(id){
  let h='<div class="md-head">'+pic+'<div><div class="md-name">'+c.name+'</div><div class="md-meta">'+c.role+' · age '+c.age+' in 2028 · '+laneL+'</div></div></div>';
  h+='<div class="md-odds"><span>market <b>'+c.mkt+'%</b></span><span>runs <b>'+c.run+'%</b></span><span>my rank <b>#'+c.rank+'</b></span></div>';
  const rv=c.reviewed?'<span class="rv">Reviewed '+edMonth(c.reviewed)+'</span>':'';
+ const as=NAMEID.score[id];
  h+='<div class="md-sec"><h4>Strength</h4><p>'+c.str+rv+'</p></div>';
  h+='<div class="md-sec"><h4>Weakness</h4><p>'+c.weak+rv+'</p></div>';
+ if(as)h+='<div class="md-sec"><h4>Attention</h4><p>'+as.score+' out of 10 on our attention score, which sets how fast news coverage turns into name recognition.'+(as.reviewed?'<span class="rv">Reviewed '+edMonth(as.reviewed)+'</span>':'')+'</p></div>';
  h+='<div class="md-sec"><h4>Likely coalition</h4><p>'+coalition+'</p></div>';
  h+='<div class="md-sec" id="mdPaths"><h4>Best and worst paths</h4><p class="muted">Computed live from the model: which conditions maximize and minimize this candidate\u2019s chance of finishing first.</p><button class="btn sm" onclick="computePaths(\''+id+'\')">Compute best and worst paths</button></div>';
  document.getElementById('modalBody').innerHTML=h;
@@ -1628,6 +1685,10 @@ document.querySelectorAll('.ctl input[type=range]').forEach(r=>{
 renderSettled();renderReviewed();loadDeskNote();loadWire();loadHeatmap();loadCalls();loadCrowd();loadAttention();loadApproval();document.getElementById('pTrump').addEventListener('input',()=>{APPR_TOUCHED=true;});buildCards();loadPolls();loadHistory();tickClock();setInterval(tickClock,30000);buildBracket();paintDefault();deepLink();bracketFromUrl();
 // fitted market strengths for the anchor slider (scripts/calibrate_anchor.js, nightly)
 fetch('anchor.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(A=>{if(!A||!A.mstr)return;CANDS.forEach(c=>{if(typeof A.mstr[c.id]==='number')c.mstr=A.mstr[c.id];});if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();}).catch(()=>{});
+// ==NAME ID INPUTS== nameid.csv, attention_scores.csv and attention.csv set up the name ID layer on the page
+Promise.all(['nameid.csv','attention_scores.csv','attention.csv'].map(f=>fetch(f+'?v='+Date.now()).then(r=>r.ok?r.text():null).catch(()=>null))).then(([a,b,c])=>{
+ if(!a||!b)return;nameIdSetup(parseCSV(a),parseCSV(b),c?parseCSV(c):[]);refreshOdds();
+}).catch(()=>{});
 // ==KNOBS== knobs.json holds the frozen defaults for the Advanced sliders and the transfer rules. The markup
 // carries the same numbers (scripts/knobs.js check fails the build if they differ), so this only matters if they
 // ever drift. A slider a reader already moved is left alone.
