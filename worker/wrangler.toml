@@ -1,0 +1,15 @@
+# Cloudflare Worker for anonymous reader brackets. Kevin deploys this; see README.md.
+name = "globe-2028-crowd"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+
+# Replace the id with the one `wrangler kv namespace create BRACKETS` prints.
+[[kv_namespaces]]
+binding = "BRACKETS"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+[vars]
+# Origins allowed to post. Local dev origins are allowed by the code when running under wrangler dev.
+ALLOWED_ORIGINS = "https://driscollglobe.github.io"
+# Brackets one reader may save per day.
+DAILY_LIMIT = "5"
