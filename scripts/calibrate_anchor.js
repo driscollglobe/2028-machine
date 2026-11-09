@@ -23,23 +23,7 @@ const ids = sim.CANDS.map(c => c.id);
 const target = {};
 ids.forEach(id => { target[id] = Math.max(0, M.blend[id] || 0); });
 
-const mstr = {};
-ids.forEach(id => { mstr[id] = Math.max(0.05, target[id]); });
-const seed = core.seedFrom(M.date + ':anchor');
-let err = null, res = null;
-for (let r = 0; r < ROUNDS; r++) {
-  core.applyAnchor(sim, { mstr });
-  sim.controls.pAnchor.value = '100';
-  res = core.runMany(sim, sim.cfg(), N, seed);
-  if (process.env.DEBUG) console.log(r, Math.round(err||0), 'oss', mstr.ossoff.toFixed(2), res.first.ossoff, 'aoc', mstr.aoc.toFixed(2), res.first.aoc);
-  err = ids.reduce((t, id) => t + Math.abs(res.first[id] - target[id]), 0) / 2;
-  ids.forEach(id => {
-    const ratio = (target[id] + K) / (res.first[id] + K);
-    mstr[id] = Math.max(0.01, mstr[id] * Math.pow(ratio, DAMP));
-  });
-}
-const sum = ids.reduce((t, id) => t + mstr[id], 0);
-const out = { date: M.date, rounds: ROUNDS, runs: N, distance: Math.round(err * 10) / 10, mstr: {} };
-ids.forEach(id => { out.mstr[id] = Math.round(mstr[id] / sum * 100000) / 1000; });
+const fit = core.fitAnchor(sim, target, { rounds: ROUNDS, runs: N, k: K, damp: DAMP, seed: core.seedFrom(M.date + ':anchor'), debug: !!process.env.DEBUG });
+const out = { date: M.date, rounds: ROUNDS, runs: N, distance: fit.distance, mstr: fit.mstr };
 fs.writeFileSync(OUT, JSON.stringify(out, null, 1) + '\n');
 console.log('anchor.json for ' + M.date + ': total variation distance from the blend ' + out.distance + ' points after ' + ROUNDS + ' rounds');

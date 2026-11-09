@@ -34,7 +34,10 @@ function parseControls(html) {
   return controls;
 }
 
-function load(indexPath) {
+// inject: optional JS source run after the sim's declarations and before they are returned. The 2020
+// backtest uses it to swap the 2028 data (CANDS, POOLS, DELS, ...) for 2020 data in place, so the sim code
+// itself is never forked.
+function load(indexPath, inject) {
   const html = fs.readFileSync(indexPath || path.join(ROOT, 'index.html'), 'utf8');
   const scriptStart = html.indexOf('<script>');
   const scriptEnd = html.indexOf('</script>', scriptStart);
@@ -56,7 +59,7 @@ function load(indexPath) {
   const windowStub = { document: documentStub, location: { search: '' }, addEventListener() {}, innerWidth: 1200 };
   // Function wrapper rather than eval: the script declares top-level const.
   const factory = new Function('document', 'window', 'navigator', 'location',
-    core + '\nreturn {CANDS:CANDS, RESOLVED:(typeof RESOLVED==="undefined"?{}:RESOLVED), BP_PRESETS:(typeof BP_PRESETS==="undefined"?{}:BP_PRESETS), HM_LEVERS:(typeof HM_LEVERS==="undefined"?[]:HM_LEVERS), HM_WATCH:(typeof HM_WATCH==="undefined"?[]:HM_WATCH), computeHeatmap:(typeof computeHeatmap==="undefined"?null:computeHeatmap), simulate:simulate, cfg:cfg, mb:mb, setRng:function(r){rng=r;}};');
+    core + '\n' + (inject || '') + '\nreturn {CANDS:CANDS, RESOLVED:(typeof RESOLVED==="undefined"?{}:RESOLVED), BP_PRESETS:(typeof BP_PRESETS==="undefined"?{}:BP_PRESETS), HM_LEVERS:(typeof HM_LEVERS==="undefined"?[]:HM_LEVERS), HM_WATCH:(typeof HM_WATCH==="undefined"?[]:HM_WATCH), computeHeatmap:(typeof computeHeatmap==="undefined"?null:computeHeatmap), simulate:simulate, cfg:cfg, mb:mb, setRng:function(r){rng=r;}};');
   const sim = factory(documentStub, windowStub, {}, windowStub.location);
   sim.controls = controls;
   sim.html = html;
@@ -129,4 +132,27 @@ function runMany(sim, C, N, seed) {
   return out;
 }
 
-module.exports = { ROOT, load, applyMarkets, applyAnchor, applyApproval, seedFrom, runMany, parseControls };
+// Fit market strengths so that a = 100 at the current settings reproduces target first-place shares.
+// Damped multiplicative updates on a fixed seed; the sim's response to strength is steep, so steps stay small.
+function fitAnchor(sim, target, opts) {
+  opts = opts || {};
+  const ROUNDS = opts.rounds || 30, N = opts.runs || 4000, K = opts.k || 0.3, DAMP = opts.damp || 0.2;
+  const ids = sim.CANDS.map(c => c.id);
+  const mstr = {};
+  ids.forEach(id => { mstr[id] = Math.max(0.05, target[id] || 0); });
+  let err = null;
+  for (let r = 0; r < ROUNDS; r++) {
+    applyAnchor(sim, { mstr });
+    sim.controls.pAnchor.value = '100';
+    const res = runMany(sim, sim.cfg(), N, opts.seed || 1);
+    err = ids.reduce((t, id) => t + Math.abs(res.first[id] - (target[id] || 0)), 0) / 2;
+    if (opts.debug) console.log(r, Math.round(err));
+    ids.forEach(id => { mstr[id] = Math.max(0.01, mstr[id] * Math.pow(((target[id] || 0) + K) / (res.first[id] + K), DAMP)); });
+  }
+  const sum = ids.reduce((t, id) => t + mstr[id], 0);
+  const out = {};
+  ids.forEach(id => { out[id] = Math.round(mstr[id] / sum * 100000) / 1000; });
+  return { mstr: out, distance: Math.round(err * 10) / 10 };
+}
+
+module.exports = { ROOT, load, fitAnchor, applyMarkets, applyAnchor, applyApproval, seedFrom, runMany, parseControls };

@@ -36,8 +36,8 @@ MIN_POLLS = 3
 HEAD = ["pollster", "sponsor", "field_start", "field_end", "sample", "population", "geography"] + IDS
 
 POP = {"LV": "likely voters", "RV": "registered voters", "A": "adults", "V": "voters"}
-MONTHS = {m: i for i, m in enumerate(["january", "february", "march", "april", "may", "june", "july",
-                                      "august", "september", "october", "november", "december"], 1)}
+MONTHS = {m: i for i, m in enumerate(["jan", "feb", "mar", "apr", "may", "jun", "jul",
+                                      "aug", "sep", "oct", "nov", "dec"], 1)}  # keyed by the first three letters
 # Names the books do not list but the polls do. Extra aliases for the poll tables only.
 EXTRA_NAMES = {"alexandria ocasio-cortez": "aoc", "aoc": "aoc", "jb pritzker": "pritzker", "pete buttigieg": "pete"}
 
@@ -93,17 +93,23 @@ def footnote_pairs(cell):
 def parse_dates(s):
     """'October 30 – November 5, 2026', 'October 24–26, 2026', 'November 3, 2026' -> (start, end) ISO."""
     s = re.sub(r"\[[a-z0-9]+\]", "", str(s)).replace("–", "-").replace("—", "-").strip()
+    s = s.replace(".", "")
     m = re.match(r"([A-Za-z]+)\s+(\d+)(?:,\s*(\d{4}))?\s*-\s*(?:([A-Za-z]+)\s+)?(\d+),\s*(\d{4})$", s)
     if m:
         m1, d1, y1, m2, d2, y2 = m.groups()
         y2 = int(y2)
         y1 = int(y1) if y1 else y2
-        mo1 = MONTHS[m1.lower()]
-        mo2 = MONTHS[(m2 or m1).lower()]
+        mo1 = MONTHS.get(m1.lower()[:3])
+        mo2 = MONTHS.get((m2 or m1).lower()[:3])
+        if not mo1 or not mo2:
+            return None
         return date(y1, mo1, int(d1)), date(y2, mo2, int(d2))
     m = re.match(r"([A-Za-z]+)\s+(\d+),\s*(\d{4})$", s)
     if m:
-        d = date(int(m.group(3)), MONTHS[m.group(1).lower()], int(m.group(2)))
+        mo = MONTHS.get(m.group(1).lower()[:3])
+        if not mo:
+            return None
+        d = date(int(m.group(3)), mo, int(m.group(2)))
         return d, d
     return None
 
