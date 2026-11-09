@@ -375,7 +375,7 @@ body.show-adv h2.s.adv{display:block;}
  </div>
  <div class="section">
   <div class="shead">Environment</div>
-  <div class="ctl adv"><label class="cl">Trump approval (late 2027)</label><input type="range" min="30" max="60" value="38" id="pTrump"><span class="cv" id="pTrumpOut">38%</span><label class="dpr"><input type="checkbox" id="apprMixed">Drawn per run</label><div class="ctlnote" data-reviewed="2026-09">Silver Bulletin average Sep 10, 2026: approve 38.5, net minus 19.5.</div></div>
+  <div class="ctl adv"><label class="cl">Trump approval (late 2027)</label><input type="range" min="30" max="60" value="38" id="pTrump"><span class="cv" id="pTrumpOut">38%</span><label class="dpr"><input type="checkbox" id="apprMixed">Drawn per run</label><div class="ctlnote" id="apprNote">Default is the latest public approval average, pulled nightly. Silver Bulletin 2026-09-10: approve 38.5.</div></div>
   <div class="ctl"><label class="cl">What 2028 is about</label><select id="selTheme"><option value="mixed" selected>Drawn per run</option><option value="afford">Affordability and class</option><option value="ai">AI and the future of work</option><option value="fight">Democracy and fighting Trumpism</option><option value="norm">Competence and electability</option></select></div>
   <div class="ctl adv"><label class="cl">Lesson of 2026</label><select id="selLesson"><option value="mixed">Drawn per run</option><option value="inst">Institutional Democrats won</option><option value="pop">Economic populists won</option><option value="muddle" selected>Both sides claim victory</option></select></div>
   <div class="ctl adv"><label class="cl">Black Democratic voters</label><select id="selBlack"><option value="mixed" selected>Drawn per run</option><option value="hold">Harris holds the coalition</option><option value="div">Remains divided</option><option value="another">Consolidates behind another</option><option value="gen">Generational realignment</option></select></div>
@@ -1056,6 +1056,7 @@ function fallbackCopy(t){const ta=document.createElement('textarea');ta.value=t;
 let currentBP=null;
 function applyPreset(which){
  const pre=BP_PRESETS[which];if(!pre)return false;
+ if('pTrump' in pre.set&&typeof APPR_TOUCHED!=='undefined')APPR_TOUCHED=true;
  Object.keys(pre.set).forEach(id=>{const e=document.getElementById(id);if(!e)return;const v=pre.set[id];
   if(typeof v==='boolean'){e.checked=v;return;}
   e.value=v;const o=document.getElementById(id+'Out');if(o)o.textContent=v+'%';});
@@ -1240,6 +1241,19 @@ function loadCalls(){
   el.innerHTML=h;el.classList.remove('muted');
  }).catch(()=>{document.getElementById('callsBody').textContent='calls.csv unavailable';});
 }
+// ==APPROVAL== approval.json is written nightly by scripts/fetch_approval.py. It sets the lever's default;
+// the lever stays draggable. A reader's own value (from a preset or a drag) is never overwritten.
+let APPR_TOUCHED=false;
+function loadApproval(){
+ fetch('approval.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(A=>{
+  if(!A||typeof A.value!=='number')return;
+  const n=document.getElementById('apprNote');if(n)n.textContent='Default is the '+A.source+' average, '+A.date+': approve '+A.approve.toFixed(1)+'. Pulled nightly.';
+  if(APPR_TOUCHED)return;
+  const e=document.getElementById('pTrump'),o=document.getElementById('pTrumpOut');
+  const v=Math.max(+e.min,Math.min(+e.max,A.value));
+  if(+e.value!==v){e.value=v;if(o&&!document.getElementById('apprMixed').checked)o.textContent=v+'%';if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();}
+ }).catch(()=>{});
+}
 function loadWire(){
  fetch('wire.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(w=>{if(!w||!Array.isArray(w.items))return;WIRE=w.items;initTicker();}).catch(()=>{});
 }
@@ -1360,7 +1374,7 @@ document.querySelectorAll('.ctl input[type=range]').forEach(r=>{
  const mk=(d,txt)=>{const b=document.createElement('button');b.type='button';b.className='step';b.textContent=txt;b.setAttribute('aria-label',(d>0?'Increase ':'Decrease ')+r.id);b.addEventListener('click',()=>{if(r.disabled)return;const v=Math.max(+r.min,Math.min(+r.max,+r.value+d));r.value=v;r.dispatchEvent(new Event('input',{bubbles:true}));});return b;};
  r.before(mk(-5,'-'));r.after(mk(5,'+'));
 });
-renderSettled();renderReviewed();loadWire();loadHeatmap();loadCalls();buildCards();loadPolls();loadHistory();tickClock();setInterval(tickClock,30000);buildBracket();paintDefault();deepLink();bracketFromUrl();
+renderSettled();renderReviewed();loadWire();loadHeatmap();loadCalls();loadApproval();document.getElementById('pTrump').addEventListener('input',()=>{APPR_TOUCHED=true;});buildCards();loadPolls();loadHistory();tickClock();setInterval(tickClock,30000);buildBracket();paintDefault();deepLink();bracketFromUrl();
 // fitted market strengths for the anchor slider (scripts/calibrate_anchor.js, nightly)
 fetch('anchor.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(A=>{if(!A||!A.mstr)return;CANDS.forEach(c=>{if(typeof A.mstr[c.id]==='number')c.mstr=A.mstr[c.id];});if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();}).catch(()=>{});
 // ==LIVE MARKET ANCHORS== fetch nightly-updated markets.json; fall back silently to baked-in values

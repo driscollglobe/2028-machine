@@ -78,6 +78,16 @@ function applyMarkets(sim, M) {
   if (M.run && typeof M.run.aoc === 'number') sim.controls.pAoc.value = String(Math.round(M.run.aoc));
   if (M.run && typeof M.run.harris === 'number') sim.controls.pHarris.value = String(Math.round(M.run.harris));
   applyAnchor(sim);
+  applyApproval(sim);
+}
+
+// Nightly approval average sets the Trump approval lever's default, clamped to the slider range.
+function applyApproval(sim) {
+  const f = path.join(ROOT, 'approval.json');
+  if (!fs.existsSync(f)) return;
+  const A = JSON.parse(fs.readFileSync(f, 'utf8'));
+  if (typeof A.value !== 'number') return;
+  sim.controls.pTrump.value = String(Math.max(30, Math.min(60, A.value)));
 }
 
 // Fitted market strengths for the anchor slider. Only used when anchor.json matches the markets date.
@@ -115,4 +125,4 @@ function runMany(sim, C, N, seed) {
   return out;
 }
 
-module.exports = { ROOT, load, applyMarkets, applyAnchor, seedFrom, runMany, parseControls };
+module.exports = { ROOT, load, applyMarkets, applyAnchor, applyApproval, seedFrom, runMany, parseControls };
