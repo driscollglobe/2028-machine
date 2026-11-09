@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "0 10 * * *"
   workflow_dispatch:
+    inputs:
+      note:
+        description: "Structural note for today's history.csv row (no commas or quotes). Leave empty on normal runs."
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -31,6 +36,8 @@ jobs:
         run: python3 scripts/fetch_markets.py
 
       - name: Run the 20,000 simulation baseline
+        env:
+          NOTE: ${{ github.event.inputs.note }}
         run: node scripts/baseline.js
 
       - name: Install Playwright Chromium for the share cards
@@ -47,7 +54,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add markets.json history.csv default.json cards share
+          git add markets.json history.csv default.json wire.json cards share
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0

@@ -12,6 +12,8 @@ const ROOT = core.ROOT;
 const MARKETS = path.join(ROOT, 'markets.json');
 const HISTORY = path.join(ROOT, 'history.csv');
 const DEFAULT = path.join(ROOT, 'default.json');
+const WIRE = path.join(ROOT, 'wire.json');
+const wire = require('./wire');
 const RUNS = 20000;
 
 const sim = core.load();
@@ -45,7 +47,8 @@ fs.writeFileSync(DEFAULT, JSON.stringify(def, null, 1) + '\n');
 
 // history.csv: date, m_<id> model share, k_<id> blended price, then kal_/poly_/run_ per book detail.
 let header = ['date'].concat(ids.map(id => 'm_' + id)).concat(ids.map(id => 'k_' + id))
-  .concat(ids.map(id => 'kal_' + id)).concat(ids.map(id => 'poly_' + id)).concat(ids.map(id => 'run_' + id));
+  .concat(ids.map(id => 'kal_' + id)).concat(ids.map(id => 'poly_' + id)).concat(ids.map(id => 'run_' + id))
+  .concat(['note']);
 let existing = [];
 if (fs.existsSync(HISTORY)) {
   const lines = fs.readFileSync(HISTORY, 'utf8').replace(/\r/g, '').split('\n').filter(l => l.trim().length);
@@ -71,10 +74,23 @@ ids.forEach(id => {
   newRow['poly_' + id] = num(M.polymarket ? M.polymarket[id] : undefined);
   newRow['run_' + id] = num(runProb[id]);
 });
-const replaced = existing.some(r => r.date === M.date);
+// note: a structural change (a model rebuild, a resolved lever) that moves the default numbers without the books.
+// Set with the NOTE env var (the workflow_dispatch input) on the day it lands. A rerun on the same date keeps it. Notes cannot hold commas
+// or quotes because every reader splits this file on commas.
+const prior = existing.find(r => r.date === M.date);
+const envNote = (process.env.NOTE || '').trim();
+if (/[,"]/.test(envNote)) throw new Error('NOTE contains a comma or quote: ' + envNote);
+newRow.note = envNote || (prior && prior.note ? prior.note : '');
+existing.forEach(r => { if (/[,"]/.test(r.note || '')) throw new Error('history.csv note on ' + r.date + ' contains a comma or quote'); });
+const replaced = !!prior;
 const rows = existing.filter(r => r.date !== M.date).concat([newRow]);
 const out = [header.join(',')].concat(rows.map(r => header.map(h => r[h] === undefined ? '' : r[h]).join(','))).join('\n') + '\n';
 fs.writeFileSync(HISTORY, out);
 
-console.log((replaced ? 'Replaced ' : 'Appended ') + M.date + ' in history.csv (' + RUNS + ' runs, ' + res.contested + '% contested); wrote default.json');
+// wire.json: the ticker, from today's markets and default run, against the previous history row.
+const prevRow = rows.length > 1 ? rows[rows.length - 2] : null;
+const items = wire.wireItems(M, def, prevRow, CANDS, sim.RESOLVED);
+fs.writeFileSync(WIRE, JSON.stringify({ date: M.date, items }, null, 1) + '\n');
+
+console.log((replaced ? 'Replaced ' : 'Appended ') + M.date + ' in history.csv (' + RUNS + ' runs, ' + res.contested + '% contested); wrote default.json and wire.json');
 console.log(order.slice(0, 8).map(id => id + ' ' + share[id]).join(', '));

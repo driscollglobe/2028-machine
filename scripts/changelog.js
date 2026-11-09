@@ -18,7 +18,7 @@ function parseCSV(text) {
 const num = v => { const x = parseFloat(v); return isFinite(x) ? x : null; };
 const name = id => NAMES[id] || id;
 const sgn = x => (x > 0 ? 'up ' : 'down ') + Math.abs(x).toFixed(1);
-const longDate = d => new Date(d + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+const longDate = d => d; // ISO dates in everything a reader sees
 function joinList(parts) {
   if (parts.length <= 1) return parts.join('');
   return parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1];
@@ -80,6 +80,8 @@ if (single) {
   else if (d.some(x => x.dr !== null)) paras.push('The run market was quiet. No candidate’s probability of entering the race moved by half a point or more.');
   else paras.push('Run probability history begins with this week’s rows, so the run market comparison starts next week.');
 }
+const noted = rows.filter(r => (r.note || '').trim() && r.date > base.date && r.date <= last.date);
+if (noted.length) paras.push('Changes to the model itself this week: ' + noted.map(r => r.date + ', ' + r.note.trim()).join(' ') + ' Moves on those days come from the rebuild, not the books.');
 paras.push('The machine reruns 20,000 primaries every morning on that day’s Kalshi and Polymarket prices and logs the result, so this is a record of what it believed and when, not a forecast.');
 
 const md = title + '\n\n' + paras.join('\n\n') + '\n';
