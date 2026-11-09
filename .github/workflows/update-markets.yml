@@ -49,6 +49,9 @@ jobs:
           NOTE: ${{ github.event.inputs.note }}
         run: node scripts/baseline.js
 
+      - name: Build the turning point heatmap at default settings
+        run: node scripts/heatmap.js
+
       - name: Install Playwright Chromium for the share cards
         run: |
           npm install --no-save --no-audit --no-fund playwright@1.47.2
@@ -63,7 +66,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add markets.json polls.csv anchor.json history.csv default.json wire.json cards share
+          git add markets.json polls.csv anchor.json history.csv default.json wire.json heatmap.json rankings.json cards share
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0
