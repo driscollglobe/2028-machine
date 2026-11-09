@@ -388,7 +388,7 @@ body.show-adv h2.s.adv{display:block;}
   <div class="ctl"><label class="cl">Harris runs</label><input type="range" min="0" max="100" value="78" id="pHarris"><span class="cv" id="pHarrisOut">78%</span></div>
   <div class="ctl"><label class="cl">Newsom holds up under scrutiny</label><input type="range" min="0" max="100" value="60" id="pNewsom"><span class="cv" id="pNewsomOut">60%</span></div>
   <div class="ctl adv"><label class="cl">Polls are right about Harris</label><label class="dpr"><input type="checkbox" id="pollsHarris">On: Harris runs at 95% and her base strength is multiplied by 1.5</label></div>
-  <div class="ctl adv"><label class="cl">Ossoff reverses his denial</label><input type="range" min="0" max="100" value="90" id="pOssRev"><span class="cv" id="pOssRevOut">90%</span></div>
+  <div class="ctl adv"><label class="cl">Ossoff runs</label><input type="range" min="0" max="100" value="90" id="pOssRev"><span class="cv" id="pOssRevOut">90%</span></div>
  </div>
  <div class="section">
   <div class="shead">Environment</div>
@@ -1717,8 +1717,8 @@ fetch('markets.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(M=>{
   const r=M.run?M.run[c.id]:undefined;if(typeof r==='number'&&c.run>0&&c.run<100)c.run=Math.round(r);
   if(typeof c.runCap==='number')c.run=Math.min(c.run,c.runCap); // operator cap on top of the run market
  });
- // AOC and Harris run probabilities live on the sliders, so the run market sets those too
- [['pAoc','aoc'],['pHarris','harris']].forEach(([sl,id])=>{const r=M.run?M.run[id]:undefined;const el=document.getElementById(sl);if(el&&typeof r==='number'){el.value=Math.round(r);const o=document.getElementById(sl+'Out');if(o)o.textContent=Math.round(r)+'%';}});
+ // AOC, Harris and Ossoff run probabilities live on sliders, so the run market (Kalshi and Polymarket average) sets those too
+ [['pAoc','aoc'],['pHarris','harris'],['pOssRev','ossoff']].forEach(([sl,id])=>{const r=M.run?M.run[id]:undefined;const el=document.getElementById(sl);if(el&&typeof r==='number'){el.value=Math.round(r);const o=document.getElementById(sl+'Out');if(o)o.textContent=Math.round(r)+'%';}});
  if(M.date){const b=document.getElementById('updBadge');if(b)b.textContent='Updated '+edDate(M.date);const sd=document.getElementById('stDate');if(sd)sd.textContent='Markets as of '+edDate(M.date,false);const by=document.getElementById('bylineDate');if(by)by.textContent=' · Last updated '+edDate(M.date);}
  if(CANDS.filter(onCards).map(c=>c.id).join(',')!==CARD_SET)buildCards();
  refreshOdds();renderPollBoard();paintDefaultRows();if(!BR.touched)buildBracket();

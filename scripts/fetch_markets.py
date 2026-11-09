@@ -15,6 +15,7 @@ Any HTTP error, empty book, or missing top candidate is fatal on purpose.
 """
 import json
 import sys
+import urllib.parse
 import urllib.request
 import urllib.error
 from datetime import datetime, timezone
@@ -29,11 +30,16 @@ KALSHI_NOM_EVENT = "KXPRESNOMD-28"
 KALSHI_RUN_EVENT = "KX2028DRUN-28"
 POLY_BASE = "https://gamma-api.polymarket.com/events"
 POLY_NOM_SLUG = "democratic-presidential-nominee-2028"
+# Polymarket's run market: one contract per person, "announces a presidential run before 2028". The slug carries
+# a creation stamp, so if it ever 404s the script finds the event again by its title.
+POLY_RUN_SLUG = "who-will-announce-presidential-run-before-2028-20260803142755224"
+POLY_RUN_TITLE = "Who will announce Presidential run before 2028?"
 
 SOURCES = [
     KALSHI_BASE + "?event_ticker=" + KALSHI_NOM_EVENT,
     KALSHI_BASE + "?event_ticker=" + KALSHI_RUN_EVENT,
     POLY_BASE + "?slug=" + POLY_NOM_SLUG,
+    POLY_BASE + "?slug=" + POLY_RUN_SLUG,
 ]
 
 # Candidate ids used by index.html. Order matters only for output readability.
@@ -229,11 +235,46 @@ def today_str():
     return datetime.now(tz).strftime("%Y-%m-%d")
 
 
+def polymarket_run():
+    """Polymarket run prices by candidate id, or {} with a warning if the event can't be read. Republicans and
+    others in the same event are unmapped and ignored."""
+    try:
+        book = polymarket_book(POLY_RUN_SLUG)
+    except (SystemExit, Exception) as e:
+        try:
+            found = get_json("https://gamma-api.polymarket.com/public-search?q=" + urllib.parse.quote(POLY_RUN_TITLE) + "&limit_per_type=10")
+            ev = [x for x in (found.get("events") or []) if (x.get("title") or "").strip() == POLY_RUN_TITLE and not x.get("closed")]
+            if not ev:
+                raise SystemExit("not found")
+            book = polymarket_book(ev[0]["slug"])
+        except (SystemExit, Exception) as e2:
+            print("::warning::fetch_markets: Polymarket run market unreadable (%r, %r); run odds use Kalshi alone" % (e, e2))
+            return {}
+    book.pop("_unmapped", None)
+    return book
+
+
+def blend_run(k, p):
+    """Run odds: the mean of Kalshi's and Polymarket's run prices, or the one book that lists the candidate."""
+    out = {}
+    for c in IDS:
+        kv, pv = k.get(c), p.get(c)
+        if kv is not None and pv is not None:
+            out[c] = r1((kv + pv) / 2.0)
+        elif kv is not None:
+            out[c] = kv
+        elif pv is not None:
+            out[c] = pv
+    return out
+
+
 def main():
     kal = kalshi_book(KALSHI_NOM_EVENT, "nominee")
     poly = polymarket_book(POLY_NOM_SLUG)
-    run = kalshi_book(KALSHI_RUN_EVENT, "run")
-    run.pop("_unmapped", None)
+    run_k = kalshi_book(KALSHI_RUN_EVENT, "run")
+    run_k.pop("_unmapped", None)
+    run_p = polymarket_run()
+    run = blend_run(run_k, run_p)
     unmapped_pct = r1((kal["_unmapped"] + poly["_unmapped"]) / 2.0)
 
     blend = blend_books(kal, poly)
@@ -250,6 +291,8 @@ def main():
         "polymarket": {c: poly[c] for c in IDS if c in poly},
         "blend": blend,
         "run": {c: run[c] for c in IDS if c in run},
+        "run_kalshi": {c: run_k[c] for c in IDS if c in run_k},
+        "run_polymarket": {c: run_p[c] for c in IDS if c in run_p},
         "unmapped_pct": unmapped_pct,
         "sources": SOURCES,
     }
@@ -258,8 +301,8 @@ def main():
         f.write("\n")
     log("Wrote markets.json for " + out["date"] + "; unmapped contracts blended to %s" % unmapped_pct)
     for c in IDS:
-        log("  %-9s kalshi %-5s poly %-5s blend %-5s run %s" % (
-            c, kal.get(c, "-"), poly.get(c, "-"), blend.get(c, "-"), run.get(c, "-")))
+        log("  %-9s kalshi %-5s poly %-5s blend %-5s run %s (kalshi %s, poly %s)" % (
+            c, kal.get(c, "-"), poly.get(c, "-"), blend.get(c, "-"), run.get(c, "-"), run_k.get(c, "-"), run_p.get(c, "-")))
 
 
 if __name__ == "__main__":

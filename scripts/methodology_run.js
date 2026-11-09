@@ -20,6 +20,7 @@ function run(seed) {
   const snap = f => JSON.parse(fs.readFileSync(path.join(core.ROOT, 'methodology', f), 'utf8'));
   const M = snap('markets.json');
   core.applyMarkets(sim, M);
+  sim.controls.pOssRev.value = '90'; // the page predates Ossoff's run odds coming from the run market (2026-11-09)
   core.applyAnchor(sim, snap('anchor.json'));
   sim.controls.pTrump.value = String(snap('approval.json').value);
   const C = sim.cfg();
