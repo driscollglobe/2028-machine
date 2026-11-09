@@ -49,6 +49,12 @@ jobs:
           NOTE: ${{ github.event.inputs.note }}
         run: node scripts/baseline.js
 
+      - name: Grade open calls against today's data
+        run: node scripts/calls.js grade
+
+      - name: Check that no past call was edited
+        run: node scripts/calls.js lock HEAD
+
       - name: Build the turning point heatmap at default settings
         run: node scripts/heatmap.js
 
@@ -66,7 +72,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add markets.json polls.csv anchor.json history.csv default.json wire.json heatmap.json rankings.json cards share
+          git add markets.json polls.csv anchor.json history.csv default.json wire.json heatmap.json rankings.json calls.csv cards share
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0

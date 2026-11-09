@@ -402,6 +402,9 @@ body.show-adv h2.s.adv{display:block;}
 <h2 class="s">What moved</h2>
 <div class="section changestrip" id="changestrip"><div class="shead"><span id="csTitle">Since yesterday</span><span class="row" style="gap:5px;"><button class="seg on" id="csDay" onclick="setChangeMode('day')">Latest change</button><button class="seg" id="csLaunch" onclick="setChangeMode('launch')">Since launch</button></span></div><div id="csBody" class="muted">Loading history.csv</div></div>
 
+<h2 class="s">Calls</h2>
+<div class="section" id="calls"><div class="shead"><span>Dated claims, graded nightly against the books and the model</span><span class="note" id="callRecord">loading calls.csv</span></div><div id="callsBody" class="muted">Loading calls.csv</div><div class="legend">A call resolves true the first day its condition holds and false at its deadline if it never does. Past calls cannot be edited; a build check enforces it. <a href="track.html#calls">Full ledger</a></div></div>
+
 <p class="foot">THE 2028 MACHINE · A MODEL BUILT FROM ONE OPERATOR'S PRIORS, NOT A FORECAST · THE STRENGTHS ARE ARGUABLE ON PURPOSE; THE VALUE IS WHAT MOVES THE OUTCOME, NOT THE HEADLINE ODDS · PRIORS REVIEWED THROUGH <span id="priorsDate">2026-09</span> · MARKET ANCHORS UPDATED NIGHTLY FROM KALSHI AND POLYMARKET · POLLS PULLED NIGHTLY FROM PUBLIC AGGREGATORS · POOL ASSIGNMENTS AND SHARES ARE OPERATOR PRIORS, NOT MEASURED VOTER DATA · THE DRISCOLL GLOBE · POLITICAL SYSTEMS DESK</p>
 <div class="modal-bg" id="modalBg" onclick="closeModal(event)">
  <div class="modal" id="modalBox" onclick="event.stopPropagation()">
@@ -1218,6 +1221,25 @@ function loadHeatmap(){
   if(R&&Array.isArray(R.ranked)&&R.ranked.length){renderRankings(R.ranked);document.getElementById('rankStatus').textContent='nightly build '+R.date+' · top lever: '+R.ranked[0].key;renderChips(R.ranked);}
  });
 }
+// ==CALLS== calls.csv is graded nightly by scripts/calls.js
+function parseQuotedCSV(text){const rows=[];let row=[],f='',q=false;text=text.replace(/\r/g,'');for(let i=0;i<text.length;i++){const ch=text[i];if(q){if(ch==='"'){if(text[i+1]==='"'){f+='"';i++;}else q=false;}else f+=ch;}else if(ch==='"')q=true;else if(ch===','){row.push(f);f='';}else if(ch==='\n'){row.push(f);rows.push(row);row=[];f='';}else f+=ch;}if(f.length||row.length){row.push(f);rows.push(row);}const c=rows.filter(r=>r.some(x=>x.trim().length));if(!c.length)return[];const h=c[0];return c.slice(1).map(r=>Object.fromEntries(h.map((k,i)=>[k,r[i]===undefined?'':r[i]])));}
+function callEsc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function callDaysLeft(d){return Math.round((new Date(d+'T12:00:00')-new Date(new Date().toISOString().slice(0,10)+'T12:00:00'))/86400000);}
+function callRecord(rows){const g=rows.filter(r=>r.status==='true'||r.status==='false');return g.filter(r=>r.status==='true').length+' for '+g.length;}
+function loadCalls(){
+ fetch('calls.csv?v='+Date.now()).then(r=>r.ok?r.text():null).then(t=>{
+  const el=document.getElementById('callsBody');if(!t){el.textContent='calls.csv unavailable';return;}
+  const all=parseQuotedCSV(t), rows=all.filter(r=>r.status!=='test'), tests=all.filter(r=>r.status==='test');
+  document.getElementById('callRecord').textContent='Record: '+callRecord(rows);
+  const open=rows.filter(r=>r.status==='open').sort((a,b)=>a.deadline<b.deadline?-1:1);
+  const done=rows.filter(r=>r.status==='true'||r.status==='false').sort((a,b)=>a.resolved_date<b.resolved_date?1:-1).slice(0,5);
+  let h='';
+  if(open.length)h+='<table class="cstable"><tr><th>Open call</th><th>Deadline</th><th>Days left</th></tr>'+open.map(r=>'<tr><td style="text-align:left">'+callEsc(r.text)+'</td><td>'+r.deadline+'</td><td>'+Math.max(0,callDaysLeft(r.deadline))+'</td></tr>').join('')+'</table>';
+  if(done.length)h+='<table class="cstable"><tr><th>Graded call</th><th>Result</th><th>On</th></tr>'+done.map(r=>'<tr><td style="text-align:left">'+callEsc(r.text)+'</td><td class="'+(r.status==='true'?'up':'down')+'">'+(r.status==='true'?'Right':'Wrong')+'</td><td>'+r.resolved_date+'</td></tr>').join('')+'</table>';
+  if(!h)h='<div class="muted">No calls on the record yet.'+(tests.length?' The ledger holds '+tests.length+(tests.length>1?' test rows, which never count.':' test row, which never counts.'):'')+'</div>';
+  el.innerHTML=h;el.classList.remove('muted');
+ }).catch(()=>{document.getElementById('callsBody').textContent='calls.csv unavailable';});
+}
 function loadWire(){
  fetch('wire.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(w=>{if(!w||!Array.isArray(w.items))return;WIRE=w.items;initTicker();}).catch(()=>{});
 }
@@ -1338,7 +1360,7 @@ document.querySelectorAll('.ctl input[type=range]').forEach(r=>{
  const mk=(d,txt)=>{const b=document.createElement('button');b.type='button';b.className='step';b.textContent=txt;b.setAttribute('aria-label',(d>0?'Increase ':'Decrease ')+r.id);b.addEventListener('click',()=>{if(r.disabled)return;const v=Math.max(+r.min,Math.min(+r.max,+r.value+d));r.value=v;r.dispatchEvent(new Event('input',{bubbles:true}));});return b;};
  r.before(mk(-5,'-'));r.after(mk(5,'+'));
 });
-renderSettled();renderReviewed();loadWire();loadHeatmap();buildCards();loadPolls();loadHistory();tickClock();setInterval(tickClock,30000);buildBracket();paintDefault();deepLink();bracketFromUrl();
+renderSettled();renderReviewed();loadWire();loadHeatmap();loadCalls();buildCards();loadPolls();loadHistory();tickClock();setInterval(tickClock,30000);buildBracket();paintDefault();deepLink();bracketFromUrl();
 // fitted market strengths for the anchor slider (scripts/calibrate_anchor.js, nightly)
 fetch('anchor.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(A=>{if(!A||!A.mstr)return;CANDS.forEach(c=>{if(typeof A.mstr[c.id]==='number')c.mstr=A.mstr[c.id];});if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();}).catch(()=>{});
 // ==LIVE MARKET ANCHORS== fetch nightly-updated markets.json; fall back silently to baked-in values
