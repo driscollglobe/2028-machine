@@ -573,6 +573,11 @@ function convention(dels,C){
  }
  return {winner:live[0],ballot:MAX_BALLOT,plurality:true,log};
 }
+// Field rules, calibrated 2026-11-09 so fewer than 15 percent of default runs reach the convention without a
+// pledged majority (37.7 before, 13.2 after on the 2026-11-09 books). After Super Tuesday only the top LATE_FIELD
+// survive into the late states (was 3). A candidate drops out after two contests under the winnow share
+// (was 0.07, or 0.05 when coordination fails). An object so methodology_run.js can pin the old rules.
+const SIMRULES={lateField:2,winnow:0.11,winnowFail:0.09};
 const DELS={SC:55,NH:33,NV:36,NM:34,VA:99,IA:40,MI:117,GA:108,NC:116,ST:1500,LS:2200};
 const THL={afford:'affordability and class',ai:'AI and the future of work',fight:'democracy and fighting Trumpism',norm:'competence and electability'};
 const LL={inst:'institutional Democrats won 2026',pop:'economic populists won 2026',muddle:'2026 settled nothing'};
@@ -764,7 +769,7 @@ function simulate(C,collect){
  const seq=CALS[calKey], calClass=CALCLASS[calKey];
  const coordFails=rng()<C.pCF;
  const coordRoll=!coordFails && rng()<Math.min(1,C.pC*(0.8+0.75*panic));
- const winnowThresh=coordFails?0.05:0.07;
+ const winnowThresh=coordFails?SIMRULES.winnowFail:SIMRULES.winnow;
  function board(){return Object.keys(dels).map(k=>({k,d:dels[k]})).filter(x=>x.d>0).sort((a,b)=>b.d-a.d).slice(0,5);}
  function contest(st,limitTo){
   const sc={};let tot=0;
@@ -815,7 +820,7 @@ function simulate(C,collect){
  }
  const stS=contest('ST',null);if(stS.length)won[stS[0].k]++;
  steps.push({type:'state',st:'ST',shares:stS.slice(0,5),dropped:[],board:board()});
- const top3=board().slice(0,3).map(x=>x.k).filter(k=>alive[k]);
+ const top3=board().slice(0,SIMRULES.lateField).map(x=>x.k).filter(k=>alive[k]);
  Object.keys(alive).forEach(k=>{if(alive[k]&&!top3.includes(k))alive[k]=false;});
  const lsS=contest('LS',top3);
  steps.push({type:'state',st:'LS',shares:lsS.slice(0,3),dropped:[],board:board()});

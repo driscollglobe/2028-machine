@@ -13,7 +13,7 @@ function run(seed) {
   // The page was written on 2026-11-09 against the field and settings of that morning. Candidates added
   // later are removed and later default changes are pinned back, so seed 5 keeps reproducing the page.
   const LATER = ['booker', 'gallego', 'slotkin', 'vanhollen'];
-  const sim = core.load(undefined, 'LATER_IDS=' + JSON.stringify(LATER) + ';LATER_IDS.forEach(id=>{const i=CANDS.findIndex(c=>c.id===id);if(i>=0)CANDS.splice(i,1);});');
+  const sim = core.load(undefined, 'SIMRULES.lateField=3;SIMRULES.winnow=0.07;SIMRULES.winnowFail=0.05;LATER_IDS=' + JSON.stringify(LATER) + ';LATER_IDS.forEach(id=>{const i=CANDS.findIndex(c=>c.id===id);if(i>=0)CANDS.splice(i,1);});');
   sim.controls.pCrowd.value = '15';
   sim.CANDS.find(c => c.id === 'khanna').base = 5; // lowered to 0.5 after the page was written
   // inputs are frozen in methodology/ so the page stays reproducible after the nightly files move on
