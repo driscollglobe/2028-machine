@@ -47,7 +47,8 @@ function pollGap() {
 
 // default.json: everything the page needs to paint the default state.
 const runProb = {};
-CANDS.forEach(c => { runProb[c.id] = c.id === 'aoc' ? +sim.controls.pAoc.value : (c.id === 'harris' ? +sim.controls.pHarris.value : c.run); });
+// runIfAocOut candidates (El-Sayed): run odds are the chance AOC stays out times their chance then
+CANDS.forEach(c => { runProb[c.id] = c.id === 'aoc' ? +sim.controls.pAoc.value : (c.id === 'harris' ? +sim.controls.pHarris.value : (typeof c.runIfAocOut === 'number' ? Math.round((1 - sim.controls.pAoc.value / 100) * c.runIfAocOut) : c.run)); });
 const order = ids.slice().sort((a, b) => share[b] - share[a]);
 const def = {
   date: M.date,

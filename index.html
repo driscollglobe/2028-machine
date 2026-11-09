@@ -456,7 +456,7 @@ const CANDS=[
  {id:'moore',reviewed:'2026-09',name:'Wes Moore',role:'Gov., Maryland',age:50,mkt:2.0,run:70,lane:'anchor',rank:15,debate:1.05,str:'Generational, compelling bio',weak:'Thin executive record',base:4,fit:{SC:1.25,NH:0.80,NV:0.95,IA:0.85,MI:0.95,GA:1.10,NC:1.10,ST:1.00}},
  {id:'warnock',reviewed:'2026-09',name:'Raphael Warnock',role:'Sen., Georgia',age:59,mkt:0.7,run:35,lane:'anchor',rank:16,debate:1.1,str:'Heir to Black institutional support',weak:'Overshadowed by Ossoff',base:4,fit:{SC:1.45,NH:0.80,NV:0.95,IA:0.85,MI:0.95,GA:1.40,NC:1.15,ST:1.00}},
  {id:'talarico',reviewed:'2026-11',name:'James Talarico',role:'Sen.-elect, Texas',age:36,mkt:2.1,run:15,lane:'fight',rank:17,debate:1.1,str:'Viral, young, surprising',weak:'No infrastructure',base:8,fit:{SC:1.05,NH:0.80,NV:0.95,IA:0.95,MI:0.90,GA:0.95,NC:1.00,ST:1.10}},
- {id:'elsayed',reviewed:'2026-11',name:'Abdul El-Sayed',role:'Sen.-elect, Michigan',age:44,mkt:2.0,run:40,lane:'movement',rank:18,debate:1.05,str:'Sanders lineage, Michigan Senate platform',weak:'Untested nationally; splits the left with AOC',base:8,fit:{SC:0.70,NH:1.00,NV:1.10,IA:1.00,MI:1.60,GA:0.75,NC:0.85,ST:1.00}},
+ {id:'elsayed',reviewed:'2026-11',name:'Abdul El-Sayed',role:'Sen.-elect, Michigan',age:44,mkt:2.0,run:40,runIfAocOut:70,lane:'movement',rank:18,debate:1.05,str:'Sanders lineage, Michigan Senate platform',weak:'Untested nationally; splits the left with AOC',base:8,fit:{SC:0.70,NH:1.00,NV:1.10,IA:1.00,MI:1.60,GA:0.75,NC:0.85,ST:1.00}},
  {id:'stewart',reviewed:'2026-09',name:'Jon Stewart',role:'Broadcaster',age:65,mkt:0.4,run:12,lane:'out',rank:19,debate:1.2,str:'Attention, anti-elite credibility',weak:'66 on election day; wants influence not the job',base:5,fit:{SC:0.60,NH:1.10,NV:1.00,IA:0.90,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
  {id:'fain',reviewed:'2026-09',name:'Shawn Fain',role:'UAW President',age:56,mkt:1.0,run:15,runCap:15,lane:'movement',tag:'Labor',rank:20,debate:1.0,str:'Purest class-war vessel',weak:'Under federal investigation; fighting for his own union job first',base:5,fit:{SC:0.60,NH:0.80,NV:1.30,IA:1.10,MI:1.50,GA:0.70,NC:0.85,ST:0.95}},
  {id:'walz',reviewed:'2026-09',name:'Tim Walz',role:'Gov., Minnesota',age:64,mkt:0.1,run:13,lane:'working',rank:21,debate:1.0,str:'Folksy, soft-left',weak:'Losing VP rarely tops the ticket',base:5,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.20,MI:1.10,GA:0.80,NC:0.90,ST:0.95}},
@@ -804,6 +804,9 @@ function simulate(C,collect){
   if(c.id==='ossoff'){inRace[c.id]=ossIn;return;}
   if(c.id==='other'){inRace[c.id]=true;return;}
   let runP=(C.runOverride&&typeof C.runOverride[c.id]==='number')?C.runOverride[c.id]:c.run;
+  // runIfAocOut (operator, 2026-11-09): this candidate runs only when AOC stays out, and then with this chance.
+  // It replaces the run market for them. El-Sayed: 70.
+  if(typeof c.runIfAocOut==='number'&&!(C.runOverride&&typeof C.runOverride[c.id]==='number')){inRace[c.id]=!aoc&&rng()<c.runIfAocOut/100;return;}
   inRace[c.id]=rng()<(runP/100);
  });
  // Black voters consolidate behind another candidate: decide AFTER the field is set,
@@ -1172,7 +1175,7 @@ function oddsRow(c){
  const gapTxt=x.gap===null?'<b>&nbsp;</b>':'<b class="gap '+(x.gap>=0?'pos':'neg')+'">'+fmtGap(x.gap)+'</b>';
  return '<span'+(typeof c.madj==='number'?' title="Corrected for long-shot bias: '+c.madj.toFixed(1)+'%. The model anchors to the corrected price."':'')+'><i>market</i><b>'+x.mkt.toFixed(1)+'%</b></span><span><i>poll</i>'+pollTxt+'</span><span><i>gap</i>'+gapTxt+'</span>';
 }
-function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=oddsRow(c);const r=document.getElementById('runrow_'+c.id);if(r)r.innerHTML='<span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+nidCell(c)+attnCell(c);});}
+function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=oddsRow(c);const r=document.getElementById('runrow_'+c.id);if(r)r.innerHTML='<span'+runTip(c)+'><i>run</i><b>'+runPct(c)+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+nidCell(c)+attnCell(c);});}
 function renderPollBoard(){
  const body=document.getElementById('pollboardBody');if(!body)return;
  const top=CANDS.filter(c=>c.id!=='other').slice().sort((a,b)=>b.mkt-a.mkt).slice(0,6);
@@ -1207,7 +1210,7 @@ function buildCards(){
    +pic
    +'<div class="nm">'+c.name+'</div><div class="meta">'+c.role+' · '+c.age+' in \u201928</div>'
    +'<div class="odds polls" id="odds_'+c.id+'">'+oddsRow(c)+'</div>'
-   +'<div class="odds pair" id="runrow_'+c.id+'"><span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+nidCell(c)+attnCell(c)+'</div>'
+   +'<div class="odds pair" id="runrow_'+c.id+'"><span'+runTip(c)+'><i>run</i><b>'+runPct(c)+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+nidCell(c)+attnCell(c)+'</div>'
    +'<span class="lane '+c.lane+'" title="'+poolTip(c).replace(/"/g,'&quot;')+'">'+tagLabel(c)+'</span>'
    +'<div class="sw"><b>Strength:</b> '+c.str+'<br><b>Weakness:</b> '+c.weak+'</div>'
    +'<a class="gaplink" href="gap.html#'+c.id+'" onclick="event.stopPropagation()">Polls vs market</a></div>';
@@ -1275,6 +1278,9 @@ function spark(v){
  return '<svg class="spark" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" aria-hidden="true"><polyline points="'+pts+'" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>';
 }
 // name ID on the field card: measured, with date and source on hover, or estimated from the attention score
+// run odds a reader sees: for a runIfAocOut candidate, the chance AOC stays out times their chance then
+function runPct(c){if(typeof c.runIfAocOut!=='number')return c.run;const a=+((document.getElementById('pAoc')||{}).value||66)/100;return Math.round((1-a)*c.runIfAocOut);}
+function runTip(c){return typeof c.runIfAocOut==='number'?' title="Runs only if AOC stays out, and then '+c.runIfAocOut+' percent of the time"':'';}
 function nidCell(c){if(!NAMEID.on||typeof NAMEID.x0[c.id]!=='number')return '';const x=Math.round(NAMEID.x0[c.id]*100),src=NAMEID.src[c.id];
  const tip=NAMEID.est[c.id]?'No Economist/YouGov reading yet. Estimated from our attention score of '+(NAMEID.score[c.id]?NAMEID.score[c.id].score:1)+' out of 10.':'Share who have heard enough to rate them. Economist/YouGov, '+edDate(src.date)+'. '+src.source;
  return '<span title="'+tip.replace(/"/g,'&quot;')+'"><i>known by'+(NAMEID.est[c.id]?', estimated':'')+'</i><b>'+x+'%</b></span>';}
@@ -1372,7 +1378,7 @@ function openDossier(id){
  const laneL=tagLabel(c)+(c.tag?' ('+poolLabel(c.lane)+')':'')+(c.lane2?' (secondary: '+poolLabel(c.lane2)+')':'');
  const coalition=(POOL_META[c.lane]||POOL_META.out).def+(POOL_WHY[id]?' '+POOL_WHY[id]:'');
  let h='<div class="md-head">'+pic+'<div><div class="md-name">'+c.name+'</div><div class="md-meta">'+c.role+' · age '+c.age+' in 2028 · '+laneL+'</div></div></div>';
- h+='<div class="md-odds"><span>market <b>'+c.mkt+'%</b></span><span>runs <b>'+c.run+'%</b></span><span>my rank <b>#'+c.rank+'</b></span></div>';
+ h+='<div class="md-odds"><span>market <b>'+c.mkt+'%</b></span><span'+runTip(c)+'>runs <b>'+runPct(c)+'%</b></span><span>my rank <b>#'+c.rank+'</b></span></div>';
  const rv=c.reviewed?'<span class="rv">Reviewed '+edMonth(c.reviewed)+'</span>':'';
  const as=NAMEID.score[id];
  h+='<div class="md-sec"><h4>Strength</h4><p>'+c.str+rv+'</p></div>';
