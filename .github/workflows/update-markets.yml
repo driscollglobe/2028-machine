@@ -44,6 +44,9 @@ jobs:
       - name: Pull the Trump approval average
         run: python3 scripts/fetch_approval.py
 
+      - name: Count news attention per candidate (display only)
+        run: python3 scripts/fetch_attention.py
+
       - name: Fit market strengths for the anchor slider
         run: node scripts/calibrate_anchor.js
 
@@ -80,7 +83,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add markets.json polls.csv approval.json anchor.json history.csv default.json wire.json heatmap.json rankings.json calls.csv notes cards share
+          git add markets.json polls.csv attention.csv approval.json anchor.json history.csv default.json wire.json heatmap.json rankings.json calls.csv notes cards share
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0

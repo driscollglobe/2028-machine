@@ -277,6 +277,7 @@ body.show-adv .ctl.adv{display:flex;}
 .desknote .dnlabel{font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--wire);margin-bottom:4px;}
 .desknote .dnlabel span{color:var(--faint);margin-left:6px;}
 .desknote p{margin:0;font-size:14.5px;line-height:1.5;}
+.spark{display:block;margin-top:2px;color:var(--wire);}
 .rv{font-family:'Spline Sans Mono',monospace;font-size:9.5px;color:var(--faint);letter-spacing:.04em;margin-left:6px;white-space:nowrap;}
 .settled .rs{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:7px 0;border-top:1px solid var(--rule);}
 .settled .rs:first-child{border-top:0;}
@@ -413,7 +414,7 @@ body.show-adv h2.s.adv{display:block;}
 <h2 class="s">Calls</h2>
 <div class="section" id="calls"><div class="shead"><span>Dated claims, graded nightly against the books and the model</span><span class="note" id="callRecord">loading calls.csv</span></div><div id="callsBody" class="muted">Loading calls.csv</div><div class="legend">A call resolves true the first day its condition holds and false at its deadline if it never does. Past calls cannot be edited; a build check enforces it. <a href="track.html#calls">Full ledger</a></div></div>
 
-<p class="foot">THE 2028 MACHINE · A MODEL BUILT FROM ONE OPERATOR'S PRIORS, NOT A FORECAST · THE STRENGTHS ARE ARGUABLE ON PURPOSE; THE VALUE IS WHAT MOVES THE OUTCOME, NOT THE HEADLINE ODDS · PRIORS REVIEWED THROUGH <span id="priorsDate">2026-09</span> · MARKET ANCHORS UPDATED NIGHTLY FROM KALSHI AND POLYMARKET · POLLS PULLED NIGHTLY FROM PUBLIC AGGREGATORS · READER BRACKETS ARE ANONYMOUS AND AGGREGATED. NOTHING IDENTIFIES YOU. · POOL ASSIGNMENTS AND SHARES ARE OPERATOR PRIORS, NOT MEASURED VOTER DATA · THE DRISCOLL GLOBE · POLITICAL SYSTEMS DESK</p>
+<p class="foot">THE 2028 MACHINE · A MODEL BUILT FROM ONE OPERATOR'S PRIORS, NOT A FORECAST · THE STRENGTHS ARE ARGUABLE ON PURPOSE; THE VALUE IS WHAT MOVES THE OUTCOME, NOT THE HEADLINE ODDS · PRIORS REVIEWED THROUGH <span id="priorsDate">2026-09</span> · MARKET ANCHORS UPDATED NIGHTLY FROM KALSHI AND POLYMARKET · POLLS PULLED NIGHTLY FROM PUBLIC AGGREGATORS · READER BRACKETS ARE ANONYMOUS AND AGGREGATED. NOTHING IDENTIFIES YOU. · NEWS ATTENTION IS A GOOGLE NEWS COUNT, SHOWN FOR CONTEXT AND NOT USED IN THE MODEL · POOL ASSIGNMENTS AND SHARES ARE OPERATOR PRIORS, NOT MEASURED VOTER DATA · THE DRISCOLL GLOBE · POLITICAL SYSTEMS DESK</p>
 <div class="modal-bg" id="modalBg" onclick="closeModal(event)">
  <div class="modal" id="modalBox" onclick="event.stopPropagation()">
   <button class="modal-x" onclick="closeModal()">×</button>
@@ -1009,7 +1010,7 @@ function oddsRow(c){
  const gapTxt=x.gap===null?'<b>&nbsp;</b>':'<b class="gap '+(x.gap>=0?'pos':'neg')+'">'+fmtGap(x.gap)+'</b>';
  return '<span><i>market</i><b>'+x.mkt.toFixed(1)+'%</b></span><span><i>poll</i>'+pollTxt+'</span><span><i>gap</i>'+gapTxt+'</span>';
 }
-function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=oddsRow(c);const r=document.getElementById('runrow_'+c.id);if(r)r.innerHTML='<span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c);});}
+function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=oddsRow(c);const r=document.getElementById('runrow_'+c.id);if(r)r.innerHTML='<span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+attnCell(c);});}
 function renderPollBoard(){
  const body=document.getElementById('pollboardBody');if(!body)return;
  const top=CANDS.filter(c=>c.id!=='other').slice().sort((a,b)=>b.mkt-a.mkt).slice(0,6);
@@ -1039,7 +1040,7 @@ function buildCards(){
    +pic
    +'<div class="nm">'+c.name+'</div><div class="meta">'+c.role+' · '+c.age+' in \u201928</div>'
    +'<div class="odds polls" id="odds_'+c.id+'">'+oddsRow(c)+'</div>'
-   +'<div class="odds pair" id="runrow_'+c.id+'"><span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+'</div>'
+   +'<div class="odds pair" id="runrow_'+c.id+'"><span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+attnCell(c)+'</div>'
    +'<span class="lane '+c.lane+'" title="'+poolTip(c).replace(/"/g,'&quot;')+'">'+tagLabel(c)+'</span>'
    +'<div class="sw"><b>Strength:</b> '+c.str+'<br><b>Weakness:</b> '+c.weak+'</div>'
    +'<a class="gaplink" href="gap.html#'+c.id+'" onclick="event.stopPropagation()">Polls vs market</a></div>';
@@ -1089,6 +1090,22 @@ let MODEL_RANK={};
 let MODEL_FIRST={};
 // model share minus market price for a field card; updates whenever the live model reruns
 function crowdCell(c){const x=CROWD&&CROWD.candidates&&CROWD.candidates[c.id];return x?'<span title="median run odds from '+CROWD.count+' anonymous reader brackets"><i>Globe readers</i><b>'+Math.round(x.median)+'%</b></span>':'';}
+// ==ATTENTION== attention.csv: Google News results per candidate per day (scripts/fetch_attention.py).
+// Display only. It never enters the model.
+let ATTN={};
+function loadAttention(){
+ fetch('attention.csv?v='+Date.now()).then(r=>r.ok?r.text():null).then(t=>{
+  if(!t)return;const rows=parseCSV(t).filter(r=>r.date).slice(-7);if(!rows.length)return;
+  CANDS.forEach(c=>{const v=rows.map(r=>{const x=parseFloat(r[c.id]);return isFinite(x)?x:null;});if(v.some(x=>x!==null))ATTN[c.id]={v,days:rows.length,cap:v.some(x=>x>=100)};});
+  refreshOdds();
+ }).catch(()=>{});
+}
+function spark(v){
+ const w=56,h=16,vals=v.map(x=>x===null?0:x),mx=Math.max(1,...vals);
+ const pts=vals.map((x,i)=>((vals.length<2?w/2:i*w/(vals.length-1)).toFixed(1))+','+(h-1-x/mx*(h-2)).toFixed(1)).join(' ');
+ return '<svg class="spark" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" aria-hidden="true"><polyline points="'+pts+'" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>';
+}
+function attnCell(c){const a=ATTN[c.id];if(!a)return '';const tot=a.v.reduce((s,x)=>s+(x||0),0);return '<span title="Google News results, last '+a.days+' days; not in the model'+(a.cap?'; a day at 100 means 100 or more':'')+'"><i>news, '+a.days+'d</i><b>'+tot+(a.cap?'+':'')+'</b>'+spark(a.v)+'</span>';}
 function mmm(c){const f=MODEL_FIRST[c.id];if(typeof f!=='number')return '';const g=Math.round((f-c.mkt)*10)/10;return '<span title="model share minus market price"><i>model vs mkt</i><b class="gap '+(g>=0?'pos':'neg')+'">'+(g>0?'+':'')+g.toFixed(1)+'</b></span>';}
 function setModelRank(first){MODEL_FIRST=first||{};const ids=CANDS.filter(c=>c.id!=='other').map(c=>c.id).sort((a,b)=>(first[b]||0)-(first[a]||0));MODEL_RANK={};ids.forEach((id,i)=>MODEL_RANK[id]=i+1);refreshOdds();}
 // ==PRECOMPUTED DEFAULT== default.json is written nightly by scripts/baseline.js. On load the page paints from it
@@ -1463,7 +1480,7 @@ document.querySelectorAll('.ctl input[type=range]').forEach(r=>{
  const mk=(d,txt)=>{const b=document.createElement('button');b.type='button';b.className='step';b.textContent=txt;b.setAttribute('aria-label',(d>0?'Increase ':'Decrease ')+r.id);b.addEventListener('click',()=>{if(r.disabled)return;const v=Math.max(+r.min,Math.min(+r.max,+r.value+d));r.value=v;r.dispatchEvent(new Event('input',{bubbles:true}));});return b;};
  r.before(mk(-5,'-'));r.after(mk(5,'+'));
 });
-renderSettled();renderReviewed();loadDeskNote();loadWire();loadHeatmap();loadCalls();loadCrowd();loadApproval();document.getElementById('pTrump').addEventListener('input',()=>{APPR_TOUCHED=true;});buildCards();loadPolls();loadHistory();tickClock();setInterval(tickClock,30000);buildBracket();paintDefault();deepLink();bracketFromUrl();
+renderSettled();renderReviewed();loadDeskNote();loadWire();loadHeatmap();loadCalls();loadCrowd();loadAttention();loadApproval();document.getElementById('pTrump').addEventListener('input',()=>{APPR_TOUCHED=true;});buildCards();loadPolls();loadHistory();tickClock();setInterval(tickClock,30000);buildBracket();paintDefault();deepLink();bracketFromUrl();
 // fitted market strengths for the anchor slider (scripts/calibrate_anchor.js, nightly)
 fetch('anchor.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(A=>{if(!A||!A.mstr)return;CANDS.forEach(c=>{if(typeof A.mstr[c.id]==='number')c.mstr=A.mstr[c.id];});if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();}).catch(()=>{});
 // ==LIVE MARKET ANCHORS== fetch nightly-updated markets.json; fall back silently to baked-in values
