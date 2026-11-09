@@ -635,11 +635,34 @@ function anchorBases(a,prior){
  const ob=c=>c.base*(prior&&prior[c.id]>0?prior[c.id]:1); // operator strength, drawn when a prior draw is passed
  const sb=CANDS.reduce((t,c)=>t+c.base,0), sd=CANDS.reduce((t,c)=>t+ob(c),0);
  if(!(a>0)){CANDS.forEach(c=>B[c.id]=sb*ob(c)/sd);return B;}
- const mv=c=>Math.max(0,typeof c.mstr==='number'?c.mstr:c.mkt);
+ const mv=c=>Math.max(0,typeof c.mstr==='number'?c.mstr:(typeof c.madj==='number'?c.madj:c.mkt));
  const sm=CANDS.reduce((t,c)=>t+mv(c),0);
  CANDS.forEach(c=>{B[c.id]=sb*((1-a)*ob(c)/sd+(sm>0?a*mv(c)/sm:0));});
  return B;
 }
+// ==LONG-SHOT CORRECTION== 2026-11-09 (longshot). Prediction markets overprice long shots and underprice
+// favorites (the favorite-longshot bias). Before the blend anchors the model, each book's prices are corrected:
+// a price under LONGSHOT.floor is multiplied by (p / floor) ^ LONGSHOT.power, prices at the floor and above keep
+// their size, and the book (with "other" as 100 minus the named prices) is rescaled to 100, which lifts every
+// price at or above the floor by the same factor. power 0.5, floor 5 was fitted on the 2026-11-09 books so a
+// 2 becomes 1.4 and a 26 becomes 28.4 to 28.8. The raw blend stays what readers see and what the gap uses.
+const LONGSHOT={floor:5,power:0.5};
+function longshot(book){
+ const b={};let named=0;Object.keys(book||{}).forEach(k=>{if(k==='other'||k.charAt(0)==='_'||typeof book[k]!=='number')return;b[k]=Math.max(0,book[k]);named+=b[k];});
+ b.other=Math.max(0,100-named);
+ const w={};let t=0;Object.keys(b).forEach(k=>{const p=b[k];w[k]=p<LONGSHOT.floor?p*Math.pow(p/LONGSHOT.floor,LONGSHOT.power):p;t+=w[k];});
+ const out={};Object.keys(w).forEach(k=>{out[k]=t>0?w[k]*100/t:0;});return out;
+}
+// the same blend rule as scripts/fetch_markets.py: mean of the two books, one book where only one lists the
+// candidate, other as the residual; one decimal
+function blendBooks(k,p){
+ const r1=x=>Math.round(x*10)/10,out={};let sum=0;
+ CANDS.forEach(c=>{if(c.id==='other')return;const kv=k?k[c.id]:undefined,pv=p?p[c.id]:undefined;
+  let v=null;if(typeof kv==='number'&&typeof pv==='number')v=(kv+pv)/2;else if(typeof kv==='number')v=kv;else if(typeof pv==='number')v=pv;
+  if(v!==null){out[c.id]=r1(v);sum+=out[c.id];}});
+ out.other=r1(100-sum);return out;
+}
+function correctedBlend(M){return M&&(M.kalshi||M.polymarket)?blendBooks(M.kalshi?longshot(M.kalshi):null,M.polymarket?longshot(M.polymarket):null):null;}
 // ==DRAWN PRIORS== 2026-11-09 (drawn-priors). Our operator strengths and pool shares are estimates, so every run
 // draws them. Each candidate's strength is multiplied by a lognormal draw with median 1 and one sigma of
 // spread (0.30 means x1.30 or /1.30). Each pool's share of the electorate takes its own draw of the same size,
@@ -1080,7 +1103,7 @@ function oddsRow(c){
  const x=pollNums(c);
  const pollTxt=x.poll===null?'<b>&nbsp;</b>':'<b>'+x.poll.toFixed(1)+'%</b>';
  const gapTxt=x.gap===null?'<b>&nbsp;</b>':'<b class="gap '+(x.gap>=0?'pos':'neg')+'">'+fmtGap(x.gap)+'</b>';
- return '<span><i>market</i><b>'+x.mkt.toFixed(1)+'%</b></span><span><i>poll</i>'+pollTxt+'</span><span><i>gap</i>'+gapTxt+'</span>';
+ return '<span'+(typeof c.madj==='number'?' title="Corrected for long-shot bias: '+c.madj.toFixed(1)+'%. The model anchors to the corrected price."':'')+'><i>market</i><b>'+x.mkt.toFixed(1)+'%</b></span><span><i>poll</i>'+pollTxt+'</span><span><i>gap</i>'+gapTxt+'</span>';
 }
 function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=oddsRow(c);const r=document.getElementById('runrow_'+c.id);if(r)r.innerHTML='<span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+attnCell(c);});}
 function renderPollBoard(){
@@ -1581,8 +1604,10 @@ fetch('anchor.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(A=>{if(!A||!
 // ==LIVE MARKET ANCHORS== fetch nightly-updated markets.json; fall back silently to baked-in values
 fetch('markets.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(M=>{
  if(!M||!M.blend)return;
+ const MA=correctedBlend(M);
  CANDS.forEach(c=>{
   const b=M.blend[c.id];if(typeof b==='number')c.mkt=b;
+  if(MA&&typeof MA[c.id]==='number')c.madj=MA[c.id];
   const r=M.run?M.run[c.id]:undefined;if(typeof r==='number'&&c.run>0&&c.run<100)c.run=Math.round(r);
   if(typeof c.runCap==='number')c.run=Math.min(c.run,c.runCap); // operator cap on top of the run market
  });
