@@ -59,7 +59,7 @@ function load(indexPath, inject) {
   const windowStub = { document: documentStub, location: { search: '' }, addEventListener() {}, innerWidth: 1200 };
   // Function wrapper rather than eval: the script declares top-level const.
   const factory = new Function('document', 'window', 'navigator', 'location',
-    core + '\n' + (inject || '') + '\nreturn {CANDS:CANDS, RESOLVED:(typeof RESOLVED==="undefined"?{}:RESOLVED), BP_PRESETS:(typeof BP_PRESETS==="undefined"?{}:BP_PRESETS), HM_LEVERS:(typeof HM_LEVERS==="undefined"?[]:HM_LEVERS), HM_WATCH:(typeof HM_WATCH==="undefined"?[]:HM_WATCH), computeHeatmap:(typeof computeHeatmap==="undefined"?null:computeHeatmap), SIMRULES:(typeof SIMRULES==="undefined"?{}:SIMRULES), drawPrior:(typeof drawPrior==="undefined"?null:drawPrior), shareDist:(typeof shareDist==="undefined"?null:shareDist), simulate:simulate, cfg:cfg, mb:mb, setRng:function(r){rng=r;}};');
+    core + '\n' + (inject || '') + '\nreturn {CANDS:CANDS, RESOLVED:(typeof RESOLVED==="undefined"?{}:RESOLVED), BP_PRESETS:(typeof BP_PRESETS==="undefined"?{}:BP_PRESETS), HM_LEVERS:(typeof HM_LEVERS==="undefined"?[]:HM_LEVERS), HM_WATCH:(typeof HM_WATCH==="undefined"?[]:HM_WATCH), computeHeatmap:(typeof computeHeatmap==="undefined"?null:computeHeatmap), SIMRULES:(typeof SIMRULES==="undefined"?{}:SIMRULES), drawPrior:(typeof drawPrior==="undefined"?null:drawPrior), shareDist:(typeof shareDist==="undefined"?null:shareDist), correctedBlend:(typeof correctedBlend==="undefined"?null:correctedBlend), longshot:(typeof longshot==="undefined"?null:longshot), simulate:simulate, cfg:cfg, mb:mb, setRng:function(r){rng=r;}};');
   const sim = factory(documentStub, windowStub, {}, windowStub.location);
   sim.controls = controls;
   sim.html = html;
@@ -69,10 +69,13 @@ function load(indexPath, inject) {
 // Apply markets.json to the loaded model: blend to mkt, run market to run probabilities.
 function applyMarkets(sim, M) {
   if (!M.blend || !M.date) throw new Error('markets.json missing blend or date');
+  // long-shot corrected blend for the anchor (index.html correctedBlend); raw blend stays in c.mkt
+  const MA = sim.correctedBlend ? sim.correctedBlend(M) : null;
   sim.CANDS.forEach(c => {
     const b = M.blend[c.id];
     if (typeof b !== 'number') throw new Error('markets.json blend lacks ' + c.id);
     c.mkt = b;
+    if (MA && typeof MA[c.id] === 'number') c.madj = MA[c.id]; else delete c.madj;
     const r = M.run ? M.run[c.id] : undefined;
     if (typeof r === 'number' && c.run > 0 && c.run < 100) c.run = Math.round(r);
     if (typeof c.runCap === 'number') c.run = Math.min(c.run, c.runCap); // operator cap on top of the run market

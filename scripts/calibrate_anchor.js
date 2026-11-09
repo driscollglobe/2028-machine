@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Nightly: fit market strengths for the anchor slider so that a = 100 at default settings
-// reproduces the Kalshi and Polymarket blend. Writes anchor.json. Node 20, no packages.
+// reproduces the Kalshi and Polymarket blend after the long-shot correction. Writes anchor.json. Node 20, no packages.
 // Method: start from the blend, run the sim at a = 100 with a fixed seed, and scale each
 // candidate's strength by (target + k) / (simulated + k), damped. Repeat. Same seed every
 // round so the fit moves on the strengths, not on noise.
@@ -21,7 +21,9 @@ const sim = core.load();
 core.applyMarkets(sim, M);
 const ids = sim.CANDS.map(c => c.id);
 const target = {};
-ids.forEach(id => { target[id] = Math.max(0, M.blend[id] || 0); });
+// the target is the long-shot corrected blend (index.html longshot), the price the model anchors to
+const MA = sim.correctedBlend(M);
+ids.forEach(id => { target[id] = Math.max(0, MA[id] || 0); });
 
 const fit = core.fitAnchor(sim, target, { rounds: ROUNDS, runs: N, k: K, damp: DAMP, seed: core.seedFrom(M.date + ':anchor'), debug: !!process.env.DEBUG });
 const out = { date: M.date, rounds: ROUNDS, runs: N, distance: fit.distance, mstr: fit.mstr };
