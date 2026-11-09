@@ -59,7 +59,7 @@ function load(indexPath, inject) {
   const windowStub = { document: documentStub, location: { search: '' }, addEventListener() {}, innerWidth: 1200 };
   // Function wrapper rather than eval: the script declares top-level const.
   const factory = new Function('document', 'window', 'navigator', 'location',
-    core + '\n' + (inject || '') + '\nreturn {CANDS:CANDS, RESOLVED:(typeof RESOLVED==="undefined"?{}:RESOLVED), BP_PRESETS:(typeof BP_PRESETS==="undefined"?{}:BP_PRESETS), HM_LEVERS:(typeof HM_LEVERS==="undefined"?[]:HM_LEVERS), HM_WATCH:(typeof HM_WATCH==="undefined"?[]:HM_WATCH), computeHeatmap:(typeof computeHeatmap==="undefined"?null:computeHeatmap), SIMRULES:(typeof SIMRULES==="undefined"?{}:SIMRULES), drawPrior:(typeof drawPrior==="undefined"?null:drawPrior), shareDist:(typeof shareDist==="undefined"?null:shareDist), correctedBlend:(typeof correctedBlend==="undefined"?null:correctedBlend), longshot:(typeof longshot==="undefined"?null:longshot), simulate:simulate, cfg:cfg, mb:mb, setRng:function(r){rng=r;}};');
+    core + '\n' + (inject || '') + '\nreturn {CANDS:CANDS, RESOLVED:(typeof RESOLVED==="undefined"?{}:RESOLVED), BP_PRESETS:(typeof BP_PRESETS==="undefined"?{}:BP_PRESETS), HM_LEVERS:(typeof HM_LEVERS==="undefined"?[]:HM_LEVERS), HM_WATCH:(typeof HM_WATCH==="undefined"?[]:HM_WATCH), computeHeatmap:(typeof computeHeatmap==="undefined"?null:computeHeatmap), SIMRULES:(typeof SIMRULES==="undefined"?{}:SIMRULES), drawPrior:(typeof drawPrior==="undefined"?null:drawPrior), shareDist:(typeof shareDist==="undefined"?null:shareDist), correctedBlend:(typeof correctedBlend==="undefined"?null:correctedBlend), CLOCK:(typeof CLOCK==="undefined"?null:CLOCK), daysToSC:(typeof daysToSC==="undefined"?null:daysToSC), longshot:(typeof longshot==="undefined"?null:longshot), simulate:simulate, cfg:cfg, mb:mb, setRng:function(r){rng=r;}};');
   const sim = factory(documentStub, windowStub, {}, windowStub.location);
   sim.controls = controls;
   sim.html = html;
@@ -71,6 +71,8 @@ function applyMarkets(sim, M) {
   if (!M.blend || !M.date) throw new Error('markets.json missing blend or date');
   // long-shot corrected blend for the anchor (index.html correctedBlend); raw blend stays in c.mkt
   const MA = sim.correctedBlend ? sim.correctedBlend(M) : null;
+  // the clock runs on the markets date, so the nightly job narrows the model as South Carolina nears
+  if (sim.CLOCK) sim.CLOCK.today = M.date;
   sim.CANDS.forEach(c => {
     const b = M.blend[c.id];
     if (typeof b !== 'number') throw new Error('markets.json blend lacks ' + c.id);

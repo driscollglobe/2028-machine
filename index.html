@@ -664,6 +664,19 @@ function blendBooks(k,p){
  out.other=r1(100-sum);return out;
 }
 function correctedBlend(M){return M&&(M.kalshi||M.polymarket)?blendBooks(M.kalshi?longshot(M.kalshi):null,M.polymarket?longshot(M.polymarket):null):null;}
+// ==THE CLOCK== 2026-11-09 (clock). The model gets more certain as South Carolina nears, on purpose: fewer months
+// are left for shocks, and more of what we guess about the candidates will have been tested. CLOCK.sc is the
+// South Carolina primary in the DNC calendar (Jan. 22, 2028). CLOCK.start is the day these rules were set.
+// Between them, by days left, the random branch-event rate falls linearly from the slider's value to
+// CLOCK.eventsEnd of it, and the prior draw spread falls from SIMRULES.priorSpread to CLOCK.spreadEnd, both
+// reached on the eve of South Carolina and held after it. CLOCK.today is the markets date in the nightly job
+// and on the page, so the page narrows on its own; null means the reader's clock.
+const CLOCK={start:'2026-11-09',sc:'2028-01-22',eventsEnd:0.25,spreadEnd:0.10,today:null};
+function isoDay(d){return Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10))/86400000;}
+function daysToSC(){const t=CLOCK.today||new Date().toISOString().slice(0,10);return Math.round(isoDay(CLOCK.sc)-isoDay(t));}
+function clockFrac(days){const D0=isoDay(CLOCK.sc)-isoDay(CLOCK.start);return Math.max(0,Math.min(1,(days-1)/(D0-1)));}
+function clockEvents(days){const f=clockFrac(days);return CLOCK.eventsEnd+(1-CLOCK.eventsEnd)*f;}
+function clockSpread(days){const f=clockFrac(days);return CLOCK.spreadEnd+(SIMRULES.priorSpread-CLOCK.spreadEnd)*f;}
 // ==DRAWN PRIORS== 2026-11-09 (drawn-priors). Our operator strengths and pool shares are estimates, so every run
 // draws them. Each candidate's strength is multiplied by a lognormal draw with median 1 and one sigma of
 // spread (0.30 means x1.30 or /1.30). Each pool's share of the electorate takes its own draw of the same size,
@@ -693,8 +706,8 @@ function shareDist(counts,per,ids){
  });
  return out;
 }
-function cfg(){return{spread:SIMRULES.priorSpread,crowd:P('pCrowd'),resolveConv:!!(document.getElementById('resolveConv')||{}).checked,autoLean:P('pAutoLean'),anchor:P('pAnchor'),pA:P('pAoc'),pH:document.getElementById('pollsHarris').checked?0.95:P('pHarris'),pollsHarris:document.getElementById('pollsHarris').checked,pHslider:P('pHarris'),pN:P('pNewsom'),pOW:P('pOssWin'),pOR:P('pOssRev'),pMaine:P('pMaine'),pTex:P('pTexas'),pMich:P('pMich'),
- pC:P('pCoord'),pCF:P('pCoordFail'),pEv:P('pEvents'),pDb:P('pDebate'),pDrop:P('pDrop'),appr:+V('pTrump'),apprMixed:document.getElementById('apprMixed').checked,
+function cfg(){const days=daysToSC();return{days,spread:clockSpread(days),crowd:P('pCrowd'),resolveConv:!!(document.getElementById('resolveConv')||{}).checked,autoLean:P('pAutoLean'),anchor:P('pAnchor'),pA:P('pAoc'),pH:document.getElementById('pollsHarris').checked?0.95:P('pHarris'),pollsHarris:document.getElementById('pollsHarris').checked,pHslider:P('pHarris'),pN:P('pNewsom'),pOW:P('pOssWin'),pOR:P('pOssRev'),pMaine:P('pMaine'),pTex:P('pTexas'),pMich:P('pMich'),
+ pC:P('pCoord'),pCF:P('pCoordFail'),pEv:P('pEvents')*clockEvents(days),pDb:P('pDebate'),pDrop:P('pDrop'),appr:+V('pTrump'),apprMixed:document.getElementById('apprMixed').checked,
  selAoc:V('selAoc'),selTheme:V('selTheme'),selLesson:V('selLesson'),selBlack:V('selBlack'),selLatino:V('selLatino'),calKey:V('selCal'),darling:V('selDarling'),
  field:Object.fromEntries(CANDS.map(c=>[c.id,document.getElementById('tg_'+c.id)?document.getElementById('tg_'+c.id).value:'sample']))};}
 function simulate(C,collect){
@@ -1599,6 +1612,7 @@ fetch('anchor.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(A=>{if(!A||!
 // ==LIVE MARKET ANCHORS== fetch nightly-updated markets.json; fall back silently to baked-in values
 fetch('markets.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(M=>{
  if(!M||!M.blend)return;
+ if(M.date)CLOCK.today=M.date;
  const MA=correctedBlend(M);
  CANDS.forEach(c=>{
   const b=M.blend[c.id];if(typeof b==='number')c.mkt=b;
