@@ -69,6 +69,11 @@ test('lock check allows grading columns to change and allows edits to rows made 
   assert.deepStrictEqual(C.lockViolations(old, graded, '2026-11-21').filter(x => !/^D /.test(x)), []);
   assert.deepStrictEqual(C.lockViolations(old, graded, '2026-11-09'), []);
 });
+test('test rows are exempt from the lock', () => {
+  const old = fixture();
+  const edited = fixture().filter(r => r.id !== 'T');
+  assert.deepStrictEqual(C.lockViolations(old, edited, '2026-11-09'), []);
+});
 test('csv round trip keeps commas and quotes', () => {
   const rows = fixture();
   const back = C.parseCSV(C.toCSV(rows));

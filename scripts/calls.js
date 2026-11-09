@@ -3,7 +3,7 @@
 //   node scripts/calls.js grade [YYYY-MM-DD]   grade open calls against markets.json and default.json
 //   node scripts/calls.js lock [git-ref]       fail if a past row's terms changed versus git-ref (default HEAD)
 // A call resolves true the first day its condition holds, and false at its deadline if it never held.
-// Rows with status "test" are examples: never graded, never counted, still lock-checked.
+// Rows with status "test" are examples: never graded, never counted, and free to edit or delete.
 // Metrics: run.<id> (Kalshi run price), market.<id> (blend), kalshi.<id>, poly.<id>, model.<id>
 // (default run first place share), model.contested.
 'use strict';
@@ -87,6 +87,7 @@ function lockViolations(oldRows, newRows, today) {
   const byId = Object.fromEntries(newRows.map(r => [r.id, r]));
   oldRows.forEach(o => {
     if (!(o.date_made < today)) return;
+    if (o.status === 'test') return; // examples can be replaced; real calls cannot
     const n = byId[o.id];
     if (!n) { out.push(o.id + ' was deleted'); return; }
     if (n.date_made !== o.date_made) out.push(o.id + ' date_made changed');
