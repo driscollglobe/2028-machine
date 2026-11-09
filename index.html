@@ -391,6 +391,7 @@ body.show-adv h2.s.adv{display:block;}
   <div class="ctl adv"><label class="cl">...or coordination FAILURE (nobody drops)</label><input type="range" min="0" max="100" value="35" id="pCoordFail"><span class="cv" id="pCoordFailOut">35%</span></div>
   <div class="ctl adv"><label class="cl">Random branch-point events</label><input type="range" min="0" max="100" value="40" id="pEvents"><span class="cv" id="pEventsOut">40%</span></div>
   <div class="ctl adv"><label class="cl">Dropout support transfer</label><input type="range" min="0" max="70" value="35" id="pDrop"><span class="cv" id="pDropOut">35%</span><div class="ctlnote" data-reviewed="2026-09">Share of a departing candidate's strength that moves to pool mates, primary pool at full weight and secondary at half.</div></div>
+  <div class="ctl adv"><label class="cl">Lane crowding</label><input type="range" min="0" max="50" value="15" id="pCrowd"><span class="cv" id="pCrowdOut">15%</span><div class="ctlnote" data-reviewed="2026-11">Each pool's strength scales by 1 / (1 + c * (n - 1)), where n is how many of its candidates run. At 15, a third candidate in a lane cuts everyone in it by about 12 percent.</div></div>
   <div class="ctl adv"><label class="cl">Resolve conventions</label><label class="dpr"><input type="checkbox" id="resolveConv" checked>On: a convention with no pledged majority goes to more ballots</label></div>
   <div class="ctl adv"><label class="cl">Automatic delegates lean to Party Anchor and Suburb</label><input type="range" min="0" max="100" value="60" id="pAutoLean"><span class="cv" id="pAutoLeanOut">60%</span><div class="ctlnote" data-reviewed="2026-11">Share of automatic delegates that split among Party Anchor and Suburb Democrats still standing. The rest split in proportion to delegates won.</div></div>
   <div class="ctl adv"><label class="cl">Debate skill matters</label><input type="range" min="0" max="100" value="50" id="pDebate"><span class="cv" id="pDebateOut">50%</span></div>
@@ -607,7 +608,7 @@ function anchorBases(a){
  CANDS.forEach(c=>{B[c.id]=sb*((1-a)*c.base/sb+(sm>0?a*mv(c)/sm:0));});
  return B;
 }
-function cfg(){return{resolveConv:!!(document.getElementById('resolveConv')||{}).checked,autoLean:P('pAutoLean'),anchor:P('pAnchor'),pA:P('pAoc'),pH:document.getElementById('pollsHarris').checked?0.95:P('pHarris'),pollsHarris:document.getElementById('pollsHarris').checked,pHslider:P('pHarris'),pN:P('pNewsom'),pOW:P('pOssWin'),pOR:P('pOssRev'),pMaine:P('pMaine'),pTex:P('pTexas'),pMich:P('pMich'),
+function cfg(){return{crowd:P('pCrowd'),resolveConv:!!(document.getElementById('resolveConv')||{}).checked,autoLean:P('pAutoLean'),anchor:P('pAnchor'),pA:P('pAoc'),pH:document.getElementById('pollsHarris').checked?0.95:P('pHarris'),pollsHarris:document.getElementById('pollsHarris').checked,pHslider:P('pHarris'),pN:P('pNewsom'),pOW:P('pOssWin'),pOR:P('pOssRev'),pMaine:P('pMaine'),pTex:P('pTexas'),pMich:P('pMich'),
  pC:P('pCoord'),pCF:P('pCoordFail'),pEv:P('pEvents'),pDb:P('pDebate'),pDrop:P('pDrop'),appr:+V('pTrump'),apprMixed:document.getElementById('apprMixed').checked,
  selAoc:V('selAoc'),selTheme:V('selTheme'),selLesson:V('selLesson'),selBlack:V('selBlack'),selLatino:V('selLatino'),calKey:V('selCal'),darling:V('selDarling'),
  field:Object.fromEntries(CANDS.map(c=>[c.id,document.getElementById('tg_'+c.id)?document.getElementById('tg_'+c.id).value:'sample']))};}
@@ -708,6 +709,13 @@ function simulate(C,collect){
   if(darling===c.id)b*=1.35;
   str[c.id]=Math.pow(Math.max(0,b),0.6);mom[c.id]=1;strikes[c.id]=0;
  });
+ // lane crowding: each pool's total strength scales by 1/(1+c*(n-1)), n = its candidates in this run.
+ // Every member takes the same factor, so the pool total scales and the split inside it holds.
+ const crowdC=typeof C.crowd==='number'?C.crowd:0;
+ if(crowdC>0){
+  const nIn={};CANDS.forEach(c=>{if(c.id!=='other'&&alive[c.id]){const p=POOLOF[c.id];nIn[p]=(nIn[p]||0)+1;}});
+  CANDS.forEach(c=>{if(c.id!=='other'&&alive[c.id]){const n=nIn[POOLOF[c.id]]||1;str[c.id]/=1+crowdC*(n-1);}});
+ }
  // the named heir also gets the endorsement bump on top of the transfer
  if(endorse)str[endorse]*=Math.pow(1.6,0.6);
  // dropout inheritance: a share of a departing candidate's strength flows to live candidates in the same pool,
@@ -1443,7 +1451,7 @@ function bracketFromUrl(){
  runBracket();
 }
 let _frUpd;function queueFront(){clearTimeout(_frUpd);_frUpd=setTimeout(updateFrontrunner,200);}
-['pAutoLean','pAnchor','pAoc','pHarris','pNewsom','pOssRev','pTrump','pCoord','pCoordFail','pEvents','pDebate','pDrop'].forEach(id=>document.getElementById(id).addEventListener('input',e=>{document.getElementById(id+'Out').textContent=e.target.value+'%';queueFront();}));
+['pCrowd','pAutoLean','pAnchor','pAoc','pHarris','pNewsom','pOssRev','pTrump','pCoord','pCoordFail','pEvents','pDebate','pDrop'].forEach(id=>document.getElementById(id).addEventListener('input',e=>{document.getElementById(id+'Out').textContent=e.target.value+'%';queueFront();}));
 document.addEventListener('change',e=>{if(e.target&&e.target.tagName==='SELECT')queueFront();});
 document.getElementById('pollsHarris').addEventListener('change',queueFront);
 document.getElementById('resolveConv').addEventListener('change',queueFront);
