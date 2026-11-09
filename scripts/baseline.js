@@ -27,28 +27,20 @@ const C = sim.cfg();
 const res = core.runMany(sim, C, RUNS, core.seedFrom(M.date));
 const share = res.first;
 
-// Poll minus market gap per candidate, the same numbers gap.html shows: equal weight mean of national
-// polls in polls.csv whose field_end falls in the 30 days up to the market date, minus the blend.
-// Graded by calls.js as gap.<id>. A candidate with no poll in the window has no gap.
+// Poll minus market gap per candidate, the same numbers gap.html shows: the weighted national average
+// (pollavg.js, pollsters.csv) up to the market date, minus the raw blend. Graded by calls.js as gap.<id>.
+// A candidate with no poll in the window has no gap.
+const PA = require(path.join(ROOT, 'pollavg.js'));
 function pollGap() {
   const file = path.join(ROOT, 'polls.csv');
   if (!fs.existsSync(file)) return {};
-  const lines = fs.readFileSync(file, 'utf8').replace(/\r/g, '').split('\n').filter(l => l.trim().length);
-  const head = lines[0].split(',').map(h => h.trim());
-  const end = new Date(M.date + 'T12:00:00Z'), cutoff = new Date(end.getTime() - 30 * 86400000);
-  const sum = {}, n = {};
-  lines.slice(1).forEach(l => {
-    const cells = l.split(','), r = {};
-    head.forEach((h, i) => r[h] = (cells[i] || '').trim());
-    if ((r.geography || '').toLowerCase() !== 'national') return;
-    const fe = new Date(r.field_end + 'T12:00:00Z');
-    if (isNaN(fe) || fe < cutoff || fe > end) return;
-    ids.forEach(id => { const x = parseFloat(r[id]); if (r[id] !== undefined && r[id] !== '' && isFinite(x)) { sum[id] = (sum[id] || 0) + x; n[id] = (n[id] || 0) + 1; } });
-  });
+  const pf = path.join(ROOT, 'pollsters.csv');
+  const ps = fs.existsSync(pf) ? PA.parsePollsters(fs.readFileSync(pf, 'utf8')) : {};
+  const w = PA.weighted(PA.parseCSV(fs.readFileSync(file, 'utf8')), ps, M.date, ids);
   const gap = {};
-  Object.keys(sum).forEach(id => {
+  Object.keys(w.avg).forEach(id => {
     if (id === 'other' || typeof M.blend[id] !== 'number') return;
-    gap[id] = Math.round((Math.round(sum[id] / n[id] * 10) / 10 - M.blend[id]) * 10) / 10;
+    gap[id] = Math.round((w.avg[id] - M.blend[id]) * 10) / 10;
   });
   return gap;
 }

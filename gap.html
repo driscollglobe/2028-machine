@@ -54,11 +54,11 @@ tr.hl td{background:var(--wire-soft);}
 <div class="nav"><a href="index.html">The 2028 Machine</a><a href="track.html">Track record</a><a href="https://driscollglobe.substack.com">The Driscoll Globe</a></div>
 <p class="dek">Polls measure name recognition this far out. Markets price the whole path to the nomination. The distance between them, candidate by candidate, is the story. Click a column to sort.</p>
 <div class="section">
- <div class="shead"><span>National Democratic primary polls, last 30 days, against the Kalshi and Polymarket blend</span><span id="status">loading</span></div>
+ <div class="shead"><span>National Democratic primary polls, weighted, against the Kalshi and Polymarket blend</span><span id="status">loading</span></div>
  <table id="tbl"><thead><tr>
   <th data-k="name">Candidate</th><th data-k="poll">Poll average</th><th data-k="mkt">Market blend</th><th data-k="gap" class="on">Gap</th><th data-k="run">Run odds</th><th class="note">Note</th>
  </tr></thead><tbody></tbody></table>
- <div class="legend">Poll average is an equal weight mean of national Democratic primary polls from the last 30 days. Market blend is the simple average of the Kalshi and Polymarket nomination prices, updated nightly. Gap is poll minus market in points. Run odds are from the Kalshi run market. Notes are mine.</div>
+ <div class="legend">Poll average weights national Democratic primary polls from the last 90 days by recency (half as much every 30 days), by the square root of sample size, and by pollster quality and house adjustment from <a href="pollsters.csv">pollsters.csv</a>. The <a href="methodology.html#polls">methodology page</a> has the details. Market blend is the simple average of the Kalshi and Polymarket nomination prices, updated nightly. Gap is poll minus market in points. Run odds are from the Kalshi run market. Notes are mine.</div>
  <div class="getdata">Get the data: <a href="https://github.com/driscollglobe/2028-machine/blob/main/polls.csv">polls.csv</a><a href="https://github.com/driscollglobe/2028-machine/blob/main/history.csv">history.csv</a></div>
 </div>
 
@@ -70,9 +70,9 @@ tr.hl td{background:var(--wire-soft);}
 </div>
 <p class="foot">THE 2028 MACHINE · THE DRISCOLL GLOBE · POLITICAL SYSTEMS DESK</p>
 </div>
+<script src="pollavg.js"></script>
 <script>
 const NAMES={newsom:'Gavin Newsom',aoc:'AOC',sanders:'Bernie Sanders',ossoff:'Jon Ossoff',harris:'Kamala Harris',shapiro:'Josh Shapiro',pete:'Pete Buttigieg',pritzker:'JB Pritzker',khanna:'Ro Khanna',murphy:'Chris Murphy',kelly:'Mark Kelly',beshear:'Andy Beshear',rahm:'Rahm Emanuel',whitmer:'Gretchen Whitmer',moore:'Wes Moore',warnock:'Raphael Warnock',talarico:'James Talarico',elsayed:'Abdul El-Sayed',stewart:'Jon Stewart',fain:'Shawn Fain',walz:'Tim Walz',booker:'Cory Booker',gallego:'Ruben Gallego',slotkin:'Elissa Slotkin',vanhollen:'Chris Van Hollen',other:'Someone else'};
-const WINDOW_DAYS=30;
 const AP_MON=['Jan.','Feb.','March','April','May','June','July','Aug.','Sept.','Oct.','Nov.','Dec.'];
 function edDate(d,y){const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(d||'');if(!m)return d||'';return AP_MON[+m[2]-1]+' '+(+m[3])+(y===false?'':', '+m[1]);}
 let ROWS=[],sortKey='gap',sortAsc=false;
@@ -82,23 +82,12 @@ function parseCSV(text){
  const head=lines[0].split(',');
  return lines.slice(1).map(l=>{const cells=l.split(',');const o={};head.forEach((h,i)=>o[h.trim()]=(cells[i]||'').trim());return o;});
 }
-function pollAverages(rows){
- const today=new Date(),cutoff=new Date(today.getTime()-WINDOW_DAYS*86400000);
- const sum={},n={};let used=0;
- rows.forEach(r=>{
-  if((r.geography||'').toLowerCase()!=='national')return;
-  const end=new Date(r.field_end+'T12:00:00');
-  if(isNaN(end)||end<cutoff||end>today)return;
-  used++;
-  Object.keys(NAMES).forEach(id=>{const v=r[id];if(v===undefined||v==='')return;const x=parseFloat(v);if(!isFinite(x))return;sum[id]=(sum[id]||0)+x;n[id]=(n[id]||0)+1;});
- });
- const avg={};Object.keys(sum).forEach(k=>avg[k]=Math.round(sum[k]/n[k]*10)/10);
- return {avg,n,used};
-}
+// weighted average shared with index.html and scripts/baseline.js (pollavg.js, pollsters.csv)
+function pollAverages(rows,pollsters){return PollAvg.weighted(rows,pollsters,new Date(),Object.keys(NAMES));}
 const get=(u,kind)=>fetch(u+'?v='+Date.now()).then(r=>r.ok?(kind==='text'?r.text():r.json()):null).catch(()=>null);
-Promise.all([get('polls.csv','text'),get('markets.json','json'),get('notes.json','json')]).then(([csv,M,notes])=>{
+Promise.all([get('polls.csv','text'),get('markets.json','json'),get('notes.json','json'),get('pollsters.csv','text')]).then(([csv,M,notes,pst])=>{
  const pollRows=csv?parseCSV(csv):[];
- const polls=csv?pollAverages(pollRows):{avg:{},n:{},used:0};
+ const polls=csv?pollAverages(pollRows,PollAvg.parsePollsters(pst||'')):{avg:{},n:{},used:0};
  renderPollTable(pollRows);
  if(M&&M.date){const b=document.getElementById('updBadge');if(b)b.textContent='Updated '+edDate(M.date);}
  const blend=M&&M.blend?M.blend:{};const run=M&&M.run?M.run:{};
@@ -107,7 +96,7 @@ Promise.all([get('polls.csv','text'),get('markets.json','json'),get('notes.json'
   const mkt=typeof blend[id]==='number'?blend[id]:null,poll=typeof polls.avg[id]==='number'?polls.avg[id]:null;
   return {id,name:NAMES[id],poll,mkt,gap:(poll===null||mkt===null)?null:Math.round((poll-mkt)*10)/10,run:typeof run[id]==='number'?Math.round(run[id]):null,note:notes[id]||''};
  });
- document.getElementById('status').textContent=polls.used+' poll'+(polls.used===1?'':'s')+' in the last 30 days · markets as of '+(M&&M.date?edDate(M.date,false):'the last saved prices');
+ document.getElementById('status').textContent=polls.used+' poll'+(polls.used===1?'':'s')+' in the last 90 days, weighted · markets as of '+(M&&M.date?edDate(M.date,false):'the last saved prices');
  render();
  const hl=location.hash.replace('#','');if(hl){const tr=document.getElementById('row_'+hl);if(tr){tr.classList.add('hl');tr.scrollIntoView({block:'center'});}}
 });

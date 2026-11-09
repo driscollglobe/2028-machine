@@ -1,0 +1,9 @@
+The 2028 Machine, weighted poll average of 2026-11-09
+
+The national poll average was an equal weight mean of polls that ended in the last 30 days. It is now a weighted mean of polls that ended in the last 90 days. Each poll's weight is 0.5 to the power (age in days / 30), times the square root of its sample, times its pollster's quality. Before averaging, each candidate's number moves by the pollster's house adjustment for that candidate. A poll with no published sample counts at the median sample of the window. The method lives in pollavg.js, which index.html, gap.html and the nightly baseline all use, so the three can't drift apart.
+
+pollsters.csv holds pollster, aliases, quality, house adjustments and a reason for each. Harvard CAPS Harris starts at quality 0.7 and a Harris adjustment of minus 15: in the 30 days to 2026-11-09 it had Harris at 34 against 18.7 for every other pollster (38 against 23.4 over 90 days). Every other pollster starts at 1.0 with no adjustment. Pollster names match on letters and digits, so the scrape's spellings (J.L. Partners, Atlas Intel, McLauglin) find their row.
+
+Old and new averages to 2026-11-09 (node scripts/polls_compare.js): Harris 21.3 and 21.1, Newsom 13.2 and 13.1, Buttigieg 10.5 and 11.4, AOC 10.6 and 11.1, Ossoff 7.8 and 9.5, Kelly 6.5 and 6.7, Shapiro 4.7 and 4.7, Talarico 4.0 and 4.0, Pritzker 3.3 and 3.0, Beshear 2.2 and 2.8. Harris barely moves because the 15 point cut on Harvard is offset by older polls, which had her higher, now counting at reduced weight.
+
+Polls never enter the simulations, so the default top five is unchanged. The gap column moves, and so does default.json gap, which the calls ledger grades as gap.<id>. Call C3 (Harris's poll minus market gap under 10 by 2027-06-30) is now graded against the weighted average. Harris's gap went from 15.6 to 15.4.
