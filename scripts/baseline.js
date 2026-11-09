@@ -66,6 +66,10 @@ const def = {
   ballots: res.ballots,
   frontrunner: { id: order[0], share: share[order[0]] },
   first: share,
+  range: res.range || {},
+  dist: res.dist || {},
+  draws: res.draws || 0,
+  spread: C.spread || 0,
   majority: res.majority,
   lead: res.lead,
   order: order,
@@ -124,4 +128,4 @@ const items = wire.wireItems(M, def, prevRow, CANDS, sim.RESOLVED);
 fs.writeFileSync(WIRE, JSON.stringify({ date: M.date, items }, null, 1) + '\n');
 
 console.log((replaced ? 'Replaced ' : 'Appended ') + M.date + ' in history.csv (' + RUNS + ' runs, ' + res.contested + '% contested); wrote default.json and wire.json');
-console.log(order.slice(0, 8).map(id => id + ' ' + share[id]).join(', '));
+console.log(order.slice(0, 8).map(id => id + ' ' + share[id] + (res.range ? ' (likely ' + Math.round(res.range[id][0]) + ' to ' + Math.round(res.range[id][1]) + ')' : '')).join(', '));

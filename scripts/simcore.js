@@ -59,7 +59,7 @@ function load(indexPath, inject) {
   const windowStub = { document: documentStub, location: { search: '' }, addEventListener() {}, innerWidth: 1200 };
   // Function wrapper rather than eval: the script declares top-level const.
   const factory = new Function('document', 'window', 'navigator', 'location',
-    core + '\n' + (inject || '') + '\nreturn {CANDS:CANDS, RESOLVED:(typeof RESOLVED==="undefined"?{}:RESOLVED), BP_PRESETS:(typeof BP_PRESETS==="undefined"?{}:BP_PRESETS), HM_LEVERS:(typeof HM_LEVERS==="undefined"?[]:HM_LEVERS), HM_WATCH:(typeof HM_WATCH==="undefined"?[]:HM_WATCH), computeHeatmap:(typeof computeHeatmap==="undefined"?null:computeHeatmap), simulate:simulate, cfg:cfg, mb:mb, setRng:function(r){rng=r;}};');
+    core + '\n' + (inject || '') + '\nreturn {CANDS:CANDS, RESOLVED:(typeof RESOLVED==="undefined"?{}:RESOLVED), BP_PRESETS:(typeof BP_PRESETS==="undefined"?{}:BP_PRESETS), HM_LEVERS:(typeof HM_LEVERS==="undefined"?[]:HM_LEVERS), HM_WATCH:(typeof HM_WATCH==="undefined"?[]:HM_WATCH), computeHeatmap:(typeof computeHeatmap==="undefined"?null:computeHeatmap), SIMRULES:(typeof SIMRULES==="undefined"?{}:SIMRULES), drawPrior:(typeof drawPrior==="undefined"?null:drawPrior), shareDist:(typeof shareDist==="undefined"?null:shareDist), simulate:simulate, cfg:cfg, mb:mb, setRng:function(r){rng=r;}};');
   const sim = factory(documentStub, windowStub, {}, windowStub.location);
   sim.controls = controls;
   sim.html = html;
@@ -111,15 +111,24 @@ function seedFrom(str) {
 }
 
 // Run N simulations for a config and return first place shares, majority and contested splits.
+// With drawn priors (C.spread > 0), runs come in batches of SIMRULES.priorBatch that share one prior draw, and
+// the result carries dist (10th, 25th, 50th, 75th, 90th percentile of first place share across draws) and
+// range ([p10, p90]) per candidate.
 function runMany(sim, C, N, seed) {
   sim.setRng(sim.mb(seed));
+  const per = (C.spread > 0 && sim.drawPrior && sim.SIMRULES.priorBatch) || 0;
+  const batches = [];
+  let cur = null;
+  C = Object.assign({}, C);
   const ids = sim.CANDS.map(c => c.id);
   const first = {}, maj = {}, lead = {};
   ids.forEach(id => { first[id] = 0; maj[id] = 0; lead[id] = 0; });
   let contested = 0;
   const ballots = {};
   for (let i = 0; i < N; i++) {
+    if (per && i % per === 0) { C.prior = sim.drawPrior(C.spread); cur = {}; batches.push(cur); }
     const r = sim.simulate(C, false);
+    if (cur) cur[r.winner] = (cur[r.winner] || 0) + 1;
     first[r.winner]++;
     if (r.majority) maj[r.winner]++; else { lead[r.winner]++; contested++; }
     const bk = r.ballot === 0 || r.ballot === undefined ? 'unresolved' : (r.plurality ? 'plurality' : String(r.ballot));
@@ -129,6 +138,12 @@ function runMany(sim, C, N, seed) {
   const out = { runs: N, contested: pct(contested), unresolved: pct(ballots.unresolved || 0), ballots: {}, first: {}, majority: {}, lead: {} };
   Object.keys(ballots).forEach(k => { out.ballots[k] = pct(ballots[k]); });
   ids.forEach(id => { out.first[id] = pct(first[id]); out.majority[id] = pct(maj[id]); out.lead[id] = pct(lead[id]); });
+  if (per && N % per === 0) {
+    out.dist = sim.shareDist(batches, per, ids);
+    out.range = {};
+    ids.forEach(id => { out.range[id] = [out.dist[id].p10, out.dist[id].p90]; });
+    out.draws = batches.length;
+  }
   return out;
 }
 
