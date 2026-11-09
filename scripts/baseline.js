@@ -36,6 +36,8 @@ const def = {
   runs: RUNS,
   anchor: +sim.controls.pAnchor.value,
   contested: res.contested,
+  unresolved: res.unresolved,
+  ballots: res.ballots,
   frontrunner: { id: order[0], share: share[order[0]] },
   first: share,
   majority: res.majority,

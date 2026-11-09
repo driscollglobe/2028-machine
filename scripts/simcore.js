@@ -114,13 +114,17 @@ function runMany(sim, C, N, seed) {
   const first = {}, maj = {}, lead = {};
   ids.forEach(id => { first[id] = 0; maj[id] = 0; lead[id] = 0; });
   let contested = 0;
+  const ballots = {};
   for (let i = 0; i < N; i++) {
     const r = sim.simulate(C, false);
     first[r.winner]++;
     if (r.majority) maj[r.winner]++; else { lead[r.winner]++; contested++; }
+    const bk = r.ballot === 0 || r.ballot === undefined ? 'unresolved' : (r.plurality ? 'plurality' : String(r.ballot));
+    ballots[bk] = (ballots[bk] || 0) + 1;
   }
   const pct = x => Math.round(x / N * 1000) / 10;
-  const out = { runs: N, contested: pct(contested), first: {}, majority: {}, lead: {} };
+  const out = { runs: N, contested: pct(contested), unresolved: pct(ballots.unresolved || 0), ballots: {}, first: {}, majority: {}, lead: {} };
+  Object.keys(ballots).forEach(k => { out.ballots[k] = pct(ballots[k]); });
   ids.forEach(id => { out.first[id] = pct(first[id]); out.majority[id] = pct(maj[id]); out.lead[id] = pct(lead[id]); });
   return out;
 }

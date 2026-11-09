@@ -391,6 +391,8 @@ body.show-adv h2.s.adv{display:block;}
   <div class="ctl adv"><label class="cl">...or coordination FAILURE (nobody drops)</label><input type="range" min="0" max="100" value="35" id="pCoordFail"><span class="cv" id="pCoordFailOut">35%</span></div>
   <div class="ctl adv"><label class="cl">Random branch-point events</label><input type="range" min="0" max="100" value="40" id="pEvents"><span class="cv" id="pEventsOut">40%</span></div>
   <div class="ctl adv"><label class="cl">Dropout support transfer</label><input type="range" min="0" max="70" value="35" id="pDrop"><span class="cv" id="pDropOut">35%</span><div class="ctlnote" data-reviewed="2026-09">Share of a departing candidate's strength that moves to pool mates, primary pool at full weight and secondary at half.</div></div>
+  <div class="ctl adv"><label class="cl">Resolve conventions</label><label class="dpr"><input type="checkbox" id="resolveConv" checked>On: a convention with no pledged majority goes to more ballots</label></div>
+  <div class="ctl adv"><label class="cl">Automatic delegates lean to Party Anchor and Suburb</label><input type="range" min="0" max="100" value="60" id="pAutoLean"><span class="cv" id="pAutoLeanOut">60%</span><div class="ctlnote" data-reviewed="2026-11">Share of automatic delegates that split among Party Anchor and Suburb Democrats still standing. The rest split in proportion to delegates won.</div></div>
   <div class="ctl adv"><label class="cl">Debate skill matters</label><input type="range" min="0" max="100" value="50" id="pDebate"><span class="cv" id="pDebateOut">50%</span></div>
  </div>
 </div>
@@ -511,6 +513,48 @@ const CAL={sc:{harris:1.3,moore:1.2,ossoff:1.1,beshear:1.05,warnock:1.3,pete:0.7
 const CALCLASS={R:'sc',NH:'retail',IA:'retail'};
 const SN={SC:'South Carolina',NH:'New Hampshire',NV:'Nevada',NM:'New Mexico',VA:'Virginia',IA:'Iowa',MI:'Michigan',GA:'Georgia',NC:'North Carolina',ST:'Super Tuesday',LS:'The long spring'};
 const SMON={SC:'January',NH:'February',NV:'February',NM:'February',VA:'February',IA:'February',MI:'February',GA:'February',NC:'February',ST:'March',LS:'April to June'};
+// ==CONVENTION== Ballots after the first.
+// Automatic delegates: the 2028 Delegate Selection Rules, finalized by the DNC Rules and Bylaws Committee
+// in August 2026, keep the 2018 rule that automatic delegates do not vote on the first ballot of a
+// contested convention and vote from the second ballot on (Rule C.1, Call to Convention; 2024 language
+// restored, see https://electionlawblog.org/2026/dnc-reverses-course-on-ranked-choice-voting-rule/ and
+// https://ballotpedia.org/Democratic_delegate_rules,_2024). The 2028 automatic delegate count is not yet
+// published. 2024 had 747 automatic delegates against 3,949 pledged (ballotpedia), so the model sizes them
+// at AUTO_RATIO of the pledged total it simulates.
+const AUTO_RATIO=747/3949, MAX_BALLOT=4;
+function convention(dels,C){
+ const pledged=Object.values(dels).reduce((a,x)=>a+x,0);
+ const auto=pledged*AUTO_RATIO, need=(pledged+auto)/2;
+ const pd=Object.assign({},dels);
+ let live=Object.keys(pd).filter(k=>pd[k]>0&&k!=='other');
+ if(!live.length)live=Object.keys(pd).filter(k=>pd[k]>0);
+ const lean=typeof C.autoLean==='number'?C.autoLean:0.6;
+ const log=[];
+ for(let ballot=2;ballot<=MAX_BALLOT;ballot++){
+  // the last place candidate releases pledged delegates: primary pool mates at full weight, secondary at half
+  if(live.length>2){
+   live.sort((a,b)=>pd[b]-pd[a]);
+   const out=live.pop(),from=POOLOF[out],from2=POOL2[out]||null;
+   const w={};let tot=0;
+   live.forEach(k=>{let wt=0;if(POOLOF[k]===from)wt=1;else if(POOL2[k]===from)wt=0.5;
+    if(from2){if(POOLOF[k]===from2)wt=Math.max(wt,0.5);else if(POOL2[k]===from2)wt=Math.max(wt,0.25);}
+    w[k]=wt*pd[k];tot+=w[k];});
+   if(tot<=0){live.forEach(k=>{w[k]=pd[k];tot+=pd[k];});}
+   live.forEach(k=>{pd[k]+=pd[out]*(tot>0?w[k]/tot:1/live.length);});
+   pd[out]=0;
+  }
+  // automatic delegates: lean share to Party Anchor and Suburb candidates still standing, the rest by delegates
+  const tp=live.reduce((a,k)=>a+pd[k],0);
+  const inst=live.filter(k=>POOLOF[k]==='anchor'||POOLOF[k]==='suburb'), ti=inst.reduce((a,k)=>a+pd[k],0);
+  const votes={};
+  live.forEach(k=>{votes[k]=pd[k]+auto*((ti>0?(1-lean):1)*(tp>0?pd[k]/tp:1/live.length)+(ti>0&&inst.includes(k)?lean*pd[k]/ti:0));});
+  const order=live.slice().sort((a,b)=>votes[b]-votes[a]);
+  log.push({ballot,leader:order[0],votes:Math.round(votes[order[0]]),need:Math.round(need)});
+  if(votes[order[0]]>need)return {winner:order[0],ballot,plurality:false,log};
+  if(ballot===MAX_BALLOT)return {winner:order[0],ballot,plurality:true,log};
+ }
+ return {winner:live[0],ballot:MAX_BALLOT,plurality:true,log};
+}
 const DELS={SC:55,NH:33,NV:36,NM:34,VA:99,IA:40,MI:117,GA:108,NC:116,ST:1500,LS:2200};
 const THL={afford:'affordability and class',ai:'AI and the future of work',fight:'democracy and fighting Trumpism',norm:'competence and electability'};
 const LL={inst:'institutional Democrats won 2026',pop:'economic populists won 2026',muddle:'2026 settled nothing'};
@@ -563,7 +607,7 @@ function anchorBases(a){
  CANDS.forEach(c=>{B[c.id]=sb*((1-a)*c.base/sb+(sm>0?a*mv(c)/sm:0));});
  return B;
 }
-function cfg(){return{anchor:P('pAnchor'),pA:P('pAoc'),pH:document.getElementById('pollsHarris').checked?0.95:P('pHarris'),pollsHarris:document.getElementById('pollsHarris').checked,pHslider:P('pHarris'),pN:P('pNewsom'),pOW:P('pOssWin'),pOR:P('pOssRev'),pMaine:P('pMaine'),pTex:P('pTexas'),pMich:P('pMich'),
+function cfg(){return{resolveConv:!!(document.getElementById('resolveConv')||{}).checked,autoLean:P('pAutoLean'),anchor:P('pAnchor'),pA:P('pAoc'),pH:document.getElementById('pollsHarris').checked?0.95:P('pHarris'),pollsHarris:document.getElementById('pollsHarris').checked,pHslider:P('pHarris'),pN:P('pNewsom'),pOW:P('pOssWin'),pOR:P('pOssRev'),pMaine:P('pMaine'),pTex:P('pTexas'),pMich:P('pMich'),
  pC:P('pCoord'),pCF:P('pCoordFail'),pEv:P('pEvents'),pDb:P('pDebate'),pDrop:P('pDrop'),appr:+V('pTrump'),apprMixed:document.getElementById('apprMixed').checked,
  selAoc:V('selAoc'),selTheme:V('selTheme'),selLesson:V('selLesson'),selBlack:V('selBlack'),selLatino:V('selLatino'),calKey:V('selCal'),darling:V('selDarling'),
  field:Object.fromEntries(CANDS.map(c=>[c.id,document.getElementById('tg_'+c.id)?document.getElementById('tg_'+c.id).value:'sample']))};}
@@ -761,8 +805,13 @@ function simulate(C,collect){
  if(endorse)reasons.push('AOC threw her support to '+nm(endorse));
  if(lesson==='pop')reasons.push('2026 had vindicated the populists');
  else if(lesson==='inst')reasons.push('2026 had vindicated the institutionalists');
- steps.push({type:'final',leader:fin[0].k,delegates:Math.round(fin[0].d),total,majority:fin[0].d>total/2,runnerUp:fin[1]?fin[1].k:null,runnerDel:fin[1]?Math.round(fin[1].d):0,coordFailed:coordFails,reasons:reasons.slice(0,4)});
- return {steps,winner:fin[0].k,majority:fin[0].d>total/2};
+ const firstMaj=fin[0].d>total/2;
+ let conv=null;
+ if(!firstMaj&&C.resolveConv)conv=convention(dels,C);
+ steps.push({type:'final',leader:fin[0].k,delegates:Math.round(fin[0].d),total,majority:firstMaj,runnerUp:fin[1]?fin[1].k:null,runnerDel:fin[1]?Math.round(fin[1].d):0,coordFailed:coordFails,reasons:reasons.slice(0,4),conv});
+ // majority means a pledged majority on the first ballot. ballot is where the nomination was settled:
+ // 1, 2 to 4, or 0 when the convention is left unresolved (toggle off).
+ return {steps,winner:conv?conv.winner:fin[0].k,majority:firstMaj,ballot:firstMaj?1:(conv?conv.ballot:0),plurality:!!(conv&&conv.plurality)};
 }
 // fast headless run for heatmap (returns winner id only)
 function fastWin(C){const r=simulate(C,false);return r.winner;}
@@ -796,6 +845,10 @@ function play(){
    let h;
    if(s.majority)h='<div class="final maj"><div class="fl">The nominee</div><div class="fn">'+nm(s.leader)+'</div><div class="fs">'+s.delegates.toLocaleString()+' of '+s.total.toLocaleString()+' delegates ('+pct+'%). Majority secured.</div></div>';
    else h='<div class="final"><div class="fl">Contested convention</div><div class="fn">'+nm(s.leader)+' leads, short of a majority</div><div class="fs">'+s.delegates.toLocaleString()+' delegates ('+pct+'%)'+(s.runnerUp?', against '+nm(s.runnerUp)+' with '+s.runnerDel.toLocaleString():'')+'. It goes to the floor.</div></div>';
+   if(!s.majority&&s.conv){
+    h+=s.conv.log.map(b=>'<div class="node"><div class="month">Ballot '+b.ballot+'</div><div class="nhead">'+nm(b.leader)+' leads with '+b.votes.toLocaleString()+' of '+b.need.toLocaleString()+' needed</div></div>').join('');
+    h+='<div class="final maj"><div class="fl">The nominee</div><div class="fn">'+nm(s.conv.winner)+'</div><div class="fs">'+(s.conv.plurality?'Leads after ballot '+s.conv.ballot+' with no majority. The convention takes the plurality leader.':'Wins on ballot '+s.conv.ballot+' with automatic delegates voting.')+'</div></div>';
+   }
    tl.insertAdjacentHTML('beforeend',h);
    // share card
    const why=s.reasons.map(r=>'<li>'+r.charAt(0).toUpperCase()+r.slice(1)+'.</li>').join('');
@@ -992,19 +1045,21 @@ function run10k(){
  agg.classList.remove('open');agg.innerHTML='<div class="shead"><span>'+title+'</span><span class="note" id="aggStatus">running...</span></div><div id="aggBody"><div class="muted">Simulating...</div></div>';
  const C=cfg();
  const maj={},lead={};CANDS.forEach(c=>{maj[c.id]=0;lead[c.id]=0;});
- let done=0, contested=0;
+ let done=0, contested=0;const ballots={};
  function chunk(){
   const end=Math.min(done+CHUNK,TOTAL);
-  for(;done<end;done++){const r=simulate(C,false);if(r.majority)maj[r.winner]++;else{lead[r.winner]++;contested++;}}
+  for(;done<end;done++){const r=simulate(C,false);const bk=r.ballot===0?'unresolved':(r.plurality?'plurality':String(r.ballot));ballots[bk]=(ballots[bk]||0)+1;if(r.majority)maj[r.winner]++;else{lead[r.winner]++;contested++;}}
   document.getElementById('aggStatus').textContent=done<TOTAL?('running '+Math.round(done/TOTAL*100)+'%'):(TOTAL.toLocaleString()+' primaries complete');
   if(done<TOTAL){setTimeout(chunk,0);return;}
   const rows=CANDS.filter(c=>c.id!=='other').map(c=>({id:c.id,name:c.name,first:(maj[c.id]+lead[c.id])/TOTAL*100,majp:maj[c.id]/TOTAL*100,leadp:lead[c.id]/TOTAL*100})).sort((a,b)=>b.first-a.first);
-  document.getElementById('aggBody').innerHTML=renderAggregate(rows,TOTAL,Math.round(contested/TOTAL*100));
+  const bpct={};Object.keys(ballots).forEach(k=>bpct[k]=Math.round(ballots[k]/TOTAL*1000)/10);
+  document.getElementById('aggBody').innerHTML=renderAggregate(rows,TOTAL,Math.round(contested/TOTAL*100),bpct);
   setHero(rows[0].name,Math.round(rows[0].first),'Model share at current settings · '+TOTAL.toLocaleString()+' primaries');
  }
  setTimeout(chunk,20);
 }
-function renderAggregate(rows,TOTAL,contestedPct){
+function ballotLine(b){if(!b)return '';const k=['1','2','3','4','plurality','unresolved'].filter(x=>b[x]);return '<div class="legend"><b>Won on ballot</b> '+k.map(x=>(x==='plurality'?'plurality after ballot 4':(x==='unresolved'?'unresolved':x))+': '+b[x].toFixed(1)+'%').join(' · ')+'</div>';}
+function renderAggregate(rows,TOTAL,contestedPct,ballots){
  // model result block: top five open, the rest behind Show all. Bars animate in over 400ms.
  const mx=rows[0].first;
  const row=r=>{
@@ -1016,7 +1071,8 @@ function renderAggregate(rows,TOTAL,contestedPct){
  };
  let h='<div class="mtop">'+rows.slice(0,5).map(row).join('')+'</div>';
  if(rows.length>5)h+='<div class="mrest">'+rows.slice(5).map(row).join('')+'</div><button class="btn sm mmore" onclick="toggleAll(this)">Show all '+rows.length+'</button>';
- h+='<div class="legend">Share of '+TOTAL.toLocaleString()+' simulated primaries where each candidate finishes first, at '+(TOTAL>=20000?'the default settings':'your current settings')+'. Bar color is the candidate\u2019s pool: <span style="color:var(--p-anchor)">Party Anchor</span>, <span style="color:var(--p-fight)">Fight</span>, <span style="color:var(--p-suburb)">Suburb Democrats</span>, <span style="color:var(--p-working)">Working Families</span>, <span style="color:var(--p-movement)">Movement Left</span>, <span style="color:var(--p-out)">Outsider</span>. '+contestedPct+'% of these runs end in a contested convention, which the model does not resolve. mkt is the Kalshi and Polymarket blend, poll the 30 day national average, gap poll minus market.</div>';
+ h+='<div class="legend">Share of '+TOTAL.toLocaleString()+' simulated primaries where each candidate finishes first, at '+(TOTAL>=20000?'the default settings':'your current settings')+'. Bar color is the candidate\u2019s pool: <span style="color:var(--p-anchor)">Party Anchor</span>, <span style="color:var(--p-fight)">Fight</span>, <span style="color:var(--p-suburb)">Suburb Democrats</span>, <span style="color:var(--p-working)">Working Families</span>, <span style="color:var(--p-movement)">Movement Left</span>, <span style="color:var(--p-out)">Outsider</span>. '+contestedPct+'% of these runs reach the convention without a pledged majority'+(ballots&&!ballots.unresolved?'; the model settles them on later ballots':', which the model leaves unresolved')+'. mkt is the Kalshi and Polymarket blend, poll the 30 day national average, gap poll minus market.</div>';
+ h+=ballotLine(ballots);
  setTimeout(()=>{document.querySelectorAll('#aggregate .mfill').forEach(el=>{el.style.width=el.dataset.w+'%';});},30);
  return h;
 }
@@ -1047,7 +1103,7 @@ function paintDefaultRows(){
  // rows of the model result block from default.json; called again when polls or markets arrive so mkt, poll and gap stay current
  const d=DEF.data;if(!d||!document.getElementById('aggBody')||document.getElementById('aggStatus'))return;
  const rows=d.order.filter(id=>id!=='other').map(id=>({id,name:nm(id),first:d.first[id],majp:d.majority[id]||0,leadp:d.lead[id]||0}));
- document.getElementById('aggBody').innerHTML=renderAggregate(rows,d.runs,Math.round(d.contested));
+ document.getElementById('aggBody').innerHTML=renderAggregate(rows,d.runs,Math.round(d.contested),d.ballots);
 }
 function fallbackDefault(){updateFrontrunner();const t=contestedTicker();if(t)initTicker(t);document.getElementById('aggBody').innerHTML='<div class="muted">default.json is not available. Click Run 10,000 primaries for the distribution.</div>';}
 function longDate(d){return d;} // dates stay ISO everywhere a reader sees them
@@ -1387,9 +1443,10 @@ function bracketFromUrl(){
  runBracket();
 }
 let _frUpd;function queueFront(){clearTimeout(_frUpd);_frUpd=setTimeout(updateFrontrunner,200);}
-['pAnchor','pAoc','pHarris','pNewsom','pOssRev','pTrump','pCoord','pCoordFail','pEvents','pDebate','pDrop'].forEach(id=>document.getElementById(id).addEventListener('input',e=>{document.getElementById(id+'Out').textContent=e.target.value+'%';queueFront();}));
+['pAutoLean','pAnchor','pAoc','pHarris','pNewsom','pOssRev','pTrump','pCoord','pCoordFail','pEvents','pDebate','pDrop'].forEach(id=>document.getElementById(id).addEventListener('input',e=>{document.getElementById(id+'Out').textContent=e.target.value+'%';queueFront();}));
 document.addEventListener('change',e=>{if(e.target&&e.target.tagName==='SELECT')queueFront();});
 document.getElementById('pollsHarris').addEventListener('change',queueFront);
+document.getElementById('resolveConv').addEventListener('change',queueFront);
 document.getElementById('apprMixed').addEventListener('change',e=>{const s=document.getElementById('pTrump'),o=document.getElementById('pTrumpOut');s.disabled=e.target.checked;o.textContent=e.target.checked?'drawn':s.value+'%';queueFront();});
 // sticky masthead once the real one scrolls away
 (function(){const st=document.getElementById('sticky'),mast=document.querySelector('.mast');function chk(){st.classList.toggle('on',window.scrollY>mast.offsetTop+mast.offsetHeight);}window.addEventListener('scroll',chk,{passive:true});chk();})();
