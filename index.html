@@ -422,7 +422,7 @@ body.show-adv h2.s.adv{display:block;}
 <h2 class="s">Calls</h2>
 <div class="section" id="calls"><div class="shead"><span>Dated claims, graded nightly against the books and the model</span><span class="note" id="callRecord">loading</span></div><div id="callsBody" class="muted">Loading the calls.</div><div class="legend">A call resolves true the first day its condition holds and false at its deadline if it never does. Past calls cannot be edited; a build check enforces it. <a href="track.html#calls">Full ledger</a></div></div>
 
-<p class="foot">THE 2028 MACHINE · A MODEL BUILT FROM ONE OPERATOR'S PRIORS, NOT A FORECAST · THE STRENGTHS ARE ARGUABLE ON PURPOSE; THE VALUE IS WHAT MOVES THE OUTCOME, NOT THE HEADLINE ODDS · PRIORS REVIEWED THROUGH <span id="priorsDate">SEPT. 2026</span> · MARKET PRICES UPDATED NIGHTLY FROM KALSHI AND POLYMARKET · POLLS PULLED NIGHTLY FROM PUBLIC AGGREGATORS · READER BRACKETS ARE ANONYMOUS AND AGGREGATED. NOTHING IDENTIFIES YOU. · NEWS ATTENTION IS A GOOGLE NEWS COUNT, SHOWN FOR CONTEXT AND NOT USED IN THE MODEL · POOL ASSIGNMENTS AND SHARES ARE OPERATOR PRIORS, NOT MEASURED VOTER DATA · THE DRISCOLL GLOBE · POLITICAL SYSTEMS DESK</p>
+<p class="foot">THE 2028 MACHINE · A MODEL BUILT FROM ONE OPERATOR'S PRIORS, NOT A FORECAST · THE STRENGTHS ARE ARGUABLE ON PURPOSE; THE VALUE IS WHAT MOVES THE OUTCOME, NOT THE HEADLINE ODDS · PRIORS REVIEWED THROUGH <span id="priorsDate">SEPT. 2026</span> · MARKET PRICES UPDATED NIGHTLY FROM KALSHI AND POLYMARKET · POLLS PULLED NIGHTLY FROM PUBLIC AGGREGATORS · NEWS ATTENTION IS A GOOGLE NEWS COUNT, SHOWN FOR CONTEXT AND NOT USED IN THE MODEL · POOL ASSIGNMENTS AND SHARES ARE OPERATOR PRIORS, NOT MEASURED VOTER DATA · THE DRISCOLL GLOBE · POLITICAL SYSTEMS DESK</p>
 <div class="modal-bg" id="modalBg" onclick="closeModal(event)">
  <div class="modal" id="modalBox" onclick="event.stopPropagation()">
   <button class="modal-x" onclick="closeModal()">×</button>
@@ -439,7 +439,7 @@ const CANDS=[
  {id:'aoc',reviewed:'2026-09',name:'AOC',role:'Rep., New York',age:39,mkt:17.7,run:66,lane:'movement',rank:2,debate:1.06,str:'Best communicator in the party',weak:'Must choose: president or Senate',base:16,fit:{SC:0.80,NH:1.15,NV:1.25,IA:1.00,MI:1.10,GA:0.90,NC:0.90,ST:1.05}},
  {id:'harris',reviewed:'2026-09',name:'Kamala Harris',role:'Former VP',age:64,mkt:8.1,run:78,lane:'anchor',rank:4,debate:0.8,str:'Universal name ID, Black voters',weak:'Shaky on her feet, 2024 baggage',base:14,fit:{SC:1.60,NH:0.70,NV:1.10,IA:0.70,MI:0.90,GA:1.30,NC:1.10,ST:1.05}},
  {id:'sanders',reviewed:'2026-09',name:'Bernie Sanders',role:'Sen., Vermont',age:87,mkt:0.4,run:8,lane:'movement',rank:19,debate:1.0,str:'Founder of the lane; the list, the money, the loyalty',weak:'87 on election day and has said his time has passed',base:10,fit:{SC:0.70,NH:1.40,NV:1.20,IA:1.10,MI:1.10,GA:0.80,NC:0.90,ST:1.00}},
- {id:'ossoff',reviewed:'2026-11',name:'Jon Ossoff',role:'Sen., Georgia',age:41,mkt:16.6,run:71,lane:'suburb',rank:9,debate:1.0,str:'Viral speeches, swing-state wins; won reelection Nov. 3, 2026',weak:'Imitative; disavowed running',base:12,fit:{SC:1.30,NH:0.90,NV:0.95,IA:0.90,MI:0.95,GA:1.80,NC:1.20,ST:1.00}},
+ {id:'ossoff',reviewed:'2026-11',name:'Jon Ossoff',role:'Sen., Georgia',age:41,mkt:16.6,run:71,lane:'suburb',rank:9,debate:1.0,str:'Viral speeches, swing-state wins; won reelection Nov. 3, 2026',weak:'Said in 2026 that he would not run for president. As of Nov. 9, 2026, Kalshi puts the odds he runs anyway at 70 percent.',base:12,fit:{SC:1.30,NH:0.90,NV:0.95,IA:0.90,MI:0.95,GA:1.80,NC:1.20,ST:1.00}},
  {id:'shapiro',reviewed:'2026-09',name:'Josh Shapiro',role:'Gov., Pennsylvania',age:55,mkt:5.6,run:73,lane:'suburb',rank:7,debate:1.0,str:'Wins the tipping-point state',weak:'No early-state launchpad',base:9,fit:{SC:0.85,NH:1.10,NV:0.95,IA:0.95,MI:1.00,GA:0.95,NC:1.15,ST:1.00}},
  {id:'pete',reviewed:'2026-09',name:'Pete Buttigieg',role:'Former Sec.',age:46,mkt:5.6,run:86,lane:'suburb',rank:5,debate:1.15,str:'Elite communicator, donor network',weak:'Weak with Black voters',base:10,fit:{SC:0.50,NH:1.50,NV:0.90,IA:1.50,MI:1.30,GA:0.70,NC:0.95,ST:1.00}},
  {id:'pritzker',reviewed:'2026-09',name:'JB Pritzker',role:'Gov., Illinois',age:63,mkt:1.4,run:77,lane:'fight',rank:8,debate:0.9,str:'Bottomless money, real machine',weak:'Billionaire in an anti-elite cycle',base:7,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.05,MI:1.05,GA:0.85,NC:0.90,ST:1.00}},
@@ -577,7 +577,7 @@ function convention(dels,C){
 // pledged majority (37.7 before, 13.2 after on the 2026-11-09 books). After Super Tuesday only the top LATE_FIELD
 // survive into the late states (was 3). A candidate drops out after two contests under the winnow share
 // (was 0.07, or 0.05 when coordination fails). An object so methodology_run.js can pin the old rules.
-const SIMRULES={lateField:2,winnow:0.11,winnowFail:0.09};
+const SIMRULES={lateField:2,winnow:0.11,winnowFail:0.09,transferLeak:0.3};
 const DELS={SC:55,NH:33,NV:36,NM:34,VA:99,IA:40,MI:117,GA:108,NC:116,ST:1500,LS:2200};
 const THL={afford:'affordability and class',ai:'AI and the future of work',fight:'democracy and fighting Trumpism',norm:'competence and electability'};
 const LL={inst:'institutional Democrats won 2026',pop:'economic populists won 2026',muddle:'2026 settled nothing'};
@@ -748,7 +748,16 @@ function simulate(C,collect){
    if(POOLOF[c.id]===from)wt=1;else if(POOL2[c.id]===from)wt=0.5;
    if(from2){if(POOLOF[c.id]===from2)wt=Math.max(wt,0.5);else if(POOL2[c.id]===from2)wt=Math.max(wt,0.25);}
    if(wt>0){w[c.id]=wt*str[c.id];tot+=w[c.id];}});
-  if(tot<=0)return;const pot=str[k]*(typeof C.pDrop==='number'?C.pDrop:0.35);if(pot<=0)return;Object.keys(w).forEach(id=>{str[id]+=pot*w[id]/tot;});
+  const pot=str[k]*(typeof C.pDrop==='number'?C.pDrop:0.35);if(pot<=0)return;
+  // SIMRULES.transferLeak of the transfer goes to the whole field in proportion to strength; the rest to pool
+  // mates in proportion to strength, primary pool at full weight and secondary at half. With no pool mates
+  // standing, only the leak moves and the rest is lost, as before.
+  const leak=SIMRULES.transferLeak,f={};let ftot=0;
+  if(leak>0)CANDS.forEach(c=>{if(!alive[c.id]||c.id===k||c.id==='other')return;f[c.id]=str[c.id];ftot+=str[c.id];});
+  const add={};
+  if(tot>0)Object.keys(w).forEach(id=>{add[id]=(add[id]||0)+pot*(1-leak)*w[id]/tot;});
+  if(ftot>0)Object.keys(f).forEach(id=>{add[id]=(add[id]||0)+pot*leak*f[id]/ftot;});
+  Object.keys(add).forEach(id=>{str[id]+=add[id];});
  }
  // random branch-point events
  const eventLog=[];
@@ -867,7 +876,7 @@ function play(){
   } else if(s.type==='state'){
    const mx=s.shares[0].s;
    let h='<div class="node win"><div class="month">'+SMON[s.st]+'</div><div class="nhead">'+SN[s.st]+' · '+DELS[s.st]+' delegates</div>';
-   s.shares.forEach((x,i)=>{const pic=PHOTOS[x.k]?'<img class="bpic" src="'+PHOTOS[x.k]+'" alt="">':'<span class="bmono">'+nm(x.k).split(' ').map(w=>w[0]).slice(0,2).join('')+'</span>';h+='<div class="bar">'+pic+'<div class="bn">'+nm(x.k)+(i===0?'<span class="tagx up">wins</span>':'')+'</div><div class="bt"><div class="bf'+(i===0?' lead':'')+'" style="width:'+(x.s/mx*100*0.97).toFixed(1)+'%"></div></div><div class="bv">'+(x.s*100).toFixed(0)+'</div></div>';});
+   s.shares.forEach((x,i)=>{const pic=PHOTOS[x.k]?'<img class="bpic" src="'+PHOTOS[x.k]+'" alt="">':'<span class="bmono">'+'</span>';h+='<div class="bar">'+pic+'<div class="bn">'+nm(x.k)+(i===0?'<span class="tagx up">wins</span>':'')+'</div><div class="bt"><div class="bf'+(i===0?' lead':'')+'" style="width:'+(x.s/mx*100*0.97).toFixed(1)+'%"></div></div><div class="bv">'+(x.s*100).toFixed(0)+'</div></div>';});
    if(s.dropped.length)h+='<div class="muted" style="font-size:12px;margin-top:5px;">Out: '+s.dropped.map(nm).join(', ')+'<span class="tagx out">out</span></div>';
    if(s.board.length)h+='<div class="score2">'+s.board.map(x=>'<b>'+nm(x.k)+'</b> '+Math.round(x.d)).join(' · ')+'</div>';
    h+='</div>';tl.insertAdjacentHTML('beforeend',h);
@@ -884,7 +893,7 @@ function play(){
    // share card
    const why=s.reasons.map(r=>'<li>'+r.charAt(0).toUpperCase()+r.slice(1)+'.</li>').join('');
    const shareTxt='The 2028 Machine says:\n\n'+(s.majority?'Nominee: '+nm(s.leader):'Leads into contested convention: '+nm(s.leader))+'\n\n'+(s.majority?'Won because:':'Led because:')+'\n'+s.reasons.map(r=>'- '+r.charAt(0).toUpperCase()+r.slice(1)+'.').join('\n')+'\n\nRun your own at The Driscoll Globe';
-   const npic=PHOTOS[s.leader]?'<img class="sh-photo" src="'+PHOTOS[s.leader]+'" alt="">':'<div class="sh-mono">'+nm(s.leader).split(' ').map(w=>w[0]).slice(0,2).join('')+'</div>';
+   const npic=PHOTOS[s.leader]?'<img class="sh-photo" src="'+PHOTOS[s.leader]+'" alt="">':'<div class="sh-mono">'+'</div>';
    const pctTxt=Math.round(s.delegates/s.total*100)+'% of delegates';
    const sc='<div class="sharecard"><div class="sh-brand"><img class="sh-wh" src="'+WH+'" alt=""><span>The 2028 Machine · The Driscoll Globe</span></div>'
     +'<div class="sh-main">'+npic+'<div class="sh-text"><div class="sh-top">'+(s.majority?'The nominee':'Leads a contested convention')+'</div><div class="sh-nom">'+nm(s.leader)+'</div><div class="sh-pct">'+pctTxt+'</div></div></div>'
@@ -1054,10 +1063,15 @@ function loadPolls(){
   refreshOdds();renderPollBoard();paintDefaultRows();
  }).catch(()=>{const st=document.getElementById('pollStatus');if(st)st.textContent='polls.csv unavailable';renderPollBoard();});
 }
+// A candidate without a photo and dossier is kept in the data and the model but left off the field cards
+// while the blend has them under 1 percent. Nobody ever gets an initials avatar.
+function onCards(c){return c.id!=='other'&&(PHOTOS[c.id]||c.mkt>=1);}
+let CARD_SET='';
 function buildCards(){
  const grid=document.getElementById('cardgrid');
- grid.innerHTML=CANDS.filter(c=>c.id!=='other').map(c=>{
-  const pic=PHOTOS[c.id]?'<img class="photo" src="'+PHOTOS[c.id]+'" alt="'+c.name+'">':'<div class="mono">'+c.name.split(' ').map(w=>w[0]).slice(0,2).join('')+'</div>';
+ const shown=CANDS.filter(onCards);CARD_SET=shown.map(c=>c.id).join(',');
+ grid.innerHTML=shown.map(c=>{
+  const pic=PHOTOS[c.id]?'<img class="photo" src="'+PHOTOS[c.id]+'" alt="'+c.name+'">':'<div class="mono">'+'</div>';
   return '<div class="cc" onclick="openDossier(\''+c.id+'\')"><div class="set" onclick="event.stopPropagation()"><select id="tg_'+c.id+'"><option value="sample" selected>Auto</option><option value="in">In</option><option value="out">Out</option></select></div>'
    +pic
    +'<div class="nm">'+c.name+'</div><div class="meta">'+c.role+' · '+c.age+' in \u201928</div>'
@@ -1095,7 +1109,7 @@ function renderAggregate(rows,TOTAL,contestedPct,ballots){
  const mx=rows[0].first;
  const row=r=>{
   const c=CANDS.find(x=>x.id===r.id);const pn=pollNums(c);
-  const pic=PHOTOS[r.id]?'<img class="mpic" src="'+PHOTOS[r.id]+'" alt="">':'<span class="mmono">'+c.name.split(' ').map(w=>w[0]).slice(0,2).join('')+'</span>';
+  const pic=PHOTOS[r.id]?'<img class="mpic" src="'+PHOTOS[r.id]+'" alt="">':'<span class="mmono">'+'</span>';
   const gap=pn.gap===null?'':'<b class="gap '+(pn.gap>=0?'pos':'neg')+'">'+fmtGap(pn.gap)+'</b>';
   return '<div class="mr">'+pic+'<div class="mname">'+lastName(r.id)+'</div><div class="mtrack"><div class="mfill '+(c.lane||'out')+'" data-w="'+(r.first/mx*100).toFixed(1)+'"></div></div><div class="mshare">'+r.first.toFixed(1)+'%</div>'
    +'<div class="mstats"><span>mkt <b>'+pn.mkt.toFixed(1)+'</b></span><span>poll '+(pn.poll===null?'':'<b>'+pn.poll.toFixed(1)+'</b>')+'</span><span>gap '+gap+'</span></div></div>';
@@ -1216,7 +1230,7 @@ function setMode(m){
 }
 function openDossier(id){
  const c=CANDS.find(x=>x.id===id);if(!c)return;
- const pic=PHOTOS[id]?'<img class="md-photo" src="'+PHOTOS[id]+'">':'<div class="md-mono">'+c.name.split(' ').map(w=>w[0]).slice(0,2).join('')+'</div>';
+ const pic=PHOTOS[id]?'<img class="md-photo" src="'+PHOTOS[id]+'">':'<div class="md-mono">'+'</div>';
  const laneL=tagLabel(c)+(c.tag?' ('+poolLabel(c.lane)+')':'')+(c.lane2?' (secondary: '+poolLabel(c.lane2)+')':'');
  const coalition=(POOL_META[c.lane]||POOL_META.out).def+(POOL_WHY[id]?' '+POOL_WHY[id]:'');
  let h='<div class="md-head">'+pic+'<div><div class="md-name">'+c.name+'</div><div class="md-meta">'+c.role+' · age '+c.age+' in 2028 · '+laneL+'</div></div></div>';
@@ -1531,6 +1545,7 @@ fetch('markets.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(M=>{
  // AOC and Harris run probabilities live on the sliders, so the run market sets those too
  [['pAoc','aoc'],['pHarris','harris']].forEach(([sl,id])=>{const r=M.run?M.run[id]:undefined;const el=document.getElementById(sl);if(el&&typeof r==='number'){el.value=Math.round(r);const o=document.getElementById(sl+'Out');if(o)o.textContent=Math.round(r)+'%';}});
  if(M.date){const b=document.getElementById('updBadge');if(b)b.textContent='Updated '+edDate(M.date);const sd=document.getElementById('stDate');if(sd)sd.textContent='Markets as of '+edDate(M.date,false);const by=document.getElementById('bylineDate');if(by)by.textContent=' · Last updated '+edDate(M.date);}
+ if(CANDS.filter(onCards).map(c=>c.id).join(',')!==CARD_SET)buildCards();
  refreshOdds();renderPollBoard();paintDefaultRows();if(!BR.touched)buildBracket();
  if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();
 }).catch(()=>{});
