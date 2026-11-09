@@ -577,7 +577,12 @@ function convention(dels,C){
 // pledged majority (37.7 before, 13.2 after on the 2026-11-09 books). After Super Tuesday only the top LATE_FIELD
 // survive into the late states (was 3). A candidate drops out after two contests under the winnow share
 // (was 0.07, or 0.05 when coordination fails). An object so methodology_run.js can pin the old rules.
-const SIMRULES={lateField:2,winnow:0.11,winnowFail:0.09,transferLeak:0.3};
+// stateCap and calEarly, 2026-11-09 (iowa-swing): a candidate's multiplier in any one contest (state fit times the
+// calendar bonus) is held inside [1/stateCap, stateCap], and the calendar bonus (CAL) applies only in the early
+// window, not on Super Tuesday or the long spring. Before, Iowa crashing the window moved Buttigieg 72 points:
+// x1.4 under the Iowa calendar against x0.7 under the DNC order, on every contest through June, on top of 1.5
+// fits in Iowa and New Hampshire. Momentum (momWin, momSecond, momCap) was traced and is not the driver.
+const SIMRULES={lateField:2,winnow:0.11,winnowFail:0.09,transferLeak:0.3,momWin:1.28,momSecond:1.10,momCap:2.4,stateCap:1.2,calEarly:true};
 const DELS={SC:55,NH:33,NV:36,NM:34,VA:99,IA:40,MI:117,GA:108,NC:116,ST:1500,LS:2200};
 const THL={afford:'affordability and class',ai:'AI and the future of work',fight:'democracy and fighting Trumpism',norm:'competence and electability'};
 const LL={inst:'institutional Democrats won 2026',pop:'economic populists won 2026',muddle:'2026 settled nothing'};
@@ -785,10 +790,11 @@ function simulate(C,collect){
   CANDS.forEach(c=>{
    if(!alive[c.id])return;if(limitTo&&!limitTo.includes(c.id))return;
    let f=c.fit[st==='LS'?'ST':st];
-   const cm=calClass&&CAL[calClass]?CAL[calClass][c.id]:null;if(cm)f*=cm;
+   const cm=(!SIMRULES.calEarly||(st!=='ST'&&st!=='LS'))&&calClass&&CAL[calClass]?CAL[calClass][c.id]:null;if(cm)f*=cm;
    if(st==='SC'&&((black==='hold'&&c.id==='harris')||(black==='another'&&c.id===blackBene)))f*=1.15;
    if(st==='NV'&&((latino==='aoc'&&c.id==='aoc')||(latino==='pop'&&POOLOF[c.id]==='movement')))f*=1.15;
    else if(st==='NV'&&latino==='pop'&&POOL2[c.id]==='movement')f*=1.075;
+   if(SIMRULES.stateCap)f=Math.min(SIMRULES.stateCap,Math.max(1/SIMRULES.stateCap,f));
    let v=str[c.id]*f*mom[c.id]*Math.exp(gnoise()*0.42);
    if(!isFinite(v)||v<0)v=0;
    sc[c.id]=v;tot+=v;
@@ -805,12 +811,12 @@ function simulate(C,collect){
   if(C.pDb>0){shares.slice(0,4).forEach(x=>{const c=CANDS.find(cc=>cc.id===x.k);const lift=1+(c.debate-1)*C.pDb;str[x.k]*=lift;if(c.debate>1.05&&x.s>0.1)dbWins[x.k]++;});}
   const dropped=[];
   shares.forEach((x,idx)=>{
-   if(idx===0)mom[x.k]=Math.min(2.4,mom[x.k]*1.28);
-   else if(idx===1)mom[x.k]=Math.min(2.4,mom[x.k]*1.10);
+   if(idx===0)mom[x.k]=Math.min(SIMRULES.momCap,mom[x.k]*SIMRULES.momWin);
+   else if(idx===1)mom[x.k]=Math.min(SIMRULES.momCap,mom[x.k]*SIMRULES.momSecond);
    else if(x.s<0.08)mom[x.k]=Math.max(0.4,mom[x.k]*0.88);
    if(x.s<winnowThresh){strikes[x.k]++;if(strikes[x.k]>=2){alive[x.k]=false;dropped.push(x.k);inherit(x.k);}}
   });
-  steps.push({type:'state',st,shares:shares.slice(0,5),dropped,board:board()});
+  steps.push({type:'state',st,shares:shares.slice(0,5),dropped,board:board(),trace:collect?{shares:shares.slice(),mom:Object.assign({},mom),str:Object.assign({},str),alive:Object.assign({},alive),dels:Object.assign({},dels)}:undefined});
  });
  if(coordFails){
   steps.push({type:'coordfail'});
