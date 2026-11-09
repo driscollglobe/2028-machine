@@ -1,2 +1,4 @@
 id,date_made,text,metric,operator,threshold,deadline,status,resolved_date,resolved_value
-T1,2026-11-09,"Test call, not a real one: Ossoff's blend price reaches 30 by 2027-03-01.",market.ossoff,>=,30,2027-03-01,test,,
+C1,2026-11-09,AOC's blended market price reaches 20 by 2027-06-30.,market.aoc,>=,20,2027-06-30,open,,
+C2,2026-11-09,Ossoff's blended market price falls below 20 by 2027-06-30.,market.ossoff,<,20,2027-06-30,open,,
+C3,2026-11-09,Talarico's Kalshi run odds reach 30 percent by 2027-12-31.,run.talarico,>=,30,2027-12-31,open,,
