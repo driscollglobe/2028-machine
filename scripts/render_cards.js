@@ -29,7 +29,7 @@ function cardHtml(title, sub, rows, date) {
   const max = rows[0] ? rows[0].pct : 1;
   const bars = rows.map(r => '<div class="row"><div class="name">' + esc(r.name) + '</div>'
     + '<div class="track"><div class="fill" style="width:' + (r.pct / max * 100).toFixed(1) + '%;background:' + (POOL_COLOR[r.lane] || POOL_COLOR.out) + '"></div></div>'
-    + '<div class="pct">' + r.pct.toFixed(1) + '%</div></div>').join('');
+    + '<div class="pct">' + r.pct.toFixed(1) + '%</div><div class="rng">' + (r.range ? 'likely ' + Math.round(r.range[0]) + ' to ' + Math.round(r.range[1]) : '') + '</div></div>').join('');
   return '<!DOCTYPE html><html><head><meta charset="utf-8"><style>'
     + 'body{margin:0;width:1200px;height:630px;background:#f5f3ec;color:#16171a;font-family:Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden;}'
     + '.card{box-sizing:border-box;width:1200px;height:630px;padding:54px 64px;display:flex;flex-direction:column;}'
@@ -42,6 +42,7 @@ function cardHtml(title, sub, rows, date) {
     + '.track{flex:1;height:30px;background:#fff;border:1.5px solid rgba(20,21,24,.18);border-radius:5px;overflow:hidden;}'
     + '.fill{height:100%;}'
     + '.pct{width:110px;text-align:right;font-family:Menlo,Consolas,monospace;font-size:26px;font-weight:600;}'
+    + '.rng{width:170px;font-family:Menlo,Consolas,monospace;font-size:17px;color:#5c5b55;white-space:nowrap;}'
     + '.foot{margin-top:auto;display:flex;justify-content:space-between;font-family:Menlo,Consolas,monospace;font-size:17px;letter-spacing:.08em;color:#5c5b55;border-top:3px double #16171a;padding-top:14px;}'
     + '</style></head><body><div class="card">'
     + '<div class="globe">The Driscoll Globe</div><h1>The 2028 Machine</h1>'
@@ -58,7 +59,7 @@ function writeSharePage(job, rows, date) {
   fs.mkdirSync(SHARE, { recursive: true });
   const target = SITE + '?bp=' + job.key;
   const img = SITE + 'cards/' + job.key + '.png';
-  const desc = job.title + ': ' + rows.map(r => r.name + ' ' + r.pct.toFixed(1) + '%').join(', ') + ' (' + edDate(date) + ').';
+  const desc = job.title + ': ' + rows.map(r => r.name + ' ' + r.pct.toFixed(1) + '%' + (r.range ? ' (likely ' + Math.round(r.range[0]) + ' to ' + Math.round(r.range[1]) + ')' : '')).join(', ') + ' (' + edDate(date) + ').';
   const html = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>The 2028 Machine: ' + esc(job.title) + '</title>\n'
     + '<meta property="og:title" content="The 2028 Machine: ' + esc(job.title) + '">\n'
     + '<meta property="og:description" content="' + esc(desc) + '">\n'
@@ -100,8 +101,10 @@ async function main() {
         if (typeof set[id] === 'boolean') el.checked = set[id]; else el.value = String(set[id]);
       });
     }
-    const res = core.runMany(fresh, fresh.cfg(), RUNS, core.seedFrom(M.date + ':' + job.key));
-    const rows = Object.keys(res.first).map(id => ({ id, name: lastName(id), lane: cand(id).lane, pct: res.first[id] })).sort((a, b) => b.pct - a.pct).slice(0, 5);
+    // the default card shows default.json itself, so the card and the page never name different leaders
+    const D = JSON.parse(fs.readFileSync(path.join(ROOT, 'default.json'), 'utf8'));
+    const res = job.key === 'default' && D.date === M.date ? D : core.runMany(fresh, fresh.cfg(), RUNS, core.seedFrom(M.date + ':' + job.key));
+    const rows = Object.keys(res.first).map(id => ({ id, name: lastName(id), lane: cand(id).lane, pct: res.first[id], range: res.range ? res.range[id] : null })).sort((a, b) => b.pct - a.pct).slice(0, 5);
     await page.setContent(cardHtml(job.title, job.sub, rows, M.date), { waitUntil: 'load' });
     const file = path.join(OUT, job.key + '.png');
     await page.screenshot({ path: file, type: 'png' });

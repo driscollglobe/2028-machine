@@ -250,6 +250,7 @@ body.show-adv .ctl.adv{display:flex;}
 /* phase two hierarchy */
 .hero{margin:.2rem 0 1.1rem;}
 .hero-num{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:64px;line-height:1;letter-spacing:-.01em;min-height:64px;}
+.hero-range{font-family:'Spline Sans Mono',monospace;font-size:13px;color:var(--faint);margin-top:4px;min-height:16px;}
 .hero-date{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-top:6px;}
 .hero-note{font-family:'Fraunces',Georgia,serif;font-size:19px;line-height:1.4;max-width:720px;margin-top:10px;}
 @media(max-width:740px){.hero-num{font-size:46px;min-height:46px;}.hero-note{font-size:17px;}}
@@ -267,6 +268,7 @@ body.show-adv .ctl.adv{display:flex;}
 .mr .mtrack{flex:1;height:18px;background:var(--paper);border:1px solid var(--rule);border-radius:3px;overflow:hidden;min-width:60px;}
 .mr .mfill{height:100%;width:0;transition:width .4s ease;}
 .mfill.anchor{background:var(--p-anchor);}.mfill.fight{background:var(--p-fight);}.mfill.suburb{background:var(--p-suburb);}.mfill.working{background:var(--p-working);}.mfill.movement{background:var(--p-movement);}.mfill.out{background:var(--p-out);}
+.mr .mrange{width:58px;font-family:'Spline Sans Mono',monospace;font-size:11px;color:var(--faint);flex-shrink:0;white-space:nowrap;}
 .mr .mshare{width:52px;text-align:right;font-family:'Spline Sans Mono',monospace;font-size:14px;font-weight:500;flex-shrink:0;}
 .mr .mstats{display:flex;gap:10px;font-family:'Spline Sans Mono',monospace;font-size:11px;color:var(--faint);flex-shrink:0;width:230px;justify-content:flex-end;}
 .mr .mstats span{min-width:62px;text-align:right;}
@@ -322,6 +324,7 @@ body.show-adv h2.s.adv{display:block;}
 
 <div class="hero">
  <div class="hero-num" id="heroShare">&nbsp;</div>
+ <div class="hero-range" id="heroRange"></div>
  <div class="hero-date" id="heroDate">Share of 20,000 simulated primaries won</div>
  <div class="hero-note" id="heroNote"></div>
 </div>
@@ -582,7 +585,7 @@ function convention(dels,C){
 // window, not on Super Tuesday or the long spring. Before, Iowa crashing the window moved Buttigieg 72 points:
 // x1.4 under the Iowa calendar against x0.7 under the DNC order, on every contest through June, on top of 1.5
 // fits in Iowa and New Hampshire. Momentum (momWin, momSecond, momCap) was traced and is not the driver.
-const SIMRULES={lateField:2,winnow:0.11,winnowFail:0.09,transferLeak:0.3,momWin:1.28,momSecond:1.10,momCap:2.4,stateCap:1.2,calEarly:true};
+const SIMRULES={lateField:2,winnow:0.11,winnowFail:0.09,transferLeak:0.3,momWin:1.28,momSecond:1.10,momCap:2.4,stateCap:1.2,calEarly:true,priorSpread:0.30,priorBatch:100};
 const DELS={SC:55,NH:33,NV:36,NM:34,VA:99,IA:40,MI:117,GA:108,NC:116,ST:1500,LS:2200};
 const THL={afford:'affordability and class',ai:'AI and the future of work',fight:'democracy and fighting Trumpism',norm:'competence and electability'};
 const LL={inst:'institutional Democrats won 2026',pop:'economic populists won 2026',muddle:'2026 settled nothing'};
@@ -627,21 +630,53 @@ function V(id){return document.getElementById(id).value;}
 // so that a = 100 at default settings reproduces the blend. Raw prices are the fallback. Prices are win
 // probabilities, and the sim's momentum and winnowing turn a strength lead into a bigger win share, so raw
 // prices overshoot the leader.
-function anchorBases(a){
+function anchorBases(a,prior){
  const B={};
- if(!(a>0)){CANDS.forEach(c=>B[c.id]=c.base);return B;}
+ const ob=c=>c.base*(prior&&prior[c.id]>0?prior[c.id]:1); // operator strength, drawn when a prior draw is passed
+ const sb=CANDS.reduce((t,c)=>t+c.base,0), sd=CANDS.reduce((t,c)=>t+ob(c),0);
+ if(!(a>0)){CANDS.forEach(c=>B[c.id]=sb*ob(c)/sd);return B;}
  const mv=c=>Math.max(0,typeof c.mstr==='number'?c.mstr:c.mkt);
- const sb=CANDS.reduce((t,c)=>t+c.base,0), sm=CANDS.reduce((t,c)=>t+mv(c),0);
- CANDS.forEach(c=>{B[c.id]=sb*((1-a)*c.base/sb+(sm>0?a*mv(c)/sm:0));});
+ const sm=CANDS.reduce((t,c)=>t+mv(c),0);
+ CANDS.forEach(c=>{B[c.id]=sb*((1-a)*ob(c)/sd+(sm>0?a*mv(c)/sm:0));});
  return B;
 }
-function cfg(){return{crowd:P('pCrowd'),resolveConv:!!(document.getElementById('resolveConv')||{}).checked,autoLean:P('pAutoLean'),anchor:P('pAnchor'),pA:P('pAoc'),pH:document.getElementById('pollsHarris').checked?0.95:P('pHarris'),pollsHarris:document.getElementById('pollsHarris').checked,pHslider:P('pHarris'),pN:P('pNewsom'),pOW:P('pOssWin'),pOR:P('pOssRev'),pMaine:P('pMaine'),pTex:P('pTexas'),pMich:P('pMich'),
+// ==DRAWN PRIORS== 2026-11-09 (drawn-priors). Our operator strengths and pool shares are estimates, so every run
+// draws them. Each candidate's strength is multiplied by a lognormal draw with median 1 and one sigma of
+// spread (0.30 means x1.30 or /1.30). Each pool's share of the electorate takes its own draw of the same size,
+// is renormalized so the shares still total 100, and scales its members by drawn share over prior share.
+// The market side of the anchor is never drawn. spread 0 draws nothing and uses no random numbers.
+function drawPrior(spread){
+ if(!(spread>0))return null;
+ const sig=Math.log(1+spread), pk=Object.keys(POOL_META), d={};let t0=0,t1=0;
+ pk.forEach(k=>{const s=POOL_META[k].share||0;d[k]=s*Math.exp(sig*gnoise());t0+=s;t1+=d[k];});
+ const pm={};pk.forEach(k=>{const s=POOL_META[k].share||0;pm[k]=s>0&&t1>0?d[k]*t0/t1/s:1;});
+ const m={};CANDS.forEach(c=>{m[c.id]=Math.exp(sig*gnoise())*(pm[POOLOF[c.id]||'out']||1);});
+ return m;
+}
+// First place share as a range. Runs come in batches that share one prior draw; each batch gives a share.
+// A batch of 100 races carries coin-flip noise of its own, so each batch's distance from the mean is shrunk
+// by sqrt((observed variance - binomial noise) / observed variance) before the 10th and 90th percentiles are
+// read. counts is one {id: wins} object per batch. Returns {id: {p10,p25,p50,p75,p90}} in percent.
+function shareDist(counts,per,ids){
+ const out={},D=counts.length,q=(a,p)=>{const x=(a.length-1)*p,i=Math.floor(x),f=x-i;return a[i]+(i+1<a.length?(a[i+1]-a[i])*f:0);};
+ const r1=x=>Math.round(Math.max(0,x)*1000)/10;
+ ids.forEach(id=>{
+  const s=counts.map(c=>(c[id]||0)/per), m=s.reduce((a,x)=>a+x,0)/Math.max(1,D);
+  const V=s.reduce((a,x)=>a+(x-m)*(x-m),0)/Math.max(1,D), Nv=per>1?s.reduce((a,x)=>a+x*(1-x),0)/Math.max(1,D)/(per-1):0;
+  const k=V>0?Math.sqrt(Math.max(0,V-Nv)/V):0;
+  const adj=s.map(x=>m+(x-m)*k).sort((a,b)=>a-b);
+  out[id]=D?{p10:r1(q(adj,0.1)),p25:r1(q(adj,0.25)),p50:r1(q(adj,0.5)),p75:r1(q(adj,0.75)),p90:r1(q(adj,0.9))}:null;
+ });
+ return out;
+}
+function cfg(){return{spread:SIMRULES.priorSpread,crowd:P('pCrowd'),resolveConv:!!(document.getElementById('resolveConv')||{}).checked,autoLean:P('pAutoLean'),anchor:P('pAnchor'),pA:P('pAoc'),pH:document.getElementById('pollsHarris').checked?0.95:P('pHarris'),pollsHarris:document.getElementById('pollsHarris').checked,pHslider:P('pHarris'),pN:P('pNewsom'),pOW:P('pOssWin'),pOR:P('pOssRev'),pMaine:P('pMaine'),pTex:P('pTexas'),pMich:P('pMich'),
  pC:P('pCoord'),pCF:P('pCoordFail'),pEv:P('pEvents'),pDb:P('pDebate'),pDrop:P('pDrop'),appr:+V('pTrump'),apprMixed:document.getElementById('apprMixed').checked,
  selAoc:V('selAoc'),selTheme:V('selTheme'),selLesson:V('selLesson'),selBlack:V('selBlack'),selLatino:V('selLatino'),calKey:V('selCal'),darling:V('selDarling'),
  field:Object.fromEntries(CANDS.map(c=>[c.id,document.getElementById('tg_'+c.id)?document.getElementById('tg_'+c.id).value:'sample']))};}
 function simulate(C,collect){
  const N=collect?1:1; // single run when narrating
- const B=anchorBases(typeof C.anchor==='number'?C.anchor:0);
+ const prior=C.prior||drawPrior(C.spread);
+ const B=anchorBases(typeof C.anchor==='number'?C.anchor:0,prior);
  const appr=C.apprMixed?(33+(rng()+rng())/2*25):C.appr, panic=Math.min(1,Math.max(0,(appr-35)/30));
  const TH={afford:0.48-0.18*panic,fight:0.16+0.20*panic,norm:0.14+0.12*panic,ai:0.22-0.14*panic};
  const aoc=rng()<C.pA, harris=rng()<C.pH, nsurv=rng()<C.pN;
@@ -1097,15 +1132,17 @@ function run10k(){
  const C=cfg();
  const maj={},lead={};CANDS.forEach(c=>{maj[c.id]=0;lead[c.id]=0;});
  let done=0, contested=0;const ballots={};
+ const PER=C.spread>0?SIMRULES.priorBatch:0, batches=[];let cur=null;
  function chunk(){
   const end=Math.min(done+CHUNK,TOTAL);
-  for(;done<end;done++){const r=simulate(C,false);const bk=r.ballot===0?'unresolved':(r.plurality?'plurality':String(r.ballot));ballots[bk]=(ballots[bk]||0)+1;if(r.majority)maj[r.winner]++;else{lead[r.winner]++;contested++;}}
+  for(;done<end;done++){if(PER&&done%PER===0){C.prior=drawPrior(C.spread);cur={};batches.push(cur);}const r=simulate(C,false);if(cur)cur[r.winner]=(cur[r.winner]||0)+1;const bk=r.ballot===0?'unresolved':(r.plurality?'plurality':String(r.ballot));ballots[bk]=(ballots[bk]||0)+1;if(r.majority)maj[r.winner]++;else{lead[r.winner]++;contested++;}}
   document.getElementById('aggStatus').textContent=done<TOTAL?('running '+Math.round(done/TOTAL*100)+'%'):(TOTAL.toLocaleString()+' primaries complete');
   if(done<TOTAL){setTimeout(chunk,0);return;}
-  const rows=CANDS.filter(c=>c.id!=='other').map(c=>({id:c.id,name:c.name,first:(maj[c.id]+lead[c.id])/TOTAL*100,majp:maj[c.id]/TOTAL*100,leadp:lead[c.id]/TOTAL*100})).sort((a,b)=>b.first-a.first);
+  const dist=PER&&TOTAL%PER===0?shareDist(batches,PER,CANDS.map(c=>c.id)):null;
+  const rows=CANDS.filter(c=>c.id!=='other').map(c=>({id:c.id,name:c.name,first:(maj[c.id]+lead[c.id])/TOTAL*100,majp:maj[c.id]/TOTAL*100,leadp:lead[c.id]/TOTAL*100,range:dist?[dist[c.id].p10,dist[c.id].p90]:null})).sort((a,b)=>b.first-a.first);
   const bpct={};Object.keys(ballots).forEach(k=>bpct[k]=Math.round(ballots[k]/TOTAL*1000)/10);
   document.getElementById('aggBody').innerHTML=renderAggregate(rows,TOTAL,Math.round(contested/TOTAL*100),bpct);
-  setHero(rows[0].name,Math.round(rows[0].first),'Wins the most of '+TOTAL.toLocaleString()+' simulated primaries with your settings');
+  setHero(rows[0].name,Math.round(rows[0].first),'Wins the most of '+TOTAL.toLocaleString()+' simulated primaries with your settings',rows[0].range);
  }
  setTimeout(chunk,20);
 }
@@ -1117,12 +1154,12 @@ function renderAggregate(rows,TOTAL,contestedPct,ballots){
   const c=CANDS.find(x=>x.id===r.id);const pn=pollNums(c);
   const pic=PHOTOS[r.id]?'<img class="mpic" src="'+PHOTOS[r.id]+'" alt="">':'<span class="mmono">'+'</span>';
   const gap=pn.gap===null?'':'<b class="gap '+(pn.gap>=0?'pos':'neg')+'">'+fmtGap(pn.gap)+'</b>';
-  return '<div class="mr">'+pic+'<div class="mname">'+lastName(r.id)+'</div><div class="mtrack"><div class="mfill '+(c.lane||'out')+'" data-w="'+(r.first/mx*100).toFixed(1)+'"></div></div><div class="mshare">'+r.first.toFixed(1)+'%</div>'
+  return '<div class="mr">'+pic+'<div class="mname">'+lastName(r.id)+'</div><div class="mtrack"><div class="mfill '+(c.lane||'out')+'" data-w="'+(r.first/mx*100).toFixed(1)+'"></div></div><div class="mshare">'+r.first.toFixed(1)+'%</div><div class="mrange" title="10th to 90th percentile when our own strength estimates are redrawn">'+rangeTxt(r.range)+'</div>'
    +'<div class="mstats"><span>mkt <b>'+pn.mkt.toFixed(1)+'</b></span><span>poll '+(pn.poll===null?'':'<b>'+pn.poll.toFixed(1)+'</b>')+'</span><span>gap '+gap+'</span></div></div>';
  };
  let h='<div class="mtop">'+rows.slice(0,5).map(row).join('')+'</div>';
  if(rows.length>5)h+='<div class="mrest">'+rows.slice(5).map(row).join('')+'</div><button class="btn sm mmore" onclick="toggleAll(this)">Show all '+rows.length+'</button>';
- h+='<div class="legend">Share of '+TOTAL.toLocaleString()+' simulated primaries where each candidate finishes first, at '+(TOTAL>=20000?'the default settings':'your current settings')+'. Bar color is the candidate\u2019s pool: <span style="color:var(--p-anchor)">Party Anchor</span>, <span style="color:var(--p-fight)">Fight</span>, <span style="color:var(--p-suburb)">Suburb Democrats</span>, <span style="color:var(--p-working)">Working Families</span>, <span style="color:var(--p-movement)">Movement Left</span>, <span style="color:var(--p-out)">Outsider</span>. '+contestedPct+'% of these runs reach the convention without a pledged majority'+(ballots&&!ballots.unresolved?'; the model settles them on later ballots':', which the model leaves unresolved')+'. mkt is the Kalshi and Polymarket blend, poll the 30 day national average, gap poll minus market.</div>';
+ h+='<div class="legend">Share of '+TOTAL.toLocaleString()+' simulated primaries where each candidate finishes first, at '+(TOTAL>=20000?'the default settings':'your current settings')+'. The small range beside each share is where it lands 80 percent of the time when we redraw our own estimates of each candidate\u2019s strength and each pool\u2019s size. Bar color is the candidate\u2019s pool: <span style="color:var(--p-anchor)">Party Anchor</span>, <span style="color:var(--p-fight)">Fight</span>, <span style="color:var(--p-suburb)">Suburb Democrats</span>, <span style="color:var(--p-working)">Working Families</span>, <span style="color:var(--p-movement)">Movement Left</span>, <span style="color:var(--p-out)">Outsider</span>. '+contestedPct+'% of these runs reach the convention without a pledged majority'+(ballots&&!ballots.unresolved?'; the model settles them on later ballots':', which the model leaves unresolved')+'. mkt is the Kalshi and Polymarket blend, poll the 30 day national average, gap poll minus market.</div>';
  h+=ballotLine(ballots);
  setTimeout(()=>{document.querySelectorAll('#aggregate .mfill').forEach(el=>{el.style.width=el.dataset.w+'%';});},30);
  return h;
@@ -1158,7 +1195,7 @@ function paintDefault(){
   DEF.pending=false;
   if(!d||!d.first||!d.order){fallbackDefault();return;}
   DEF.data=d;DEF.painted=true;
-  setHero(nm(d.frontrunner.id),Math.round(d.frontrunner.share),'Wins the most of '+d.runs.toLocaleString()+' simulated primaries, run on '+edDate(d.date,false)+' market prices');
+  setHero(nm(d.frontrunner.id),Math.round(d.frontrunner.share),'Wins the most of '+d.runs.toLocaleString()+' simulated primaries, run on '+edDate(d.date,false)+' market prices',d.range&&d.range[d.frontrunner.id]);
   setModelRank(d.first);
   const agg=document.getElementById('aggregate');agg.style.display='block';agg.classList.remove('open');
   agg.innerHTML='<div class="shead"><span>Who finishes first · '+d.runs.toLocaleString()+' simulated primaries</span><span class="note">Run overnight '+edDate(d.date,false)+' · change any control to run your own</span></div><div id="aggBody"></div>';
@@ -1169,7 +1206,7 @@ function paintDefault(){
 function paintDefaultRows(){
  // rows of the model result block from default.json; called again when polls or markets arrive so mkt, poll and gap stay current
  const d=DEF.data;if(!d||!document.getElementById('aggBody')||document.getElementById('aggStatus'))return;
- const rows=d.order.filter(id=>id!=='other').map(id=>({id,name:nm(id),first:d.first[id],majp:d.majority[id]||0,leadp:d.lead[id]||0}));
+ const rows=d.order.filter(id=>id!=='other').map(id=>({id,name:nm(id),first:d.first[id],majp:d.majority[id]||0,leadp:d.lead[id]||0,range:d.range&&d.range[id]}));
  document.getElementById('aggBody').innerHTML=renderAggregate(rows,d.runs,Math.round(d.contested),d.ballots);
 }
 function fallbackDefault(){updateFrontrunner();const t=contestedTicker();if(t)initTicker(t);document.getElementById('aggBody').innerHTML='<div class="muted">Last night\u2019s run didn\u2019t load. Click Run 10,000 primaries to run it here.</div>';}
@@ -1291,7 +1328,8 @@ function updateFrontrunner(){
  const fs={};CANDS.forEach(c=>fs[c.id]=Math.round((w[c.id]||0)/tot*1000)/10);setModelRank(fs);
  if(bk)setHero(nm(bk),Math.round(bv/tot*100),'Wins the most of '+N.toLocaleString()+' simulated primaries with your settings');
 }
-function setHero(name,pct,label){document.getElementById('heroShare').textContent=name+' '+pct+'%';if(label)document.getElementById('heroDate').textContent=label;}
+function rangeTxt(r){return r&&r.length===2?Math.round(r[0])+' to '+Math.round(r[1]):'';}
+function setHero(name,pct,label,range){document.getElementById('heroShare').textContent=name+' '+pct+'%';const hr=document.getElementById('heroRange');if(hr)hr.textContent=range?'likely '+rangeTxt(range):'';if(label)document.getElementById('heroDate').textContent=label;}
 function lastName(id){const c=CANDS.find(x=>x.id===id);return c&&c.short?c.short:nm(id).split(' ').slice(-1)[0];}
 function resetField(){CANDS.forEach(c=>{const e=document.getElementById('tg_'+c.id);if(e)e.value='sample';});updateFrontrunner();}
 const SITE='https://driscollglobe.github.io/2028-machine/';

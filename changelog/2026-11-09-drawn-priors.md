@@ -1,0 +1,7 @@
+The 2028 Machine, drawn priors of 2026-11-09
+
+Our starting strength for each candidate and our estimate of each pool's share of the electorate are judgment calls. Until today every run used them as fixed. Now every run draws them. Each candidate's strength is multiplied by a lognormal factor with a median of 1 and a spread of 30 percent at one standard deviation. Each pool's share takes a draw of the same size and the pools are rescaled to add to 100. The market side of the anchor is not drawn.
+
+Runs come in batches of 100 that share a draw, so 20,000 runs give 200 first-place shares per candidate. default.json stores the 10th, 25th, 50th, 75th and 90th percentiles after the binomial noise of each batch is taken out. The hero, the result list, the share cards and the desk note show the 10th to 90th range. The desk note gives both ranges in its lead sentence when the leader's range overlaps second place's. The default share card now reads default.json, so the card and the page always name the same leader.
+
+On the 2026-11-09 books at default settings, 20,000 runs, the top five went from AOC 25.0, Ossoff 22.7, Newsom 18.3, Khanna 9.6, Harris 5.0 to Ossoff 24.1 (likely 13 to 40), AOC 23.4 (14 to 34), Newsom 17.5 (8 to 29), Khanna 9.2 (7 to 12), Harris 5.3 (2 to 9). The convention rate went from 10.6 to 10.1. Ossoff and AOC are inside each other's ranges, and a different seed can put either one first.
