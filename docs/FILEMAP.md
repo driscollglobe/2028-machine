@@ -52,7 +52,7 @@ Maps contract names to candidate ids through `NAME_TO_ID`. Unmapped contracts ar
 
 ### `scripts/simcore.js`
 Shared loader. Reads `index.html`, takes the first inline `<script>` up to the `/*==SIM_CORE_END==*/` marker, and runs it inside `new Function` with a stub DOM. Control defaults come from parsing the `<input>` and `<select>` tags in the markup (`value=`, `checked`, `selected`). Returns `CANDS`, `BP_PRESETS`, `simulate`, `cfg`, `mb`, `setRng`.
-Also exports `applyMarkets` (blend to `c.mkt`; Kalshi run price to `c.run` when `0 < c.run < 100`; `runCap` on top; AOC and Harris run prices go to the `pAoc` and `pHarris` sliders), `seedFrom` (string hash), and `runMany` (N runs, first, majority, lead, contested shares).
+Also exports `applyMarkets` (blend to `c.mkt`; run price, the Kalshi and Polymarket average since 2026-11-09, to `c.run` when `0 < c.run < 100`; `runCap` on top; AOC, Harris and Ossoff run prices go to the `pAoc`, `pHarris` and `pOssRev` sliders), `seedFrom` (string hash), and `runMany` (N runs, first, majority, lead, contested shares).
 
 This is the one copy of the sim. Node and the browser run the same code. Anything above the marker must stay DOM-safe under the stub.
 

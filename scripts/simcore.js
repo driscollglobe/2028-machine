@@ -105,8 +105,10 @@ function applyMarkets(sim, M) {
     if (typeof r === 'number' && c.run > 0 && c.run < 100) c.run = Math.round(r);
     if (typeof c.runCap === 'number') c.run = Math.min(c.run, c.runCap); // operator cap on top of the run market
   });
-  // AOC and Harris run probabilities live on the sliders, so the run market sets those too.
+  // AOC, Harris and Ossoff run probabilities live on sliders, so the run market (the Kalshi and Polymarket
+  // average) sets those too.
   if (M.run && typeof M.run.aoc === 'number') sim.controls.pAoc.value = String(Math.round(M.run.aoc));
+  if (M.run && typeof M.run.ossoff === 'number') sim.controls.pOssRev.value = String(Math.round(M.run.ossoff));
   if (M.run && typeof M.run.harris === 'number') sim.controls.pHarris.value = String(Math.round(M.run.harris));
   applyAnchor(sim);
   applyApproval(sim);
