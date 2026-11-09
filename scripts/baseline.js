@@ -62,6 +62,7 @@ const def = {
   dist: res.dist || {},
   draws: res.draws || 0,
   spread: C.spread || 0,
+  days_to_sc: typeof C.days === 'number' ? C.days : null,
   majority: res.majority,
   lead: res.lead,
   order: order,

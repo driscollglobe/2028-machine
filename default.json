@@ -335,6 +335,7 @@
  },
  "draws": 200,
  "spread": 0.3,
+ "days_to_sc": 439,
  "majority": {
   "newsom": 17.5,
   "aoc": 23.3,
