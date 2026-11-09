@@ -90,7 +90,7 @@ if (single) {
 }
 const noted = rows.filter(r => (r.note || '').trim() && r.date > base.date && r.date <= last.date);
 if (noted.length) paras.push('Changes to the model itself this week: ' + noted.map(r => r.date + ', ' + r.note.trim()).join(' ') + ' Moves on those days come from the rebuild, not the books.');
-paras.push('The machine reruns 20,000 primaries every morning on that day’s Kalshi and Polymarket prices and logs the result, so this is a record of what it believed and when, not a forecast.');
+paras.push('The machine reruns 50,000 primaries every morning on that day’s Kalshi and Polymarket prices and logs the result, so this is a record of what it believed and when, not a forecast.');
 
 const md = title + '\n\n' + paras.join('\n\n') + '\n';
 fs.mkdirSync(OUTDIR, { recursive: true });

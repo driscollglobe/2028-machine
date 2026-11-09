@@ -184,37 +184,40 @@ def build(today, M, D, prev, calls, note="", changes=None):
                 ], key, "model_opp")
             S.append((1, txt))
 
-    # 4. who leads where. When the leader's 10th to 90th range overlaps second place's, the sentence gives
-    # both ranges instead of a single number, so the note never sells a lead the model can't separate.
+    # 4. who leads where. When first and second are within 2 points (default.json two_way, the same rule the
+    # hero, the share card and the wire use), the note names both with their ranges and calls nobody the leader.
     mk = max(ids, key=lambda i: M["blend"][i])
     ml = D["frontrunner"]["id"]
     rng = D.get("range") or {}
     order = [i for i in sorted(D["first"], key=lambda i: -D["first"][i]) if i != "other"]
-    m2 = order[1] if len(order) > 1 else None
+    two = D.get("two_way")
+    if two is None and "two_way" not in D and len(order) > 1:
+        two = order[:2] if D["first"][order[0]] - D["first"][order[1]] < 2 else None
+    m2 = two[1] if two else (order[1] if len(order) > 1 else None)
+    if two:
+        ml = two[0]
     r1, r2 = rng.get(ml), rng.get(m2) if m2 else None
-    overlap = bool(r1 and r2 and r1[0] <= r2[1])
+    overlap = bool(two)
 
     def rr(r):
-        return "%d to %d" % (round(r[0]), round(r[1]))
+        return ("likely %d to %d" % (round(r[0]), round(r[1]))) if r else ""
 
-    if overlap and mk == ml:
+    def share(i, r):
+        return "%s percent%s" % (f1(D["first"][i]), (" (" + rr(r) + ")") if r else "")
+
+    if overlap:
         S.append((2, pick([
-            "%s leads the markets, at %s, and the model, though the model can't separate %s from %s: likely %s percent of simulated primaries against %s." % (full(mk), f1(M["blend"][mk]), last(ml), last(m2), rr(r1), rr(r2)),
-            "Markets and model agree on %s, at %s in the blend, but the lead is soft in our simulations, where %s wins likely %s percent and %s %s." % (full(mk), f1(M["blend"][mk]), last(ml), rr(r1), last(m2), rr(r2)),
-        ], key, "lead_same_rng")))
-    elif overlap:
-        S.append((2, pick([
-            "%s leads the markets at %s. The model has %s first, likely %s percent of simulated primaries, close enough to %s's %s that it can't call a leader." % (full(mk), f1(M["blend"][mk]), full(ml), rr(r1), last(m2), rr(r2)),
-            "In our simulations %s finishes first most often, likely %s percent, with %s at %s. The betting favorite is %s at %s." % (full(ml), rr(r1), last(m2), rr(r2), full(mk), f1(M["blend"][mk])),
-        ], key, "lead_diff_rng")))
+            "The model calls it a two-way race: %s wins %s of simulated primaries and %s %s. %s leads the markets at %s." % (full(ml), share(ml, r1), full(m2), share(m2, r2), last(mk), f1(M["blend"][mk])),
+            "In our simulations it's a two-way race, too close to name a leader: %s at %s and %s at %s. The betting favorite is %s at %s." % (full(ml), share(ml, r1), full(m2), share(m2, r2), last(mk), f1(M["blend"][mk])),
+        ], key, "two_way")))
     elif mk == ml:
         S.append((2, pick([
-            "%s leads both the markets, at %s, and the model, winning %s percent of 20,000 simulated primaries." % (full(mk), f1(M["blend"][mk]), f1(D["first"][ml])),
+            "%s leads both the markets, at %s, and the model, winning %s percent of %s simulated primaries." % (full(mk), f1(M["blend"][mk]), f1(D["first"][ml]), "{:,}".format(D.get("runs") or 50000)),
             "Markets and model agree on the leader: %s, at %s in the blend and first in %s percent of our runs." % (full(mk), f1(M["blend"][mk]), f1(D["first"][ml])),
         ], key, "lead_same")))
     else:
         S.append((2, pick([
-            "%s leads the markets at %s, but the model likes %s, who wins %s percent of 20,000 simulated primaries." % (full(mk), f1(M["blend"][mk]), full(ml), f1(D["first"][ml])),
+            "%s leads the markets at %s, but the model likes %s, who wins %s percent of %s simulated primaries." % (full(mk), f1(M["blend"][mk]), full(ml), f1(D["first"][ml]), "{:,}".format(D.get("runs") or 50000)),
             "The markets have %s on top at %s. In our simulations it's %s, first in %s percent of runs." % (full(mk), f1(M["blend"][mk]), full(ml), f1(D["first"][ml])),
             "%s wins the most simulated primaries, %s percent, though the betting favorite is %s at %s." % (full(ml), f1(D["first"][ml]), full(mk), f1(M["blend"][mk])),
         ], key, "lead_diff")))

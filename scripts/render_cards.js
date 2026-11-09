@@ -13,7 +13,8 @@ const SHARE = path.join(ROOT, 'share');
 const SITE = 'https://driscollglobe.github.io/2028-machine/';
 const POOL_COLOR = { anchor: '#c98a18', fight: '#b8442b', suburb: '#1f7a5c', working: '#3b6ea5', movement: '#7a3e9d', out: '#8c5a2b' };
 const SITE_LABEL = 'driscollglobe.github.io/2028-machine';
-const RUNS = 20000;
+const RUNS = 20000; // preset cards; the default card shows default.json and its run count
+function RUNS_DEFAULT() { try { return JSON.parse(fs.readFileSync(path.join(ROOT, 'default.json'), 'utf8')).runs || RUNS; } catch (e) { return RUNS; } }
 
 function resolvePlaywright() {
   try { return require('playwright'); } catch (e) {}
@@ -25,7 +26,7 @@ function resolvePlaywright() {
 const { edDate } = require('./eddate');
 function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
 
-function cardHtml(title, sub, rows, date) {
+function cardHtml(title, sub, rows, date, runs) {
   const max = rows[0] ? rows[0].pct : 1;
   const bars = rows.map(r => '<div class="row"><div class="name">' + esc(r.name) + '</div>'
     + '<div class="track"><div class="fill" style="width:' + (r.pct / max * 100).toFixed(1) + '%;background:' + (POOL_COLOR[r.lane] || POOL_COLOR.out) + '"></div></div>'
@@ -48,7 +49,7 @@ function cardHtml(title, sub, rows, date) {
     + '<div class="globe">The Driscoll Globe</div><h1>The 2028 Machine</h1>'
     + '<div class="sub">' + esc(sub) + '</div><div><span class="lever">' + esc(title) + '</span></div>'
     + bars
-    + '<div class="foot"><span>' + esc(edDate(date).toUpperCase()) + ' · ' + RUNS.toLocaleString() + ' SIMULATED PRIMARIES</span><span>' + SITE_LABEL + '</span></div>'
+    + '<div class="foot"><span>' + esc(edDate(date).toUpperCase()) + ' · ' + (runs || RUNS).toLocaleString('en-US') + ' SIMULATED PRIMARIES</span><span>' + SITE_LABEL + '</span></div>'
     + '</div></body></html>';
 }
 
@@ -83,7 +84,7 @@ async function main() {
   const cand = id => sim.CANDS.find(c => c.id === id);
   const lastName = id => cand(id).short || cand(id).name.split(' ').slice(-1)[0];
   const presets = sim.BP_PRESETS;
-  const jobs = [{ key: 'default', title: 'Where it stands', sub: 'Who finishes first in 20,000 simulated primaries' }]
+  const jobs = [{ key: 'default', title: 'Where it stands', sub: 'Who finishes first in ' + (RUNS_DEFAULT()).toLocaleString('en-US') + ' simulated primaries' }]
     .concat(Object.keys(presets).map(k => ({ key: k, title: presets[k].label, sub: 'What changes when this turning point flips' })));
 
   fs.mkdirSync(OUT, { recursive: true });
@@ -104,8 +105,11 @@ async function main() {
     // the default card shows default.json itself, so the card and the page never name different leaders
     const D = JSON.parse(fs.readFileSync(path.join(ROOT, 'default.json'), 'utf8'));
     const res = job.key === 'default' && D.date === M.date ? D : core.runMany(fresh, fresh.cfg(), RUNS, core.seedFrom(M.date + ':' + job.key));
+    // the two-way rule, same as the hero: the default card reads default.json, preset cards apply it to their own run
+    const two = job.key === 'default' && res === D ? D.two_way : fresh.twoWay(Object.keys(res.first).sort((a, b) => res.first[b] - res.first[a]).map(id => ({ id, first: res.first[id] })));
+    const sub = two ? 'A two-way race: ' + lastName(two[0]) + ' and ' + lastName(two[1]) + ' are within two points of each other' : job.sub;
     const rows = Object.keys(res.first).map(id => ({ id, name: lastName(id), lane: cand(id).lane, pct: res.first[id], range: res.range ? res.range[id] : null })).sort((a, b) => b.pct - a.pct).slice(0, 5);
-    await page.setContent(cardHtml(job.title, job.sub, rows, M.date), { waitUntil: 'load' });
+    await page.setContent(cardHtml(job.title, sub, rows, M.date, res.runs || RUNS), { waitUntil: 'load' });
     const file = path.join(OUT, job.key + '.png');
     await page.screenshot({ path: file, type: 'png' });
     console.log('wrote cards/' + job.key + '.png: ' + rows.map(r => r.id + ' ' + r.pct).join(', '));
