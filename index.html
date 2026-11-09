@@ -1440,7 +1440,7 @@ function renderBracketResult(res){
  el.innerHTML='<div class="brcols">'+col('Your top five',mine,'Move a slider and run.')+col('Market default top five',mkt,'default.json not loaded yet')+(crowd&&crowd.length?col('Globe readers, median run odds ('+CROWD.count+')',crowd,''):'')+'</div>';
 }
 // ==READER CROWD== anonymous brackets go to a Cloudflare Worker (worker/). Empty until Kevin deploys it.
-const CROWD_URL='';
+const CROWD_URL='https://globe-2028-crowd.kevindriscoll.workers.dev';
 const CROWD_MIN=25;
 let CROWD=null;
 function loadCrowd(){

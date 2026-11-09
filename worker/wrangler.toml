@@ -6,7 +6,7 @@ compatibility_date = "2024-09-23"
 # Replace the id with the one `wrangler kv namespace create BRACKETS` prints.
 [[kv_namespaces]]
 binding = "BRACKETS"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
+id = "97ef2b2172874c1fa1d61eb8661f1b9b"
 
 [vars]
 # Origins allowed to post. Local dev origins are allowed by the code when running under wrangler dev.
