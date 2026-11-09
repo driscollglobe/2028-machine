@@ -273,6 +273,10 @@ body.show-adv .ctl.adv{display:flex;}
 .mmore{margin-top:8px;}
 @media(max-width:740px){.mr{flex-wrap:wrap;}.mr .mstats{width:100%;justify-content:flex-start;padding-left:58px;}.mr .mname{width:80px;font-size:14px;}}
 .csnote{font-size:13px;margin-top:8px;padding:7px 10px;background:var(--amber-soft);border-radius:5px;}
+.desknote{border:1px solid var(--rule);border-left:3px solid var(--wire);background:var(--panel);padding:10px 14px;margin:0 0 10px;}
+.desknote .dnlabel{font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--wire);margin-bottom:4px;}
+.desknote .dnlabel span{color:var(--faint);margin-left:6px;}
+.desknote p{margin:0;font-size:14.5px;line-height:1.5;}
 .rv{font-family:'Spline Sans Mono',monospace;font-size:9.5px;color:var(--faint);letter-spacing:.04em;margin-left:6px;white-space:nowrap;}
 .settled .rs{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:7px 0;border-top:1px solid var(--rule);}
 .settled .rs:first-child{border-top:0;}
@@ -306,6 +310,7 @@ body.show-adv h2.s.adv{display:block;}
 </div>
 <div class="nav"><a href="gap.html">The gap: polls vs markets</a><a href="track.html">Track record</a><a href="https://driscollglobe.substack.com">The Driscoll Globe</a></div>
 
+<div class="desknote" id="deskNote" hidden><div class="dnlabel">Desk note <span id="deskDate"></span></div><p id="deskText"></p></div>
 <div class="ticker"><span class="tlabel">WIRE</span><span class="tickwrap"><span class="tscroll" id="ticker"></span></span></div>
 
 <div class="hero">
@@ -1254,6 +1259,10 @@ function loadApproval(){
   if(+e.value!==v){e.value=v;if(o&&!document.getElementById('apprMixed').checked)o.textContent=v+'%';if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();}
  }).catch(()=>{});
 }
+// ==DESK NOTE== notes/latest.json is written nightly by scripts/desk_note.py from templates
+function loadDeskNote(){
+ fetch('notes/latest.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(n=>{if(!n||!n.text)return;document.getElementById('deskText').textContent=n.text;document.getElementById('deskDate').textContent=n.date;document.getElementById('deskNote').hidden=false;}).catch(()=>{});
+}
 function loadWire(){
  fetch('wire.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(w=>{if(!w||!Array.isArray(w.items))return;WIRE=w.items;initTicker();}).catch(()=>{});
 }
@@ -1374,7 +1383,7 @@ document.querySelectorAll('.ctl input[type=range]').forEach(r=>{
  const mk=(d,txt)=>{const b=document.createElement('button');b.type='button';b.className='step';b.textContent=txt;b.setAttribute('aria-label',(d>0?'Increase ':'Decrease ')+r.id);b.addEventListener('click',()=>{if(r.disabled)return;const v=Math.max(+r.min,Math.min(+r.max,+r.value+d));r.value=v;r.dispatchEvent(new Event('input',{bubbles:true}));});return b;};
  r.before(mk(-5,'-'));r.after(mk(5,'+'));
 });
-renderSettled();renderReviewed();loadWire();loadHeatmap();loadCalls();loadApproval();document.getElementById('pTrump').addEventListener('input',()=>{APPR_TOUCHED=true;});buildCards();loadPolls();loadHistory();tickClock();setInterval(tickClock,30000);buildBracket();paintDefault();deepLink();bracketFromUrl();
+renderSettled();renderReviewed();loadDeskNote();loadWire();loadHeatmap();loadCalls();loadApproval();document.getElementById('pTrump').addEventListener('input',()=>{APPR_TOUCHED=true;});buildCards();loadPolls();loadHistory();tickClock();setInterval(tickClock,30000);buildBracket();paintDefault();deepLink();bracketFromUrl();
 // fitted market strengths for the anchor slider (scripts/calibrate_anchor.js, nightly)
 fetch('anchor.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(A=>{if(!A||!A.mstr)return;CANDS.forEach(c=>{if(typeof A.mstr[c.id]==='number')c.mstr=A.mstr[c.id];});if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();}).catch(()=>{});
 // ==LIVE MARKET ANCHORS== fetch nightly-updated markets.json; fall back silently to baked-in values
