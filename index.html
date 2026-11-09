@@ -558,8 +558,8 @@ function convention(dels,C){
    live.sort((a,b)=>pd[b]-pd[a]);
    const out=live.pop(),from=POOLOF[out],from2=POOL2[out]||null;
    const w={};let tot=0;
-   live.forEach(k=>{let wt=0;if(POOLOF[k]===from)wt=1;else if(POOL2[k]===from)wt=0.5;
-    if(from2){if(POOLOF[k]===from2)wt=Math.max(wt,0.5);else if(POOL2[k]===from2)wt=Math.max(wt,0.25);}
+   const w2=SIMRULES.pool2Weight;live.forEach(k=>{let wt=0;if(POOLOF[k]===from)wt=1;else if(POOL2[k]===from)wt=w2;
+    if(from2){if(POOLOF[k]===from2)wt=Math.max(wt,w2);else if(POOL2[k]===from2)wt=Math.max(wt,w2*w2);}
     w[k]=wt*pd[k];tot+=w[k];});
    if(tot<=0){live.forEach(k=>{w[k]=pd[k];tot+=pd[k];});}
    live.forEach(k=>{pd[k]+=pd[out]*(tot>0?w[k]/tot:1/live.length);});
@@ -586,7 +586,9 @@ function convention(dels,C){
 // window, not on Super Tuesday or the long spring. Before, Iowa crashing the window moved Buttigieg 72 points:
 // x1.4 under the Iowa calendar against x0.7 under the DNC order, on every contest through June, on top of 1.5
 // fits in Iowa and New Hampshire. Momentum (momWin, momSecond, momCap) was traced and is not the driver.
-const SIMRULES={lateField:2,winnow:0.11,winnowFail:0.09,transferLeak:0.3,momWin:1.28,momSecond:1.10,momCap:2.4,stateCap:1.2,calEarly:true,priorSpread:0.30,priorBatch:100};
+const SIMRULES={lateField:2,winnow:0.11,winnowFail:0.09,transferLeak:0.3,momWin:1.28,momSecond:1.10,momCap:2.4,stateCap:1.2,calEarly:true,priorSpread:0.30,priorBatch:100,pool2Weight:0.5};
+// pool2Weight: a candidate whose secondary pool is the departing candidate's pool gets this weight in a transfer,
+// against 1 for a primary pool mate (and pool2Weight squared for secondary to secondary). knobs.json sets it.
 const DELS={SC:55,NH:33,NV:36,NM:34,VA:99,IA:40,MI:117,GA:108,NC:116,ST:1500,LS:2200};
 const THL={afford:'affordability and class',ai:'AI and the future of work',fight:'democracy and fighting Trumpism',norm:'competence and electability'};
 const LL={inst:'institutional Democrats won 2026',pop:'economic populists won 2026',muddle:'2026 settled nothing'};
@@ -822,8 +824,8 @@ function simulate(C,collect){
  function inherit(k){
   const from=POOLOF[k],from2=POOL2[k]||null;const w={};let tot=0;
   CANDS.forEach(c=>{if(!alive[c.id]||c.id===k||c.id==='other')return;let wt=0;
-   if(POOLOF[c.id]===from)wt=1;else if(POOL2[c.id]===from)wt=0.5;
-   if(from2){if(POOLOF[c.id]===from2)wt=Math.max(wt,0.5);else if(POOL2[c.id]===from2)wt=Math.max(wt,0.25);}
+   const w2=SIMRULES.pool2Weight;if(POOLOF[c.id]===from)wt=1;else if(POOL2[c.id]===from)wt=w2;
+   if(from2){if(POOLOF[c.id]===from2)wt=Math.max(wt,w2);else if(POOL2[c.id]===from2)wt=Math.max(wt,w2*w2);}
    if(wt>0){w[c.id]=wt*str[c.id];tot+=w[c.id];}});
   const pot=str[k]*(typeof C.pDrop==='number'?C.pDrop:0.35);if(pot<=0)return;
   // SIMRULES.transferLeak of the transfer goes to the whole field in proportion to strength; the rest to pool
@@ -1609,6 +1611,17 @@ document.querySelectorAll('.ctl input[type=range]').forEach(r=>{
 renderSettled();renderReviewed();loadDeskNote();loadWire();loadHeatmap();loadCalls();loadCrowd();loadAttention();loadApproval();document.getElementById('pTrump').addEventListener('input',()=>{APPR_TOUCHED=true;});buildCards();loadPolls();loadHistory();tickClock();setInterval(tickClock,30000);buildBracket();paintDefault();deepLink();bracketFromUrl();
 // fitted market strengths for the anchor slider (scripts/calibrate_anchor.js, nightly)
 fetch('anchor.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(A=>{if(!A||!A.mstr)return;CANDS.forEach(c=>{if(typeof A.mstr[c.id]==='number')c.mstr=A.mstr[c.id];});if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();}).catch(()=>{});
+// ==KNOBS== knobs.json holds the frozen defaults for the Advanced sliders and the transfer rules. The markup
+// carries the same numbers (scripts/knobs.js check fails the build if they differ), so this only matters if they
+// ever drift. A slider a reader already moved is left alone.
+fetch('knobs.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(K=>{
+ if(!K)return;let moved=false;
+ Object.keys(K).forEach(k=>{const x=K[k];if(typeof x.value!=='number')return;
+  if(x.rule){if(SIMRULES[x.rule]!==x.value){SIMRULES[x.rule]=x.value;moved=true;}return;}
+  const el=document.getElementById(x.control);if(!el||el.value!==el.defaultValue)return;
+  const v=String(Math.round(x.value*100));if(el.value!==v){el.value=v;el.defaultValue=v;const o=document.getElementById(x.control+'Out');if(o)o.textContent=v+'%';moved=true;}});
+ if(moved&&DEF.painted&&typeof queueFront==='function')queueFront();
+}).catch(()=>{});
 // ==LIVE MARKET ANCHORS== fetch nightly-updated markets.json; fall back silently to baked-in values
 fetch('markets.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(M=>{
  if(!M||!M.blend)return;

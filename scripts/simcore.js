@@ -48,6 +48,18 @@ function load(indexPath, inject) {
   if (markerAt < 0) throw new Error('index.html: ' + marker + ' marker not found');
   const core = fullScript.slice(0, markerAt);
   const controls = parseControls(html);
+  // knobs.json is where the frozen settings live: sliders take their defaults from it, rules go into SIMRULES
+  // before any inject runs (so methodology_run.js and the backtest can still pin older values).
+  const knobsFile = path.join(path.dirname(indexPath || path.join(ROOT, 'index.html')), 'knobs.json');
+  let knobRules = '';
+  if (fs.existsSync(knobsFile)) {
+    const K = JSON.parse(fs.readFileSync(knobsFile, 'utf8'));
+    Object.keys(K).forEach(k => {
+      const x = K[k];
+      if (x.control && controls[x.control]) controls[x.control].value = String(Math.round(x.value * 100));
+      else if (x.rule) knobRules += 'SIMRULES[' + JSON.stringify(x.rule) + ']=' + JSON.stringify(x.value) + ';';
+    });
+  }
   const documentStub = {
     getElementById(id) { return controls[id] || null; },
     querySelector() { return null; },
@@ -59,7 +71,7 @@ function load(indexPath, inject) {
   const windowStub = { document: documentStub, location: { search: '' }, addEventListener() {}, innerWidth: 1200 };
   // Function wrapper rather than eval: the script declares top-level const.
   const factory = new Function('document', 'window', 'navigator', 'location',
-    core + '\n' + (inject || '') + '\nreturn {CANDS:CANDS, RESOLVED:(typeof RESOLVED==="undefined"?{}:RESOLVED), BP_PRESETS:(typeof BP_PRESETS==="undefined"?{}:BP_PRESETS), HM_LEVERS:(typeof HM_LEVERS==="undefined"?[]:HM_LEVERS), HM_WATCH:(typeof HM_WATCH==="undefined"?[]:HM_WATCH), computeHeatmap:(typeof computeHeatmap==="undefined"?null:computeHeatmap), SIMRULES:(typeof SIMRULES==="undefined"?{}:SIMRULES), drawPrior:(typeof drawPrior==="undefined"?null:drawPrior), shareDist:(typeof shareDist==="undefined"?null:shareDist), correctedBlend:(typeof correctedBlend==="undefined"?null:correctedBlend), CLOCK:(typeof CLOCK==="undefined"?null:CLOCK), daysToSC:(typeof daysToSC==="undefined"?null:daysToSC), longshot:(typeof longshot==="undefined"?null:longshot), simulate:simulate, cfg:cfg, mb:mb, setRng:function(r){rng=r;}};');
+    core + '\n' + knobRules + '\n' + (inject || '') + '\nreturn {CANDS:CANDS, RESOLVED:(typeof RESOLVED==="undefined"?{}:RESOLVED), BP_PRESETS:(typeof BP_PRESETS==="undefined"?{}:BP_PRESETS), HM_LEVERS:(typeof HM_LEVERS==="undefined"?[]:HM_LEVERS), HM_WATCH:(typeof HM_WATCH==="undefined"?[]:HM_WATCH), computeHeatmap:(typeof computeHeatmap==="undefined"?null:computeHeatmap), SIMRULES:(typeof SIMRULES==="undefined"?{}:SIMRULES), drawPrior:(typeof drawPrior==="undefined"?null:drawPrior), shareDist:(typeof shareDist==="undefined"?null:shareDist), correctedBlend:(typeof correctedBlend==="undefined"?null:correctedBlend), CLOCK:(typeof CLOCK==="undefined"?null:CLOCK), daysToSC:(typeof daysToSC==="undefined"?null:daysToSC), longshot:(typeof longshot==="undefined"?null:longshot), simulate:simulate, cfg:cfg, mb:mb, setRng:function(r){rng=r;}};');
   const sim = factory(documentStub, windowStub, {}, windowStub.location);
   sim.controls = controls;
   sim.html = html;

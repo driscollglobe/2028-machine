@@ -117,7 +117,7 @@ a{color:var(--accent);}
 
 <h2 id="ranges">How sure the model is</h2>
 <p>Our own estimates are guesses. How strong each candidate starts and how big each pool of voters is come from reporting and judgment, not from data, so the model does not treat them as known. Every run redraws them. Each candidate's starting strength is multiplied by a random factor centered on 1, where one standard deviation is 30 percent up or down. Each pool's share of the electorate gets its own factor of the same size, and the pools are rescaled so they still add to 100. The market prices are never redrawn.</p>
-<p>Runs come in batches of 100 that share one draw. Each batch gives every candidate a share of first-place finishes, so 20,000 runs give 200 shares. The range under the headline and beside each bar runs from the 10th to the 90th of those, after taking out the coin-flip noise that any 100 races carry on their own. Read "Ossoff 24%, likely 13 to 40" as: our best number is 24, and if our estimates of the candidates are off by the amount we think they could be, he lands between 13 and 40 eight times in ten.</p>
+<p>Runs come in batches of 100 that share one draw. Each batch gives every candidate a share of first-place finishes, so 20,000 runs give 200 shares. The range under the headline and beside each bar runs from the 10th to the 90th of those, after taking out the coin-flip noise that any 100 races carry on their own. On the Nov. 9, 2026 run the page reads "AOC 24%, likely 14 to 35." Read that as: our best number is 24, and if our estimates of the candidates are off by the amount we think they could be, she lands between 14 and 35 eight times in ten. Ossoff, at 24 and likely 13 to 37, is inside that range, so the model can't tell you which of them leads.</p>
 <p>The model gets more certain as South Carolina nears, and it does this on purpose: each morning it allows fewer surprise events and redraws our estimates of the candidates less, until on the eve of the first primary those draws are a third as wide as they are today.</p>
 
 <h2 id="longshot">Correcting the market prices</h2>
@@ -130,6 +130,31 @@ a{color:var(--accent);}
 <p>Polls do not feed the simulations. They sit beside the market price on every field card and on the gap page, because the distance between what voters tell pollsters and what traders pay is part of the story. The average behind that number weights each national primary poll from the last 90 days by three things, multiplied together.</p>
 <p>Recency: a poll counts half as much for every 30 days since it left the field, so a poll from two months ago counts a quarter as much as one from today. Size: weight grows with the square root of the sample, so a poll of 2,000 counts twice as much as a poll of 500, not four times. A poll that does not publish its sample counts at the middle sample size of the polls in the window. Pollster: each pollster has a quality score, 1 for a normal poll, and can carry a house adjustment for a candidate it reads consistently high or low. Each candidate's number in a poll moves by that adjustment before it is averaged.</p>
 <p>The pollster table is public, in <a href="pollsters.csv">pollsters.csv</a>, with the reason for every entry. Today one pollster carries an adjustment. Harvard CAPS Harris samples all Democrats rather than likely primary voters, and in the 30 days to Nov. 9, 2026 it had Harris at 34 when the other pollsters averaged 18.7. Its Harris number is taken down 15 points and its polls count at 0.7. Every other pollster starts at 1 with no adjustment, and we will only change one when its record against the field gives a reason.</p>
+
+<h2 id="knobs">The fixed settings</h2>
+<p>A handful of settings in the model are judgment calls with no data to fit them to. We fixed each one, wrote down why, and froze it. The Advanced panel on the main page still lets you move any of them and rerun. The defaults come from a file, <a href="knobs.json">knobs.json</a>, and the site will not build if one of them changes without a dated entry in the <a href="changelog.html">changelog</a> saying what moved and why.</p>
+<!--KNOBS-->
+<table><tr><th>Setting</th><th>Value</th><th>Set</th></tr>
+<tr><td>Lane crowding</td><td>5%</td><td>Nov. 9, 2026</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">Each extra candidate in a pool trims everyone in it a little; at 0.15 a third candidate cost 23 percent, more than anything in the data supports, and 0.05 costs about 9.</td></tr>
+<tr><td>Secondary pool transfer share</td><td>50%</td><td>Sept. 10, 2026</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">When a candidate drops out, rivals whose second home is the same pool count half as much as rivals whose first home is.</td></tr>
+<tr><td>Field leak</td><td>30%</td><td>Nov. 9, 2026</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">Not every voter follows a departing candidate to a pool mate, so 30 percent of the transfer goes to the whole field in proportion to strength.</td></tr>
+<tr><td>Establishment coordination</td><td>50%</td><td>June 14, 2026</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">Even odds that the strongest establishment pool consolidates behind its delegate leader after the early states, raised when Trump is strong.</td></tr>
+<tr><td>Coordination failure</td><td>35%</td><td>June 14, 2026</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">About one run in three the establishment never consolidates, nobody steps aside, and candidates hang on to a lower vote share.</td></tr>
+<tr><td>Automatic delegate lean</td><td>60%</td><td>Nov. 9, 2026</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">Automatic delegates are party insiders, so 60 percent of their votes from the second ballot go to Party Anchor and Suburb candidates still standing.</td></tr>
+<tr><td>Debate skill</td><td>50%</td><td>June 14, 2026</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">Half of the debating edge or weakness of each of the top four finishers carries into their strength after every contest.</td></tr>
+<tr><td>Random branch-point events</td><td>40%</td><td>June 14, 2026</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">Four runs in ten get one surprise event before the field forms; this is today's rate, and the clock lowers it to a quarter by South Carolina.</td></tr>
+<tr><td>Dropout support transfer</td><td>35%</td><td>Sept. 10, 2026</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">About a third of a departing candidate's strength moves on to the candidates still running; the rest of their voters scatter or stay home.</td></tr>
+</table>
+<!--/KNOBS-->
 
 <p class="foot">THE 2028 MACHINE · HOW IT WORKS · DRAFT · SEED 5 · INPUTS FROZEN IN <a href="https://github.com/driscollglobe/2028-machine/tree/main/methodology">methodology/</a> · REPRODUCE WITH node scripts/methodology_run.js 5</p>
 </div>

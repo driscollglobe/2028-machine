@@ -34,3 +34,13 @@ jobs:
             if ! git cat-file -e "$REF" 2>/dev/null; then REF="HEAD~1"; fi
           fi
           node scripts/calls.js lock "$REF"
+
+      - name: Knobs match knobs.json and every change has a dated changelog entry
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            REF="origin/${{ github.base_ref }}"
+          else
+            REF="${{ github.event.before }}"
+            if ! git cat-file -e "$REF" 2>/dev/null; then REF="HEAD~1"; fi
+          fi
+          node scripts/knobs.js check "$REF"

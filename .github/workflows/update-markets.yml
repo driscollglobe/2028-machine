@@ -61,6 +61,9 @@ jobs:
       - name: Check that no past call was edited
         run: node scripts/calls.js lock HEAD
 
+      - name: Check that the knobs match knobs.json
+        run: node scripts/knobs.js check
+
       - name: Build the turning point heatmap at default settings
         run: node scripts/heatmap.js
 
