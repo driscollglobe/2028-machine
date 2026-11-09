@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How It Works | The 2028 Machine</title>
+<!-- DRAFT FOR KEVIN TO REWRITE. Every number comes from: node scripts/methodology_run.js 5
+     (inputs frozen in methodology/: markets 2026-11-08, anchor fit of that day, approval 38). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1a1a1a;--paper:#faf8f4;--rule:#d8d2c6;--accent:#8a1f11;--muted:#6b6455;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,sans-serif;line-height:1.6;}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 60px;}
+h1{font-family:Fraunces,serif;font-size:32px;margin:0 0 4px;}
+h2{font-family:Fraunces,serif;font-size:21px;margin:34px 0 6px;}
+.sub{font-family:'Spline Sans Mono',monospace;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:22px;}
+.draft{border:1px dashed var(--accent);color:var(--accent);padding:8px 12px;font-size:13px;margin-bottom:22px;}
+table{border-collapse:collapse;width:100%;font-size:13px;margin:10px 0 6px;}
+th,td{border-bottom:1px solid var(--rule);padding:6px 8px;text-align:right;font-family:'Spline Sans Mono',monospace;}
+th:first-child,td:first-child{text-align:left;font-family:Inter,sans-serif;}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
+code{font-family:'Spline Sans Mono',monospace;font-size:13px;background:#efe9dd;padding:1px 4px;border-radius:3px;}
+.nav a{margin-right:14px;color:var(--accent);font-size:14px;}
+dt{font-weight:600;margin-top:8px;}
+dd{margin:0 0 4px 0;}
+.foot{font-family:'Spline Sans Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.06em;margin-top:40px;border-top:1px solid var(--rule);padding-top:10px;}
+a{color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="nav"><a href="./">The Machine</a><a href="gap.html">The gap</a><a href="track.html">Track record</a></div>
+<h1>How the machine works</h1>
+<div class="sub">One primary, start to finish · seed 5 · books of 2026-11-08</div>
+<div class="draft">Draft. Kevin rewrites this prose before it runs. The numbers are final for this seed.</div>
+
+<p>The machine plays out the 2028 Democratic primary 20,000 times every morning. Each run is one possible primary. This page follows a single run from the first random draw to the convention. Its seed is 5, which fixes every random number in it. Anyone can rerun it and get the same primary with <code>node scripts/methodology_run.js 5</code>.</p>
+
+<h2>Words this page uses</h2>
+<dl>
+<dt>Base strength</dt><dd>How strong a candidate is before anything happens. A number with no units. Bigger is stronger.</dd>
+<dt>Operator strength</dt><dd>The base strength I set by hand. Newsom is 25. Ossoff is 12.</dd>
+<dt>Market strength</dt><dd>A base strength fitted every night so that, with everything else at default, the machine reproduces the Kalshi and Polymarket prices.</dd>
+<dt>Anchor</dt><dd>How much of each. At 50, base strength is half operator and half market.</dd>
+<dt>Lever</dt><dd>A question about the world that each run answers by a draw. Does AOC run? What is the race about?</dd>
+<dt>Pool</dt><dd>The slice of the primary electorate a candidate draws from: Party Anchor, Fight, Suburb Democrats, Working Class, Movement Left, Outsider.</dd>
+<dt>Pledged delegates</dt><dd>Delegates won in primaries and caucuses. Automatic delegates are party officials who vote only from the second ballot.</dd>
+</dl>
+
+<h2>Step 1. The settings</h2>
+<p>This run uses the default settings on 2026-11-08. The anchor is 50. Lane crowding is 0.15. Automatic delegates lean 60 percent toward Party Anchor and Suburb candidates. Trump approval is 38, the Silver Bulletin average that day. Four midterm results are fixed: Ossoff won Georgia, Talarico won Texas, El-Sayed won Michigan, and the Maine Democrat beat Collins.</p>
+
+<h2>Step 2. Base strength</h2>
+<p>The operator strengths add up to 177. The fitted market strengths add up to 100. Each is turned into a share of its own total, the two shares are averaged, and the result is scaled back to 177. Newsom's operator strength is 25 and his market strength is 7.52, so his base is 19.16. Ossoff is 12 and 5.71, so his base is 11.05. El-Sayed is 8 and 3.30, so 6.92. Wes Moore is 4 and 3.45, so 5.05.</p>
+<table>
+<tr><th>Candidate</th><th>Operator</th><th>Market price</th><th>Market strength</th><th>Base at anchor 50</th></tr>
+<tr><td>Gavin Newsom</td><td>25</td><td>11.3</td><td>7.52</td><td>19.16</td></tr>
+<tr><td>Pete Buttigieg</td><td>10</td><td>5.3</td><td>11.70</td><td>15.36</td></tr>
+<tr><td>Jon Ossoff</td><td>12</td><td>25.5</td><td>5.71</td><td>11.05</td></tr>
+<tr><td>Josh Shapiro</td><td>9</td><td>4.5</td><td>6.11</td><td>9.91</td></tr>
+<tr><td>JB Pritzker</td><td>7</td><td>1.9</td><td>6.39</td><td>9.15</td></tr>
+<tr><td>Abdul El-Sayed</td><td>8</td><td>1.8</td><td>3.30</td><td>6.92</td></tr>
+<tr><td>Wes Moore</td><td>4</td><td>2.5</td><td>3.45</td><td>5.05</td></tr>
+</table>
+<p>Ossoff has the highest price on the books and only a middling market strength. That is the fit at work. The sim already gives him a 1.25 bonus for the big Georgia win and a strong South Carolina fit, so the fit likely needs less raw strength to land him on his price.</p>
+
+<h2>Step 3. The levers are drawn</h2>
+<p>The run draws each open question once. AOC stays out of the race and endorses nobody. Harris passes. Newsom holds up under scrutiny. Ossoff, with his big Georgia win already on the books, decides to run. The race is about affordability and class. The party reads 2026 as a draw: both sides claim victory. Black voters consolidate behind a candidate other than Harris. The draw weights the choice by South Carolina fit, and it lands on Wes Moore. Latino turnout stays soft. No one becomes the media darling. The DNC calendar holds: South Carolina, Nevada, New Hampshire, New Mexico, Michigan, Virginia. No random event fires.</p>
+<p>Twelve named candidates enter, plus a slot for everyone the model does not name: Newsom, Ossoff, Shapiro, Buttigieg, Pritzker, Khanna, Murphy, Kelly, Beshear, Whitmer, Moore and El-Sayed.</p>
+
+<h2>Step 4. From base strength to campaign strength</h2>
+<p>Each base is multiplied by how well the candidate fits the theme. On affordability El-Sayed gets 1.35, Moore 0.95, and Newsom and Ossoff 0.85 each. Ossoff gets 1.25 more for a big Georgia win. Then the lesson of 2026 and the Latino and Black voter draws apply their own small multipliers. The result is raised to the power 0.6, which keeps the strongest candidate from running away with every state.</p>
+<p>Then lane crowding. Each pool's strength is divided by 1 + 0.15 * (n - 1), where n is how many of its candidates are running. Six Suburb Democrats are in this race, so each of them is divided by 1.75. Fight, Party Anchor and Movement Left each have two, so theirs are divided by 1.15.</p>
+<table>
+<tr><th>Candidate</th><th>Pool</th><th>Campaign strength</th></tr>
+<tr><td>Everyone else</td><td>Outsider</td><td>4.75</td></tr>
+<tr><td>Abdul El-Sayed</td><td>Movement Left</td><td>4.64</td></tr>
+<tr><td>Gavin Newsom</td><td>Fight</td><td>4.48</td></tr>
+<tr><td>JB Pritzker</td><td>Fight</td><td>2.98</td></tr>
+<tr><td>Ro Khanna</td><td>Movement Left</td><td>2.84</td></tr>
+<tr><td>Pete Buttigieg</td><td>Suburb</td><td>2.60</td></tr>
+<tr><td>Andy Beshear</td><td>Party Anchor</td><td>2.57</td></tr>
+<tr><td>Wes Moore</td><td>Party Anchor</td><td>2.52</td></tr>
+<tr><td>Jon Ossoff</td><td>Suburb</td><td>2.42</td></tr>
+</table>
+<p>Two things stand out. El-Sayed, a long shot on the books, is the strongest named candidate in this run because the race is about affordability and AOC is out, so the Movement Left has room. And the unnamed field is strong because AOC's absence lifts it by half. Neither is a prediction. Both are what this one draw of the world looks like.</p>
+
+<h2>Step 5. The early states</h2>
+<p>Each state multiplies campaign strength by the candidate's fit for that state and by a random shock, then splits the vote. Candidates under 15 percent get no delegates. The winner gains momentum. Anyone under the winnowing line in two contests drops out, and a share of their strength moves to the candidates in their pool.</p>
+<table>
+<tr><th>State</th><th>First</th><th>Second</th><th>Dropped out</th></tr>
+<tr><td>South Carolina</td><td>Moore 32.5</td><td>Newsom 19.4</td><td></td></tr>
+<tr><td>Nevada</td><td>Newsom 21.4</td><td>El-Sayed 15.8</td><td>Khanna, Murphy, Buttigieg, Whitmer, Shapiro</td></tr>
+<tr><td>New Hampshire</td><td>Newsom 16.6</td><td>El-Sayed 14.6</td><td></td></tr>
+<tr><td>New Mexico</td><td>Newsom 23.4</td><td>Moore 18.1</td><td>Kelly</td></tr>
+<tr><td>Michigan</td><td>El-Sayed 31.9</td><td>Moore 13.4</td><td></td></tr>
+<tr><td>Virginia</td><td>Newsom 28.9</td><td>El-Sayed 19.5</td><td></td></tr>
+</table>
+<p>Moore wins South Carolina with the Black vote behind him. Newsom wins four of the six. El-Sayed wins his home state by 18.5 points, and Michigan's 117 delegates put him ahead on the board, 170 to Newsom's 129.</p>
+
+<h2>Step 6. The establishment tries to consolidate</h2>
+<p>The coordination draw fails in this run. Nobody is pushed out, and nobody gets the 1.5 times bonus that consolidation brings.</p>
+
+<h2>Step 7. Super Tuesday and the rest</h2>
+<p>Super Tuesday splits 1,500 delegates. Newsom takes 33.4 percent of the vote and El-Sayed 25.5. After it, only the top three by delegates stay in: Newsom, El-Sayed and Moore. The remaining states split 2,200 more delegates. Newsom and El-Sayed come out nearly even, 37.8 to 37.6, with Moore at 24.6.</p>
+<p>Newsom finishes with 1,812 pledged delegates out of 4,074. A majority is 2,038. El-Sayed has 1,645. Moore has 610.</p>
+
+<h2>Step 8. The convention</h2>
+<p>No one has a pledged majority, so the convention goes to a second ballot. Moore, in last place, releases his delegates. Nobody left shares his pool, so they split in proportion to delegates. Automatic delegates join on the second ballot. The model sizes them at the 2024 ratio, 747 for every 3,949 pledged, which is about 771 here. Sixty percent of them split among Party Anchor and Suburb candidates still standing. Neither Newsom nor El-Sayed is in those pools, so all of them split in proportion to delegates. The second ballot needs 2,422 votes. Newsom gets 2,536 and is the nominee.</p>
+
+<h2>What this one run means</h2>
+<p>Very little on its own. The headline numbers on the main page are the share of 20,000 runs like this one that each candidate wins. A candidate who wins in a run like this, with AOC out and affordability as the theme, can lose most of the others. The heatmap on the main page shows which of these draws move the outcome the most.</p>
+
+<p class="foot">THE 2028 MACHINE · HOW IT WORKS · DRAFT · SEED 5 · INPUTS FROZEN IN <a href="https://github.com/driscollglobe/2028-machine/tree/main/methodology">methodology/</a> · REPRODUCE WITH node scripts/methodology_run.js 5</p>
+</div>
+</body>
+</html>
