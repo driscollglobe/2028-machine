@@ -6,20 +6,20 @@
 <title>Track Record | The 2028 Machine</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#1a1a1a;--paper:#faf8f4;--rule:#d8d2c6;--accent:#8a1f11;}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,sans-serif;}
 .wrap{max-width:920px;margin:0 auto;padding:28px 18px 60px;}
 h1{font-family:Fraunces,serif;font-size:32px;margin:0 0 4px;}
-.sub{font-family:'Spline Sans Mono',monospace;font-size:12px;color:#6b6455;text-transform:uppercase;letter-spacing:.06em;margin-bottom:24px;}
+.sub{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:12px;color:#6b6455;text-transform:uppercase;letter-spacing:.06em;margin-bottom:24px;}
 canvas{width:100%;border:1px solid var(--rule);background:#fff;}
 .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;margin:12px 0 28px;}
 .legend span{display:inline-flex;align-items:center;gap:6px;}
 .sw{width:22px;height:3px;display:inline-block;}
 .sw.dash{background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 9px);height:2px;}
 table{border-collapse:collapse;width:100%;font-size:13px;}
-th,td{border-bottom:1px solid var(--rule);padding:7px 10px;text-align:right;font-family:'Spline Sans Mono',monospace;}
+th,td{border-bottom:1px solid var(--rule);padding:7px 10px;text-align:right;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;}
 th:first-child,td:first-child{text-align:left;font-family:Inter,sans-serif;}
 th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#6b6455;}
 .note{font-size:12px;color:#6b6455;margin-top:26px;line-height:1.55;}
@@ -73,7 +73,7 @@ function draw(d){
  let max=10;d.forEach(r=>IDS.forEach(id=>{max=Math.max(max,r.m[id]||0,r.k[id]||0);}));max=Math.ceil(max/10)*10;
  const x=i=>P.l+(d.length<2?0:(W-P.l-P.r)*i/(d.length-1));
  const y=v=>H-P.b-(H-P.t-P.b)*v/max;
- ctx.strokeStyle='#e5dfd3';ctx.fillStyle='#8a8272';ctx.font='11px Spline Sans Mono';
+ ctx.strokeStyle='#e5dfd3';ctx.fillStyle='#8a8272';ctx.font='11px Inter, system-ui, sans-serif';
  for(let g=0;g<=max;g+=10){ctx.beginPath();ctx.moveTo(P.l,y(g));ctx.lineTo(W-P.r,y(g));ctx.stroke();ctx.fillText(g+'%',6,y(g)+4);}
  const step=Math.max(1,Math.floor(d.length/8));
  d.forEach((r,i)=>{if(i%step===0||i===d.length-1)ctx.fillText(edDate(r.date,false),x(i)-16,H-8);});
