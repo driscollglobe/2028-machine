@@ -35,6 +35,12 @@ jobs:
       - name: Fetch Kalshi and Polymarket prices
         run: python3 scripts/fetch_markets.py
 
+      - name: Install pdftotext for the name ID crosstabs
+        run: sudo apt-get install -y -qq poppler-utils
+
+      - name: Pull Economist/YouGov name ID and favorability
+        run: python3 scripts/fetch_nameid.py
+
       - name: Install pandas for the poll scrape
         run: pip install --quiet pandas lxml
 
@@ -86,7 +92,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add markets.json polls.csv attention.csv approval.json anchor.json history.csv default.json wire.json heatmap.json rankings.json calls.csv notes cards share
+          git add markets.json nameid.csv polls.csv attention.csv approval.json anchor.json history.csv default.json wire.json heatmap.json rankings.json calls.csv notes cards share
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0

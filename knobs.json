@@ -61,5 +61,40 @@
   "value": 0.35,
   "date": "2026-09-10",
   "reason": "About a third of a departing candidate's strength moves on to the candidates still running; the rest of their voters scatter or stay home."
+ },
+ "nameid_growth": {
+  "label": "Name ID growth rate",
+  "rule": "nidR",
+  "value": 0.047,
+  "date": "2026-11-09",
+  "reason": "Fitted to Pete Buttigieg going from 15 percent name ID in January 2019 to 80 percent at the Iowa caucus on his 2019 news volume (node scripts/fit_nameid.js gives 0.0474)."
+ },
+ "nameid_fav_weight": {
+  "label": "Favorability weight",
+  "rule": "nidFav",
+  "value": 0.5,
+  "date": "2026-11-09",
+  "reason": "Net favorable among Democrats moves strength by half its size, so a candidate at plus 50 runs 25 percent stronger than one at zero."
+ },
+ "nameid_fallback_base": {
+  "label": "Estimated name ID floor",
+  "rule": "nidBase",
+  "value": 0.15,
+  "date": "2026-11-09",
+  "reason": "A candidate YouGov has never asked about starts as if 15 percent of voters knew them, about where a statewide officeholder with no national profile sits."
+ },
+ "nameid_fallback_slope": {
+  "label": "Estimated name ID per attention point",
+  "rule": "nidSlope",
+  "value": 0.05,
+  "date": "2026-11-09",
+  "reason": "Each point on the 10-point attention score adds 5 points of estimated name ID to a candidate with no YouGov reading."
+ },
+ "nameid_fallback_cap": {
+  "label": "Estimated name ID ceiling",
+  "rule": "nidCap",
+  "value": 0.6,
+  "date": "2026-11-09",
+  "reason": "No estimate goes above 60 percent; a candidate known that widely would show up in a YouGov wave."
  }
 }

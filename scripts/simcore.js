@@ -69,9 +69,20 @@ function load(indexPath, inject) {
     createElement() { return { style: {}, classList: { add() {}, remove() {} } }; }
   };
   const windowStub = { document: documentStub, location: { search: '' }, addEventListener() {}, innerWidth: 1200 };
+  // name ID inputs (nameid.csv, attention_scores.csv, attention.csv). Set up before any inject, so the
+  // methodology page and the backtest can switch it off or swap in their own data.
+  const csvRows = f => {
+    const p = path.join(path.dirname(knobsFile), f);
+    if (!fs.existsSync(p)) return null;
+    const lines = fs.readFileSync(p, 'utf8').replace(/\r/g, '').split('\n').filter(l => l.trim().length);
+    const head = lines[0].split(',').map(h => h.trim());
+    return lines.slice(1).map(l => { const c = l.split(','); const o = {}; head.forEach((h, i) => { o[h] = (c[i] || '').trim(); }); return o; });
+  };
+  const nidRows = [csvRows('nameid.csv'), csvRows('attention_scores.csv'), csvRows('attention.csv')];
+  const nidSetup = nidRows[0] && nidRows[1] ? 'if(typeof nameIdSetup==="function")nameIdSetup(' + nidRows.map(r => JSON.stringify(r || [])).join(',') + ');' : '';
   // Function wrapper rather than eval: the script declares top-level const.
   const factory = new Function('document', 'window', 'navigator', 'location',
-    core + '\n' + knobRules + '\n' + (inject || '') + '\nreturn {CANDS:CANDS, RESOLVED:(typeof RESOLVED==="undefined"?{}:RESOLVED), BP_PRESETS:(typeof BP_PRESETS==="undefined"?{}:BP_PRESETS), HM_LEVERS:(typeof HM_LEVERS==="undefined"?[]:HM_LEVERS), HM_WATCH:(typeof HM_WATCH==="undefined"?[]:HM_WATCH), computeHeatmap:(typeof computeHeatmap==="undefined"?null:computeHeatmap), SIMRULES:(typeof SIMRULES==="undefined"?{}:SIMRULES), drawPrior:(typeof drawPrior==="undefined"?null:drawPrior), shareDist:(typeof shareDist==="undefined"?null:shareDist), correctedBlend:(typeof correctedBlend==="undefined"?null:correctedBlend), CLOCK:(typeof CLOCK==="undefined"?null:CLOCK), twoWay:(typeof twoWay==="undefined"?null:twoWay), daysToSC:(typeof daysToSC==="undefined"?null:daysToSC), longshot:(typeof longshot==="undefined"?null:longshot), simulate:simulate, cfg:cfg, mb:mb, setRng:function(r){rng=r;}};');
+    core + '\n' + knobRules + '\n' + nidSetup + '\n' + (inject || '') + '\nreturn {CANDS:CANDS, RESOLVED:(typeof RESOLVED==="undefined"?{}:RESOLVED), BP_PRESETS:(typeof BP_PRESETS==="undefined"?{}:BP_PRESETS), HM_LEVERS:(typeof HM_LEVERS==="undefined"?[]:HM_LEVERS), HM_WATCH:(typeof HM_WATCH==="undefined"?[]:HM_WATCH), computeHeatmap:(typeof computeHeatmap==="undefined"?null:computeHeatmap), SIMRULES:(typeof SIMRULES==="undefined"?{}:SIMRULES), drawPrior:(typeof drawPrior==="undefined"?null:drawPrior), shareDist:(typeof shareDist==="undefined"?null:shareDist), correctedBlend:(typeof correctedBlend==="undefined"?null:correctedBlend), CLOCK:(typeof CLOCK==="undefined"?null:CLOCK), twoWay:(typeof twoWay==="undefined"?null:twoWay), NAMEID:(typeof NAMEID==="undefined"?null:NAMEID), nameIdSetup:(typeof nameIdSetup==="undefined"?null:nameIdSetup), nidAt:(typeof nidAt==="undefined"?null:nidAt), nidMultAt:(typeof nidMultAt==="undefined"?null:nidMultAt), monthsTo:(typeof monthsTo==="undefined"?null:monthsTo), CAL_DATES:(typeof CAL_DATES==="undefined"?null:CAL_DATES), daysToSC:(typeof daysToSC==="undefined"?null:daysToSC), longshot:(typeof longshot==="undefined"?null:longshot), simulate:simulate, cfg:cfg, mb:mb, setRng:function(r){rng=r;}};');
   const sim = factory(documentStub, windowStub, {}, windowStub.location);
   sim.controls = controls;
   sim.html = html;
