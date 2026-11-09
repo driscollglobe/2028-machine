@@ -23,7 +23,7 @@ Updated 2026-11-09, evening. The post-midterm stack (PRs #4 to #19) is merged in
 * Model changes reach readers through notes/changes.json (one plain sentence each) and changelog.html. The history.csv note column stays internal shorthand.
 
 ## Waiting on Kevin
-Nothing. PR #20 merged on 2026-11-09.
+Merge PR #20 before midnight ET on 2026-11-09. After that, main's old calls C1 to C3 lock and the calls lock check fails on the push to main.
 
 ## Known loose ends
 * `notes.json` on the gap page is hand-written and stale.
