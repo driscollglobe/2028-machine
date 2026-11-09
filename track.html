@@ -35,6 +35,10 @@ a{color:var(--accent);}
 <h1 style="font-size:20px">Latest readings</h1>
 <table id="tbl"></table>
 <p class="note">Solid lines are what the 2028 Machine believes at its default settings, re-run every morning on that day's market anchors. Dashed lines are the blended nomination price on Kalshi and Polymarket. The gap between a solid line and its dashed twin is the model's standing disagreement with the market, logged daily so that when the primary happens there is a public record of what this machine believed and when. Back to <a href="index.html">the Machine</a>.</p>
+<h1 style="font-size:20px" id="calls">Calls</h1>
+<div class="sub" id="callRec">loading calls.csv</div>
+<table id="callTbl"></table>
+<p class="note">Every call is a dated claim with a metric, a threshold and a deadline. It resolves true the first day the condition holds and false at its deadline if it never does. A build check fails if anyone edits the terms of a call made before today, so git history is the receipt. Test rows are examples and never count. <a href="https://github.com/driscollglobe/2028-machine/blob/main/calls.csv">calls.csv</a></p>
 </div>
 <script>
 // Candidate ids come from the history.csv header (m_<id> columns), not a hard-coded list.
@@ -89,6 +93,18 @@ function latest(d){
   IDS.map(id=>{const m=last.m[id],k=last.k[id],g=(m-k);
    return `<tr><td>${label(id)}</td><td>${isNaN(m)?'n/a':m.toFixed(1)+'%'}</td><td>${isNaN(k)?'n/a':k.toFixed(1)+'%'}</td><td style="color:${g>0?'#2e7d4f':'#8a1f11'}">${isNaN(k)||isNaN(m)?'':(g>0?'+':'')+g.toFixed(1)}</td></tr>`;}).join('');
 }
+function parseQuotedCSV(text){const rows=[];let row=[],f='',q=false;text=text.replace(/\r/g,'');for(let i=0;i<text.length;i++){const ch=text[i];if(q){if(ch==='"'){if(text[i+1]==='"'){f+='"';i++;}else q=false;}else f+=ch;}else if(ch==='"')q=true;else if(ch===','){row.push(f);f='';}else if(ch==='\n'){row.push(f);rows.push(row);row=[];f='';}else f+=ch;}if(f.length||row.length){row.push(f);rows.push(row);}const c=rows.filter(r=>r.some(x=>x.trim().length));if(!c.length)return[];const h=c[0];return c.slice(1).map(r=>Object.fromEntries(h.map((k,i)=>[k,r[i]===undefined?'':r[i]])));}
+function callEsc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function callDaysLeft(d){return Math.round((new Date(d+'T12:00:00')-new Date(new Date().toISOString().slice(0,10)+'T12:00:00'))/86400000);}
+function callRecord(rows){const g=rows.filter(r=>r.status==='true'||r.status==='false');return g.filter(r=>r.status==='true').length+' for '+g.length;}
+fetch('calls.csv?v='+Date.now()).then(r=>r.ok?r.text():null).then(t=>{
+ if(!t){document.getElementById('callRec').textContent='calls.csv unavailable';return;}
+ const all=parseQuotedCSV(t),real=all.filter(r=>r.status!=='test');
+ document.getElementById('callRec').textContent='Record: '+callRecord(real)+' · '+real.filter(r=>r.status==='open').length+' open';
+ const res=r=>r.status==='open'?Math.max(0,callDaysLeft(r.deadline))+' days left':(r.status==='test'?'test, not counted':(r.status==='true'?'Right':'Wrong')+' on '+r.resolved_date+(r.resolved_value!==''?' at '+r.resolved_value:''));
+ document.getElementById('callTbl').innerHTML='<tr><th>Call</th><th>Made</th><th>Metric</th><th>Deadline</th><th>Result</th></tr>'+
+  all.map(r=>'<tr><td>'+callEsc(r.text)+'</td><td>'+r.date_made+'</td><td>'+callEsc(r.metric+' '+r.operator+' '+r.threshold)+'</td><td>'+r.deadline+'</td><td>'+res(r)+'</td></tr>').join('');
+});
 </script>
 </body>
 </html>

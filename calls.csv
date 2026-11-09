@@ -1,0 +1,2 @@
+id,date_made,text,metric,operator,threshold,deadline,status,resolved_date,resolved_value
+T1,2026-11-09,"Test call, not a real one: Ossoff's blend price reaches 30 by 2027-03-01.",market.ossoff,>=,30,2027-03-01,test,,
