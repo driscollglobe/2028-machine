@@ -1236,7 +1236,7 @@ function loadCalls(){
   let h='';
   if(open.length)h+='<table class="cstable"><tr><th>Open call</th><th>Deadline</th><th>Days left</th></tr>'+open.map(r=>'<tr><td style="text-align:left">'+callEsc(r.text)+'</td><td>'+r.deadline+'</td><td>'+Math.max(0,callDaysLeft(r.deadline))+'</td></tr>').join('')+'</table>';
   if(done.length)h+='<table class="cstable"><tr><th>Graded call</th><th>Result</th><th>On</th></tr>'+done.map(r=>'<tr><td style="text-align:left">'+callEsc(r.text)+'</td><td class="'+(r.status==='true'?'up':'down')+'">'+(r.status==='true'?'Right':'Wrong')+'</td><td>'+r.resolved_date+'</td></tr>').join('')+'</table>';
-  if(!h)h='<div class="muted">No calls on the record yet.'+(tests.length?' The ledger holds '+tests.length+' test row'+(tests.length>1?'s':'')+', which never count.':'')+'</div>';
+  if(!h)h='<div class="muted">No calls on the record yet.'+(tests.length?' The ledger holds '+tests.length+(tests.length>1?' test rows, which never count.':' test row, which never counts.'):'')+'</div>';
   el.innerHTML=h;el.classList.remove('muted');
  }).catch(()=>{document.getElementById('callsBody').textContent='calls.csv unavailable';});
 }
