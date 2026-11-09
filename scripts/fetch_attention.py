@@ -30,6 +30,7 @@ QUERIES = {
     "rahm": '"Rahm Emanuel"', "whitmer": '"Gretchen Whitmer"', "moore": '"Wes Moore" governor',
     "warnock": '"Raphael Warnock"', "talarico": '"Talarico" Senate', "elsayed": '"El-Sayed" Michigan',
     "stewart": '"Jon Stewart"', "fain": '"Shawn Fain"', "walz": '"Tim Walz"',
+    "booker": '"Cory Booker"', "gallego": '"Ruben Gallego"', "slotkin": '"Elissa Slotkin"', "vanhollen": '"Van Hollen"',
 }
 URL = "https://news.google.com/rss/search?q={q}&hl=en-US&gl=US&ceid=US:en"
 

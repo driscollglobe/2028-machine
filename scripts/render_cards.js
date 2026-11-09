@@ -79,7 +79,7 @@ async function main() {
   const M = JSON.parse(fs.readFileSync(path.join(ROOT, 'markets.json'), 'utf8'));
   core.applyMarkets(sim, M);
   const cand = id => sim.CANDS.find(c => c.id === id);
-  const lastName = id => cand(id).name.split(' ').slice(-1)[0];
+  const lastName = id => cand(id).short || cand(id).name.split(' ').slice(-1)[0];
   const presets = sim.BP_PRESETS;
   const jobs = [{ key: 'default', title: 'Default settings', sub: 'Who finishes first when the market sets the odds' }]
     .concat(Object.keys(presets).map(k => ({ key: k, title: presets[k].label, sub: 'What changes when this turning point flips' })));

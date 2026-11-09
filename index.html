@@ -448,12 +448,16 @@ const CANDS=[
  {id:'stewart',reviewed:'2026-09',name:'Jon Stewart',role:'Broadcaster',age:65,mkt:0.4,run:12,lane:'out',rank:19,debate:1.2,str:'Attention, anti-elite credibility',weak:'66 on election day; wants influence not the job',base:5,fit:{SC:0.60,NH:1.10,NV:1.00,IA:0.90,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
  {id:'fain',reviewed:'2026-09',name:'Shawn Fain',role:'UAW President',age:56,mkt:1.0,run:15,runCap:15,lane:'movement',tag:'Labor',rank:20,debate:1.0,str:'Purest class-war vessel',weak:'Under federal investigation; fighting for his own union job first',base:5,fit:{SC:0.60,NH:0.80,NV:1.30,IA:1.10,MI:1.50,GA:0.70,NC:0.85,ST:0.95}},
  {id:'walz',reviewed:'2026-09',name:'Tim Walz',role:'Gov., Minnesota',age:64,mkt:0.1,run:13,lane:'working',rank:21,debate:1.0,str:'Folksy, soft-left',weak:'Losing VP rarely tops the ticket',base:5,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.20,MI:1.10,GA:0.80,NC:0.90,ST:0.95}},
+ {id:'booker',reviewed:'2026-11',name:'Cory Booker',role:'Sen., New Jersey',age:59,mkt:0.6,run:40,lane:'anchor',rank:22,debate:1.05,str:'Record 25-hour Senate floor speech in 2025; Black voters; retail politics',weak:'The 2020 run never caught on',base:4,fit:{SC:1.25,NH:1.00,NV:0.95,IA:0.95,MI:1.00,GA:1.15,NC:1.15,ST:1.00}},
+ {id:'gallego',reviewed:'2026-11',name:'Ruben Gallego',role:'Sen., Arizona',age:48,mkt:0.6,run:30,lane:'working',rank:23,debate:1.0,str:'Marine, working-class Latino message, won Arizona in 2024',weak:'Thin national profile',base:4,fit:{SC:0.85,NH:0.90,NV:1.35,IA:0.95,MI:1.05,GA:0.95,NC:0.95,ST:1.10}},
+ {id:'slotkin',reviewed:'2026-11',name:'Elissa Slotkin',role:'Sen., Michigan',age:52,mkt:0.5,run:25,lane:'suburb',rank:24,debate:1.0,str:'Former CIA analyst who wins swing seats in Michigan',weak:'Crowded Suburb lane; El-Sayed now owns Michigan’s left',base:3,fit:{SC:0.80,NH:1.05,NV:0.90,IA:1.05,MI:1.40,GA:0.90,NC:0.95,ST:0.95}},
+ {id:'vanhollen',reviewed:'2026-11',name:'Chris Van Hollen',short:'Van Hollen',role:'Sen., Maryland',age:69,mkt:0.9,run:20,lane:'fight',rank:25,debate:1.0,str:'Took the fight to El Salvador in 2025; Senate seniority',weak:'Little national profile; 69 in 2028',base:3,fit:{SC:0.95,NH:1.05,NV:0.90,IA:0.95,MI:1.00,GA:0.95,NC:1.05,ST:1.00}},
  {id:'other',reviewed:'2026-09',name:'Someone else',role:'Not yet declared',age:0,mkt:9.7,run:100,lane:'out',rank:0,debate:1.0,str:'The candidate the moment hasn\u2019t named',weak:'Does not exist yet',base:6,fit:{SC:1.00,NH:1.00,NV:1.00,IA:1.00,MI:1.00,GA:1.00,NC:1.00,ST:1.00}}
 ];
 // New Mexico and Virginia joined the window in the August 2026 DNC calendar. Seed their fits from the
 // nearest existing state, then hand override the candidates where the two states actually differ.
 CANDS.forEach(c=>{c.fit.NM=c.fit.NV;c.fit.VA=c.fit.NC;});
-(function(){const o={harris:{VA:1.20},warnock:{VA:1.25},moore:{VA:1.20},ossoff:{VA:1.10},khanna:{NM:1.20},aoc:{NM:1.30},fain:{NM:1.10},pete:{VA:1.00}};
+(function(){const o={harris:{VA:1.20},warnock:{VA:1.25},moore:{VA:1.20},ossoff:{VA:1.10},khanna:{NM:1.20},aoc:{NM:1.30},fain:{NM:1.10},pete:{VA:1.00},vanhollen:{VA:1.20},booker:{VA:1.10},gallego:{NM:1.35}};
  Object.keys(o).forEach(id=>{const c=CANDS.find(x=>x.id===id);if(c)Object.assign(c.fit,o[id]);});})();
 // five pools of the primary electorate. share is the operator's prior for each pool's slice of the vote.
 // Levers the 2026 midterms settled. A resolved lever renders locked with a badge, has no slider,
@@ -472,10 +476,10 @@ const POOL_META={
  movement:{label:'Movement Left',share:20,def:'Very liberal and younger Democrats who want a sharper economic and foreign policy break than the Biden and Harris years offered.'},
  out:{label:'Outsider',share:4,def:'Voters who want nobody from politics.'}
 };
-const POOLS={anchor:['harris','warnock','moore','beshear'],fight:['newsom','pritzker','rahm','talarico'],suburb:['pete','whitmer','murphy','shapiro','ossoff','kelly'],working:['walz'],movement:['aoc','sanders','khanna','elsayed','fain'],out:['stewart','other']};
+const POOLS={anchor:['harris','warnock','moore','beshear','booker'],fight:['newsom','pritzker','rahm','talarico','vanhollen'],suburb:['pete','whitmer','murphy','shapiro','ossoff','kelly','slotkin'],working:['walz','gallego'],movement:['aoc','sanders','khanna','elsayed','fain'],out:['stewart','other']};
 const POOLOF={};Object.keys(POOLS).forEach(p=>POOLS[p].forEach(id=>POOLOF[id]=p));
 // secondary pool: used only for dropout and endorsement transfers, at half weight
-const POOL2={ossoff:'anchor',shapiro:'working',kelly:'working',beshear:'working',talarico:'movement',stewart:'fight',fain:'working',moore:'suburb',rahm:'suburb',harris:'suburb',whitmer:'working',pritzker:'working',khanna:'suburb',elsayed:'working',walz:'suburb'};
+const POOL2={ossoff:'anchor',shapiro:'working',kelly:'working',beshear:'working',talarico:'movement',stewart:'fight',fain:'working',moore:'suburb',rahm:'suburb',harris:'suburb',whitmer:'working',pritzker:'working',khanna:'suburb',elsayed:'working',walz:'suburb',booker:'fight',gallego:'suburb',slotkin:'working',vanhollen:'anchor'};
 // why each candidate sits where they sit; shown on the pool tag and in the dossier
 const POOL_WHY={
  harris:'After 2024 her remaining primary strength is the institutional vote that made her the nominee, especially Black voters and Black women.',
@@ -492,6 +496,10 @@ const POOL_WHY={
  ossoff:'The 2026 rise is the Georgia next generation lane, not Warnock\u2019s church lane or Harris\u2019s restoration lane.',
  beshear:'Older, church going, loyal Democrats who want the party as it was. He wins them in Kentucky, which is why the establishment likes him.',
  walz:'The 2024 pitch was union teacher and Midwestern dad, aimed at non-college Democrats.',
+ booker:'Black voters and the party establishment are the base. The 2025 marathon speech gave him a fighter credential.',
+ gallego:'Won Arizona in 2024 running ahead of the ticket with working-class Latino men.',
+ slotkin:'National security moderate who wins suburban swing districts in Michigan.',
+ vanhollen:'The El Salvador trip made him a face of resistance to the deportation policy.',
  kelly:'Institutional moderate built for the suburbs: astronaut, gun safety, the Biden shortlist. Veterans are the crossover.',
  fain:'Class war unionist whose primary voters are the Sanders left more than the union hall.',
  aoc:'Incumbent face of the post-Sanders very liberal bloc, not of the church vote or the factory vote.',
@@ -507,7 +515,7 @@ function poolTip(c){const m=POOL_META[c.lane]||POOL_META.out;return (c.tag?c.tag
 // pools the establishment-coordination mechanic can consolidate: everything but the Movement Left
 const COORD_POOLS=['anchor','fight','suburb','working'];
 const TM={
- newsom:{afford:0.85,ai:1.0,fight:1.3,norm:0.85},aoc:{afford:1.4,ai:1.1,fight:1.2,norm:0.7},sanders:{afford:1.45,ai:1.0,fight:1.15,norm:0.6},harris:{afford:0.8,ai:0.9,fight:0.9,norm:1.1},ossoff:{afford:0.85,ai:1.0,fight:0.95,norm:1.2},shapiro:{afford:0.75,ai:0.9,fight:0.95,norm:1.5},pete:{afford:0.75,ai:1.1,fight:0.95,norm:1.3},pritzker:{afford:0.9,ai:0.9,fight:1.4,norm:0.85},khanna:{afford:1.4,ai:2.3,fight:0.85,norm:0.65},murphy:{afford:1.4,ai:0.95,fight:1.1,norm:1.0},kelly:{afford:0.85,ai:1.0,fight:0.9,norm:1.6},beshear:{afford:0.95,ai:0.85,fight:0.75,norm:1.8},rahm:{afford:0.6,ai:0.85,fight:0.85,norm:1.2},whitmer:{afford:0.95,ai:0.9,fight:1.1,norm:1.3},moore:{afford:0.95,ai:1.0,fight:1.1,norm:1.15},fain:{afford:1.9,ai:1.2,fight:0.85,norm:0.3},elsayed:{afford:1.35,ai:1.0,fight:1.0,norm:0.7},talarico:{afford:1.1,ai:0.95,fight:1.1,norm:1.05},stewart:{afford:1.0,ai:0.95,fight:1.25,norm:0.65},walz:{afford:1.15,ai:0.85,fight:1.0,norm:1.1},warnock:{afford:1.0,ai:0.9,fight:1.0,norm:1.15},other:{afford:1.1,ai:1.1,fight:1.0,norm:1.0}
+ newsom:{afford:0.85,ai:1.0,fight:1.3,norm:0.85},aoc:{afford:1.4,ai:1.1,fight:1.2,norm:0.7},sanders:{afford:1.45,ai:1.0,fight:1.15,norm:0.6},harris:{afford:0.8,ai:0.9,fight:0.9,norm:1.1},ossoff:{afford:0.85,ai:1.0,fight:0.95,norm:1.2},shapiro:{afford:0.75,ai:0.9,fight:0.95,norm:1.5},pete:{afford:0.75,ai:1.1,fight:0.95,norm:1.3},pritzker:{afford:0.9,ai:0.9,fight:1.4,norm:0.85},khanna:{afford:1.4,ai:2.3,fight:0.85,norm:0.65},murphy:{afford:1.4,ai:0.95,fight:1.1,norm:1.0},kelly:{afford:0.85,ai:1.0,fight:0.9,norm:1.6},beshear:{afford:0.95,ai:0.85,fight:0.75,norm:1.8},rahm:{afford:0.6,ai:0.85,fight:0.85,norm:1.2},whitmer:{afford:0.95,ai:0.9,fight:1.1,norm:1.3},moore:{afford:0.95,ai:1.0,fight:1.1,norm:1.15},fain:{afford:1.9,ai:1.2,fight:0.85,norm:0.3},elsayed:{afford:1.35,ai:1.0,fight:1.0,norm:0.7},talarico:{afford:1.1,ai:0.95,fight:1.1,norm:1.05},stewart:{afford:1.0,ai:0.95,fight:1.25,norm:0.65},walz:{afford:1.15,ai:0.85,fight:1.0,norm:1.1},booker:{afford:1.0,ai:1.0,fight:1.15,norm:1.0},gallego:{afford:1.2,ai:0.95,fight:1.0,norm:1.05},slotkin:{afford:0.95,ai:1.05,fight:0.95,norm:1.2},vanhollen:{afford:0.95,ai:1.0,fight:1.25,norm:0.95},warnock:{afford:1.0,ai:0.9,fight:1.0,norm:1.15},other:{afford:1.1,ai:1.1,fight:1.0,norm:1.0}
 };
 const CALS={R:['SC','NV','NH','NM','MI','VA'],NH:['NH','SC','NV','NM','MI','VA'],IA:['IA','NH','SC','NV','NM','MI']};
 // only sc and retail are reachable through CALCLASS today; battle and midwest are held for a future battleground-first calendar branch
@@ -954,7 +962,7 @@ function renderRankings(results){
  const mx=sorted[0].avgSwing||1;
  let h='<div class="ranklist">';
  sorted.forEach((r,i)=>{
-  h+='<div class="rankrow"><div class="rnum">'+(i+1)+'</div><div class="rkey">'+r.key+'<span class="rmover">biggest mover: '+nm(r.mover).split(' ').slice(-1)[0]+' '+(r.mv>0?'+':'')+r.mv.toFixed(0)+'</span></div><div class="rbart"><div class="rbarf" style="width:'+(r.avgSwing/mx*100).toFixed(1)+'%"></div></div><div class="rval">'+r.avgSwing.toFixed(1)+'</div></div>';
+  h+='<div class="rankrow"><div class="rnum">'+(i+1)+'</div><div class="rkey">'+r.key+'<span class="rmover">biggest mover: '+lastName(r.mover)+' '+(r.mv>0?'+':'')+r.mv.toFixed(0)+'</span></div><div class="rbart"><div class="rbarf" style="width:'+(r.avgSwing/mx*100).toFixed(1)+'%"></div></div><div class="rval">'+r.avgSwing.toFixed(1)+'</div></div>';
  });
  h+='</div><div class="legend">Average swing is how many percentage points a turning point moves the typical candidate\u2019s first place rate when it flips. Higher means the whole field bends around that one decision. This is the election measured as a system of choices.</div>';
  document.getElementById('rankings').innerHTML=h;
@@ -968,12 +976,12 @@ function renderHeatmap(results,watch){
   return 'background:rgba(184,68,43,'+(a*0.85).toFixed(2)+');color:'+(a>0.5?'#fff':'inherit');
  }
  let h='<table class="hmtable"><tr><th>Turning point</th>';
- watch.forEach(k=>h+='<th style="color:var(--p-'+(POOLOF[k]||'out')+')">'+nm(k).split(' ').slice(-1)[0]+'</th>');
+ watch.forEach(k=>h+='<th style="color:var(--p-'+(POOLOF[k]||'out')+')">'+lastName(k)+'</th>');
  h+='<th>Biggest mover</th></tr>';
  results.forEach(r=>{
   h+='<tr><td class="big">'+r.key+'</td>';
   watch.forEach(k=>{const v=r.sw[k];h+='<td class="hmcell" style="'+cellColor(v)+'">'+(v>0?'+':'')+v.toFixed(0)+'</td>';});
-  h+='<td style="text-align:left;font-weight:600;">'+nm(r.mover).split(' ').slice(-1)[0]+' '+(r.mv>0?'+':'')+r.mv.toFixed(0)+'</td></tr>';
+  h+='<td style="text-align:left;font-weight:600;">'+lastName(r.mover)+' '+(r.mv>0?'+':'')+r.mv.toFixed(0)+'</td></tr>';
  });
  h+='</table><div class="legend">Each cell is the change in a candidate\u2019s first place rate (percentage points) when the turning point flips from off to on, with the same starting seeds and averaging over the model\u2019s other uncertainties. Green helps, red hurts. What changes the answer matters more than who wins.</div>';
  document.getElementById('heatmap').innerHTML=h;
@@ -1246,7 +1254,7 @@ function updateFrontrunner(){
  if(bk)setHero(nm(bk),Math.round(bv/tot*100),'Model share at current settings · '+N.toLocaleString()+' primaries · fixed seed');
 }
 function setHero(name,pct,label){document.getElementById('heroShare').textContent=name+' '+pct+'%';if(label)document.getElementById('heroDate').textContent=label;}
-function lastName(id){return nm(id).split(' ').slice(-1)[0];}
+function lastName(id){const c=CANDS.find(x=>x.id===id);return c&&c.short?c.short:nm(id).split(' ').slice(-1)[0];}
 function resetField(){CANDS.forEach(c=>{const e=document.getElementById('tg_'+c.id);if(e)e.value='sample';});updateFrontrunner();}
 const SITE='https://driscollglobe.github.io/2028-machine/';
 const QUICK=window.innerWidth<700; // small screens get capped, labelled quick runs

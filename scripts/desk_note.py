@@ -33,8 +33,8 @@ NAMES = {"newsom": "Gavin Newsom", "aoc": "Alexandria Ocasio-Cortez", "sanders":
          "pritzker": "JB Pritzker", "khanna": "Ro Khanna", "murphy": "Chris Murphy", "kelly": "Mark Kelly",
          "beshear": "Andy Beshear", "rahm": "Rahm Emanuel", "whitmer": "Gretchen Whitmer", "moore": "Wes Moore",
          "warnock": "Raphael Warnock", "talarico": "James Talarico", "elsayed": "Abdul El-Sayed",
-         "stewart": "Jon Stewart", "fain": "Shawn Fain", "walz": "Tim Walz"}
-SHORT = {"aoc": "Ocasio-Cortez", "pete": "Buttigieg", "elsayed": "El-Sayed"}
+         "stewart": "Jon Stewart", "fain": "Shawn Fain", "walz": "Tim Walz", "booker": "Cory Booker", "gallego": "Ruben Gallego", "slotkin": "Elissa Slotkin", "vanhollen": "Chris Van Hollen"}
+SHORT = {"aoc": "Ocasio-Cortez", "pete": "Buttigieg", "elsayed": "El-Sayed", "vanhollen": "Van Hollen"}
 
 
 def full(i):
