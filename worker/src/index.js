@@ -7,7 +7,7 @@
 // A saved bracket holds only the six numbers and the UTC date.
 
 const IDS = ['newsom', 'aoc', 'sanders', 'ossoff', 'harris', 'shapiro', 'pete', 'pritzker', 'khanna', 'murphy',
-  'kelly', 'beshear', 'rahm', 'whitmer', 'moore', 'warnock', 'talarico', 'elsayed', 'stewart', 'fain', 'walz'];
+  'kelly', 'beshear', 'rahm', 'whitmer', 'moore', 'warnock', 'talarico', 'elsayed', 'stewart', 'fain', 'walz', 'booker', 'gallego', 'slotkin', 'vanhollen'];
 const NEED = 6;
 const AGG_KEY = 'agg:cache';
 const AGG_TTL = 120; // seconds the aggregate is cached

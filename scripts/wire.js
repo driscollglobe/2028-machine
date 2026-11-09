@@ -14,7 +14,7 @@ function signed(x) { return (x > 0 ? '+' : '') + f1(x); }
 function wireName(cands, id) {
   const c = cands.find(x => x.id === id);
   if (!c) return upper(id);
-  return upper(c.name.split(' ').slice(-1)[0]);
+  return upper(c.short || c.name.split(' ').slice(-1)[0]);
 }
 
 function topBy(obj, ids, n) {
