@@ -1,0 +1,30 @@
+{
+ "date": "2026-11-08",
+ "rounds": 30,
+ "runs": 4000,
+ "distance": 3.1,
+ "mstr": {
+  "newsom": 7.521,
+  "aoc": 4.893,
+  "harris": 4.959,
+  "sanders": 1.963,
+  "ossoff": 5.712,
+  "shapiro": 6.111,
+  "pete": 11.704,
+  "pritzker": 6.389,
+  "khanna": 0.515,
+  "murphy": 2.497,
+  "kelly": 5.157,
+  "beshear": 4.822,
+  "rahm": 7.371,
+  "whitmer": 4.825,
+  "moore": 3.449,
+  "warnock": 3.391,
+  "talarico": 7.881,
+  "elsayed": 3.304,
+  "stewart": 1.713,
+  "fain": 0.645,
+  "walz": 0.247,
+  "other": 4.93
+ }
+}
