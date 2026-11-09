@@ -28,13 +28,13 @@ Each PR's top five came from a fresh 20,000-run baseline on the 2026-11-08 books
 ## Defaults used, Kevin to confirm
 | Phase | Default | Where it came from |
 |---|---|---|
-| 1 | Theme weights unchanged; affordability already largest at 46.2 | You asked to see them first |
+| 1 | Theme weights unchanged; affordability largest at 46.2 | Kevin confirmed, 2026-11-09 |
 | 1 | Georgia margin fixed to big (about 59 to 41, unofficial) | Decision Desk HQ, cited in code |
 | 1 | Untouched priors stamped reviewed 2026-09 | The month they were written |
-| 3 | Anchor 50 | You |
+| 3 | Anchor 50 | Kevin confirmed, 2026-11-09 |
 | 3 | Anchor fit: 30 rounds of 4,000 runs, damping 0.2 | Me, so a = 100 lands within 2 to 5 points of the books |
 | 4 | Five new presets for chips | They mirror each heatmap lever's on state |
-| 5 | One sample call, T1, status test, exempt from the lock | You |
+| 5 | Calls C1 to C3: AOC market 20 or more, Ossoff market under 20 (both by 2027-06-30), Talarico run odds 30 or more by 2027-12-31 | Kevin, 2026-11-09 |
 | 6 | Silver Bulletin through its Datawrapper dataset. RealClearPolling returns 403 and VoteHub has no recent polls. | First that parsed |
 | 7 | Desk note templates, draft | Me, after the anti-ai-writing skill |
 | 8 | Daily limit 5 brackets per reader. The readers column shows the median. | Me |

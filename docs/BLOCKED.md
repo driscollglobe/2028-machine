@@ -3,8 +3,7 @@
 Written 2026-11-09 during the unattended run. All 14 build phases were built and opened as PRs. Nothing here stopped a phase. Each item is a decision, an account action, or a check that only Kevin can make.
 
 ## Needs a decision
-* **Phase 1, What 2028 is about.** You asked to see the current weights before any change. At the default Trump approval of 38 they are: affordability 46.2, AI 20.6, fight 18.0, competence 15.2. Affordability is already the largest share, so nothing was changed. Say whether to raise it further, and to what.
-* **Phase 5, the first three calls.** The ledger holds one test row, T1. Type the three calls and I will format them. Test rows are exempt from the lock, so T1 can be deleted.
+* **Settled 2026-11-09:** affordability stays at 46 percent, anchor stays at 50, and the first three calls are C1 to C3 on PR #9 (T1 removed).
 * **Phase 7, voice rules.** The desk note templates are a draft that follows the anti-ai-writing rules. You review them.
 * **Phase 13, methodology prose.** A draft for you to rewrite. The numbers are final for seed 5.
 
