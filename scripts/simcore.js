@@ -77,6 +77,18 @@ function applyMarkets(sim, M) {
   // AOC and Harris run probabilities live on the sliders, so the run market sets those too.
   if (M.run && typeof M.run.aoc === 'number') sim.controls.pAoc.value = String(Math.round(M.run.aoc));
   if (M.run && typeof M.run.harris === 'number') sim.controls.pHarris.value = String(Math.round(M.run.harris));
+  applyAnchor(sim);
+}
+
+// Fitted market strengths for the anchor slider. Only used when anchor.json matches the markets date.
+function applyAnchor(sim, A) {
+  if (!A) {
+    const f = path.join(ROOT, 'anchor.json');
+    if (!fs.existsSync(f)) return;
+    A = JSON.parse(fs.readFileSync(f, 'utf8'));
+  }
+  if (!A || !A.mstr) return;
+  sim.CANDS.forEach(c => { if (typeof A.mstr[c.id] === 'number') c.mstr = A.mstr[c.id]; else delete c.mstr; });
 }
 
 function seedFrom(str) {
@@ -103,4 +115,4 @@ function runMany(sim, C, N, seed) {
   return out;
 }
 
-module.exports = { ROOT, load, applyMarkets, seedFrom, runMany, parseControls };
+module.exports = { ROOT, load, applyMarkets, applyAnchor, seedFrom, runMany, parseControls };

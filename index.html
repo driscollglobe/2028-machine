@@ -360,6 +360,10 @@ body.show-adv h2.s.adv{display:block;}
 <div class="section settled" id="settled"><div class="shead">What 2026 settled</div><div id="settledBody"></div></div>
 <div class="modetoggle"><button class="seg on" id="segBasic" onclick="setMode('basic')">Basic</button><button class="seg" id="segAdv" onclick="setMode('advanced')">Advanced</button><span class="note">Basic shows the five biggest levers. Advanced reveals everything, including your bracket.</span></div>
 <div class="cols2">
+ <div class="section anchorbox">
+  <div class="shead">Anchor</div>
+  <div class="ctl"><label class="cl">Anchor</label><input type="range" min="0" max="100" value="50" id="pAnchor"><span class="cv" id="pAnchorOut">50%</span><div class="ctlnote" data-reviewed="2026-11">At 0 the model runs on operator strengths alone. At 100 base strength is the Kalshi and Polymarket blend. Levers, pools, calendar and convention run on top either way.</div></div>
+ </div>
  <div class="section">
   <div class="shead">Candidate gates</div>
   <div class="ctl"><label class="cl">AOC runs for president</label><input type="range" min="0" max="100" value="66" id="pAoc"><span class="cv" id="pAocOut">66%</span></div>
@@ -532,12 +536,27 @@ function gnoise(){let u=0,v=0;while(u===0)u=rng();while(v===0)v=rng();return Mat
 function nm(id){return CANDS.find(c=>c.id===id).name;}
 function P(id){if(RESOLVED[id])return RESOLVED[id].outcome/100;return +document.getElementById(id).value/100;}
 function V(id){return document.getElementById(id).value;}
-function cfg(){return{pA:P('pAoc'),pH:document.getElementById('pollsHarris').checked?0.95:P('pHarris'),pollsHarris:document.getElementById('pollsHarris').checked,pHslider:P('pHarris'),pN:P('pNewsom'),pOW:P('pOssWin'),pOR:P('pOssRev'),pMaine:P('pMaine'),pTex:P('pTexas'),pMich:P('pMich'),
+// ==ANCHOR== base = (1 - a) * operator_norm + a * market_norm, rescaled to the operator total so every
+// multiplier downstream keeps its meaning. a = 0 returns the operator bases untouched.
+// market_norm uses c.mstr when anchor.json is loaded: strengths fitted nightly by scripts/calibrate_anchor.js
+// so that a = 100 at default settings reproduces the blend. Raw prices are the fallback. Prices are win
+// probabilities, and the sim's momentum and winnowing turn a strength lead into a bigger win share, so raw
+// prices overshoot the leader.
+function anchorBases(a){
+ const B={};
+ if(!(a>0)){CANDS.forEach(c=>B[c.id]=c.base);return B;}
+ const mv=c=>Math.max(0,typeof c.mstr==='number'?c.mstr:c.mkt);
+ const sb=CANDS.reduce((t,c)=>t+c.base,0), sm=CANDS.reduce((t,c)=>t+mv(c),0);
+ CANDS.forEach(c=>{B[c.id]=sb*((1-a)*c.base/sb+(sm>0?a*mv(c)/sm:0));});
+ return B;
+}
+function cfg(){return{anchor:P('pAnchor'),pA:P('pAoc'),pH:document.getElementById('pollsHarris').checked?0.95:P('pHarris'),pollsHarris:document.getElementById('pollsHarris').checked,pHslider:P('pHarris'),pN:P('pNewsom'),pOW:P('pOssWin'),pOR:P('pOssRev'),pMaine:P('pMaine'),pTex:P('pTexas'),pMich:P('pMich'),
  pC:P('pCoord'),pCF:P('pCoordFail'),pEv:P('pEvents'),pDb:P('pDebate'),pDrop:P('pDrop'),appr:+V('pTrump'),apprMixed:document.getElementById('apprMixed').checked,
  selAoc:V('selAoc'),selTheme:V('selTheme'),selLesson:V('selLesson'),selBlack:V('selBlack'),selLatino:V('selLatino'),calKey:V('selCal'),darling:V('selDarling'),
  field:Object.fromEntries(CANDS.map(c=>[c.id,document.getElementById('tg_'+c.id)?document.getElementById('tg_'+c.id).value:'sample']))};}
 function simulate(C,collect){
  const N=collect?1:1; // single run when narrating
+ const B=anchorBases(typeof C.anchor==='number'?C.anchor:0);
  const appr=C.apprMixed?(33+(rng()+rng())/2*25):C.appr, panic=Math.min(1,Math.max(0,(appr-35)/30));
  const TH={afford:0.48-0.18*panic,fight:0.16+0.20*panic,norm:0.14+0.12*panic,ai:0.22-0.14*panic};
  const aoc=rng()<C.pA, harris=rng()<C.pH, nsurv=rng()<C.pN;
@@ -601,15 +620,15 @@ function simulate(C,collect){
  if(!aoc){let mode=C.selAoc;
   if(mode==='mixed'){const r=rng();mode=r<0.35?AOC_HEIRS[Math.floor(rng()*AOC_HEIRS.length)]:'neutral';}
   if(AOC_HEIRS.includes(mode)&&inRace[mode])endorse=mode;}
- const heirBase=AOC_HEIRS.filter(h=>inRace[h]).reduce((a,h)=>a+CANDS.find(c=>c.id===h).base,0);
+ const heirBase=AOC_HEIRS.filter(h=>inRace[h]).reduce((a,h)=>a+B[h],0);
  CANDS.forEach(c=>{
   dels[c.id]=0;won[c.id]=0;dbWins[c.id]=0;
   if(!inRace[c.id]){alive[c.id]=false;return;}
   alive[c.id]=true;
-  let b=c.base*TM[c.id][theme];
+  let b=B[c.id]*TM[c.id][theme];
   if(AOC_HEIRS.includes(c.id)){
    if(aoc)b*=AOC_IN_MULT[c.id];
-   else if(endorse)b*=(c.id===endorse?1+AOC_POOL/c.base:1);
+   else if(endorse)b*=(c.id===endorse?1+AOC_POOL/Math.max(B[c.id],1e-9):1);
    else if(heirBase>0)b*=1+AOC_POOL/heirBase;
   }
   if(c.id==='murphy')b*=aoc?0.8:1.2;
@@ -900,7 +919,7 @@ function oddsRow(c){
  const gapTxt=x.gap===null?'<b>&nbsp;</b>':'<b class="gap '+(x.gap>=0?'pos':'neg')+'">'+fmtGap(x.gap)+'</b>';
  return '<span><i>market</i><b>'+x.mkt.toFixed(1)+'%</b></span><span><i>poll</i>'+pollTxt+'</span><span><i>gap</i>'+gapTxt+'</span>';
 }
-function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=oddsRow(c);const r=document.getElementById('runrow_'+c.id);if(r)r.innerHTML='<span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>';});}
+function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=oddsRow(c);const r=document.getElementById('runrow_'+c.id);if(r)r.innerHTML='<span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c);});}
 function renderPollBoard(){
  const body=document.getElementById('pollboardBody');if(!body)return;
  const top=CANDS.filter(c=>c.id!=='other').slice().sort((a,b)=>b.mkt-a.mkt).slice(0,6);
@@ -930,7 +949,7 @@ function buildCards(){
    +pic
    +'<div class="nm">'+c.name+'</div><div class="meta">'+c.role+' · '+c.age+' in \u201928</div>'
    +'<div class="odds polls" id="odds_'+c.id+'">'+oddsRow(c)+'</div>'
-   +'<div class="odds pair" id="runrow_'+c.id+'"><span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span></div>'
+   +'<div class="odds pair" id="runrow_'+c.id+'"><span><i>run</i><b>'+c.run+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+'</div>'
    +'<span class="lane '+c.lane+'" title="'+poolTip(c).replace(/"/g,'&quot;')+'">'+tagLabel(c)+'</span>'
    +'<div class="sw"><b>Strength:</b> '+c.str+'<br><b>Weakness:</b> '+c.weak+'</div>'
    +'<a class="gaplink" href="gap.html#'+c.id+'" onclick="event.stopPropagation()">Polls vs market</a></div>';
@@ -974,7 +993,10 @@ function renderAggregate(rows,TOTAL,contestedPct){
 }
 function toggleAll(btn){const agg=document.getElementById('aggregate');agg.classList.toggle('open');const open=agg.classList.contains('open');btn.textContent=open?'Show top five':'Show all '+document.querySelectorAll('#aggregate .mr').length;if(open)setTimeout(()=>{document.querySelectorAll('#aggregate .mrest .mfill').forEach(el=>{el.style.width=el.dataset.w+'%';});},30);}
 let MODEL_RANK={};
-function setModelRank(first){const ids=CANDS.filter(c=>c.id!=='other').map(c=>c.id).sort((a,b)=>(first[b]||0)-(first[a]||0));MODEL_RANK={};ids.forEach((id,i)=>MODEL_RANK[id]=i+1);refreshOdds();}
+let MODEL_FIRST={};
+// model share minus market price for a field card; updates whenever the live model reruns
+function mmm(c){const f=MODEL_FIRST[c.id];if(typeof f!=='number')return '';const g=Math.round((f-c.mkt)*10)/10;return '<span title="model share minus market price"><i>model vs mkt</i><b class="gap '+(g>=0?'pos':'neg')+'">'+(g>0?'+':'')+g.toFixed(1)+'</b></span>';}
+function setModelRank(first){MODEL_FIRST=first||{};const ids=CANDS.filter(c=>c.id!=='other').map(c=>c.id).sort((a,b)=>(first[b]||0)-(first[a]||0));MODEL_RANK={};ids.forEach((id,i)=>MODEL_RANK[id]=i+1);refreshOdds();}
 // ==PRECOMPUTED DEFAULT== default.json is written nightly by scripts/baseline.js. On load the page paints from it
 // and only simulates once a reader changes a control.
 const DEF={data:null,painted:false,pending:true};
@@ -1028,13 +1050,18 @@ function setOgImage(which){
  const m=document.querySelector('meta[property="og:image"]');
  if(m)m.setAttribute('content',SITE+'cards/'+(which||'default')+'.png');
 }
+const ANCHOR_DEFAULT=50;
+function anchorParam(){const v=+document.getElementById('pAnchor').value;return v===ANCHOR_DEFAULT?'':'a='+v;}
 function deepLink(){
  const params=new URLSearchParams(location.search);
+ const a=parseInt(params.get('a'),10);
+ if(isFinite(a)&&a>=0&&a<=100){const e=document.getElementById('pAnchor');e.value=a;document.getElementById('pAnchorOut').textContent=a+'%';if(a!==ANCHOR_DEFAULT&&typeof queueFront==='function')queueFront();}
  const bp=params.get('bp');
  if(bp&&BP_PRESETS[bp]){cueBranch(bp);}
 }
 function shareRun(){
- const link=currentBP?SITE+'share/'+currentBP+'.html':SITE;
+ const ap=anchorParam();
+ const link=currentBP?SITE+'share/'+currentBP+'.html'+(ap?'?'+ap:''):SITE+(ap?'?'+ap:'');
  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(link).then(()=>{},()=>{fallbackCopy(link);});}
  else fallbackCopy(link);
  const label=currentBP?BP_PRESETS[currentBP].label:'Default settings';
@@ -1102,6 +1129,7 @@ function updateFrontrunner(){
  for(let i=0;i<N;i++){const win=fastWin(C);w[win]=(w[win]||0)+1;tot++;}
  rng=savedRng;
  let bk=null,bv=-1;for(const k in w){if(w[k]>bv){bv=w[k];bk=k;}}
+ const fs={};CANDS.forEach(c=>fs[c.id]=Math.round((w[c.id]||0)/tot*1000)/10);setModelRank(fs);
  if(bk)setHero(nm(bk),Math.round(bv/tot*100),'Model share at current settings · '+N.toLocaleString()+' primaries · fixed seed');
 }
 function setHero(name,pct,label){document.getElementById('heroShare').textContent=name+' '+pct+'%';if(label)document.getElementById('heroDate').textContent=label;}
@@ -1220,7 +1248,7 @@ function buildBracket(vals){
   return '<div class="ctl"><label class="cl">'+nm(id)+' runs</label><input type="range" min="0" max="100" value="'+v+'" id="br_'+id+'" oninput="BR.touched=true;document.getElementById(\'br_'+id+'Out\').textContent=this.value+\'%\'"><span class="cv" id="br_'+id+'Out">'+v+'%</span></div>';}).join('');
 }
 function bracketValues(){const o={};BR.ids.forEach(id=>o[id]=+document.getElementById('br_'+id).value);return o;}
-function bracketLink(){const v=bracketValues();return SITE+'?me='+BR.ids.map(id=>id+':'+v[id]).join(',');}
+function bracketLink(){const v=bracketValues();const ap=anchorParam();return SITE+'?me='+BR.ids.map(id=>id+':'+v[id]).join(',')+(ap?'&'+ap:'');}
 function runBracket(){
  const v=bracketValues();const C=cfg();C.runOverride={};
  BR.ids.forEach(id=>{if(id==='aoc')C.pA=v[id]/100;else if(id==='harris'){C.pH=C.pollsHarris?0.95:v[id]/100;}else C.runOverride[id]=v[id];});
@@ -1261,7 +1289,7 @@ function bracketFromUrl(){
  runBracket();
 }
 let _frUpd;function queueFront(){clearTimeout(_frUpd);_frUpd=setTimeout(updateFrontrunner,200);}
-['pAoc','pHarris','pNewsom','pOssRev','pTrump','pCoord','pCoordFail','pEvents','pDebate','pDrop'].forEach(id=>document.getElementById(id).addEventListener('input',e=>{document.getElementById(id+'Out').textContent=e.target.value+'%';queueFront();}));
+['pAnchor','pAoc','pHarris','pNewsom','pOssRev','pTrump','pCoord','pCoordFail','pEvents','pDebate','pDrop'].forEach(id=>document.getElementById(id).addEventListener('input',e=>{document.getElementById(id+'Out').textContent=e.target.value+'%';queueFront();}));
 document.addEventListener('change',e=>{if(e.target&&e.target.tagName==='SELECT')queueFront();});
 document.getElementById('pollsHarris').addEventListener('change',queueFront);
 document.getElementById('apprMixed').addEventListener('change',e=>{const s=document.getElementById('pTrump'),o=document.getElementById('pTrumpOut');s.disabled=e.target.checked;o.textContent=e.target.checked?'drawn':s.value+'%';queueFront();});
@@ -1273,6 +1301,8 @@ document.querySelectorAll('.ctl input[type=range]').forEach(r=>{
  r.before(mk(-5,'-'));r.after(mk(5,'+'));
 });
 renderSettled();renderReviewed();loadWire();buildCards();loadPolls();loadHistory();tickClock();setInterval(tickClock,30000);buildBracket();paintDefault();deepLink();bracketFromUrl();
+// fitted market strengths for the anchor slider (scripts/calibrate_anchor.js, nightly)
+fetch('anchor.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(A=>{if(!A||!A.mstr)return;CANDS.forEach(c=>{if(typeof A.mstr[c.id]==='number')c.mstr=A.mstr[c.id];});if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();}).catch(()=>{});
 // ==LIVE MARKET ANCHORS== fetch nightly-updated markets.json; fall back silently to baked-in values
 fetch('markets.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(M=>{
  if(!M||!M.blend)return;

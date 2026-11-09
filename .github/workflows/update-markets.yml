@@ -41,6 +41,9 @@ jobs:
       - name: Pull national primary polls from Wikipedia
         run: python3 scripts/fetch_polls.py
 
+      - name: Fit market strengths for the anchor slider
+        run: node scripts/calibrate_anchor.js
+
       - name: Run the 20,000 simulation baseline
         env:
           NOTE: ${{ github.event.inputs.note }}
@@ -60,7 +63,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add markets.json polls.csv history.csv default.json wire.json cards share
+          git add markets.json polls.csv anchor.json history.csv default.json wire.json cards share
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0

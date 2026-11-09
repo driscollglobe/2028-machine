@@ -34,6 +34,7 @@ const order = ids.slice().sort((a, b) => share[b] - share[a]);
 const def = {
   date: M.date,
   runs: RUNS,
+  anchor: +sim.controls.pAnchor.value,
   contested: res.contested,
   frontrunner: { id: order[0], share: share[order[0]] },
   first: share,
