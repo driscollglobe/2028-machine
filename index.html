@@ -87,7 +87,9 @@ input[type=range]{accent-color:var(--wire);}
 .cc .meta{font-size:11px;color:var(--faint);margin-top:1px;}
 .cc .odds{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;}
 .cc .odds span{display:flex;flex-direction:column;min-width:0;}
-.cc .odds span i{font-style:normal;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);}
+.cc .odds span i{font-style:normal;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);overflow-wrap:anywhere;}
+.cc .odds .est{font-size:9.5px;font-weight:400;color:var(--faint);margin-left:3px;}
+.cc .odds .spark{max-width:100%;}
 .cc .odds.pair{grid-template-columns:repeat(3,1fr);}
 .cc .odds b{color:var(--ink);font-weight:500;}
 .cc .odds.polls{margin-top:3px;}
@@ -182,14 +184,20 @@ input[type=range]{accent-color:var(--wire);}
 .rbart{width:120px;height:10px;background:var(--paper);border:1px solid var(--rule);border-radius:3px;position:relative;flex-shrink:0;}
 .rbarf{position:absolute;left:0;top:0;height:100%;background:var(--wire);border-radius:2px;}
 .rval{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:13px;font-weight:500;width:36px;text-align:right;flex-shrink:0;}
+.hmwrap{position:relative;}
+.hmwrap::after{content:"";position:absolute;top:0;right:0;bottom:0;width:36px;pointer-events:none;background:linear-gradient(to right,rgba(255,255,255,0),var(--panel));opacity:0;transition:opacity .15s;}
+.hmwrap.more::after{opacity:1;}
 .hm{overflow-x:auto;}
-.hmtable{border-collapse:collapse;width:100%;font-size:12px;}
-.hmtable th,.hmtable td{padding:6px 8px;border:1px solid var(--rule);text-align:center;}
+.hmtable{border-collapse:separate;border-spacing:0;width:100%;font-size:12px;border-top:1px solid var(--rule);border-left:1px solid var(--rule);}
+.hmtable th,.hmtable td{padding:6px 8px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);text-align:center;}
+.hmtable tr>:first-child{position:sticky;left:0;z-index:1;background:var(--panel);box-shadow:1px 0 0 var(--rule);}
 .hmtable th{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;}
 .hmtable td:first-child,.hmtable th:first-child{text-align:left;font-family:'Inter',sans-serif;font-size:12.5px;white-space:nowrap;}
 .hmtable td.big{font-weight:600;}
 .hmcell{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;}
 .legend{font-size:11.5px;color:var(--faint);margin-top:8px;line-height:1.5;}
+.legend a,.pollnote a{color:var(--wire);text-decoration:none;border-bottom:1px solid var(--wire-soft);}
+.legend a:hover,.pollnote a:hover{border-bottom-color:var(--wire);}
 .muted{color:var(--faint);font-size:12px;}
 .note{font-size:11.5px;color:var(--faint);font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;}
 h2.s{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px;margin:1.6rem 0 .6rem;}
@@ -246,6 +254,9 @@ body.show-adv .ctl.adv{display:flex;}
 .modetoggle .seg.on{background:var(--ink);color:var(--paper);}
 .cols2{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;}
 @media(max-width:740px){.cols2{grid-template-columns:1fr;}.cl{width:100%;}.mast-l h1{font-size:27px;}}
+.cols2>*{min-width:0;}
+@media(max-width:520px){.rbart{width:64px;}.rkey{min-width:0;}.ctl select{min-width:0;}#callsBody{overflow-x:auto;}#callsBody .cstable td:first-child{min-width:150px;}}
+@media(max-width:400px){.mr .mstats{padding-left:0;gap:4px 8px;flex-wrap:wrap;}.mr .mstats span{min-width:0;}}
 
 /* phase two hierarchy */
 .hero{margin:.2rem 0 1.1rem;}
@@ -254,7 +265,6 @@ body.show-adv .ctl.adv{display:flex;}
 .hero-date{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-top:6px;}
 .hero-note{font-family:'Fraunces',Georgia,serif;font-size:19px;line-height:1.4;max-width:720px;margin-top:10px;}
 @media(max-width:740px){.hero-num{font-size:46px;min-height:46px;}.hero-note{font-size:17px;}}
-.badge{display:inline-block;margin-top:4px;padding:1px 8px;border:1px solid var(--rule);border-radius:10px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
 .sticky{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--paper);border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:14px;padding:6px 18px;transform:translateY(-100%);transition:transform .2s ease;}
 .sticky.on{transform:translateY(0);}
 .sticky .st-title{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:15px;}
@@ -313,10 +323,10 @@ body.show-adv h2.s.adv{display:block;}
  <div class="mast-l">
   <div class="globe">The Driscoll Globe</div>
   <h1>The 2028 Machine</h1>
-  <div class="byline">By <b>Kevin Driscoll</b> · The Driscoll Globe · Updated nightly<span id="bylineDate"></span></div>
+  <div class="byline">By <b>Kevin Driscoll</b> · The Driscoll Globe · <span id="bylineDate">Updated nightly</span></div>
  </div>
  <svg class="wh" viewBox="0 0 360 92" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The White House"><g fill="var(--ink)"><rect x="6" y="82" width="348" height="4"/><rect x="16" y="50" width="328" height="32"/><rect x="10" y="45" width="340" height="6" rx="1"/><rect x="20" y="40" width="3" height="6"/><rect x="36" y="40" width="3" height="6"/><rect x="52" y="40" width="3" height="6"/><rect x="68" y="40" width="3" height="6"/><rect x="84" y="40" width="3" height="6"/><rect x="100" y="40" width="3" height="6"/><rect x="116" y="40" width="3" height="6"/><rect x="132" y="40" width="3" height="6"/><rect x="148" y="40" width="3" height="6"/><rect x="164" y="40" width="3" height="6"/><rect x="180" y="40" width="3" height="6"/><rect x="196" y="40" width="3" height="6"/><rect x="212" y="40" width="3" height="6"/><rect x="228" y="40" width="3" height="6"/><rect x="244" y="40" width="3" height="6"/><rect x="260" y="40" width="3" height="6"/><rect x="276" y="40" width="3" height="6"/><rect x="292" y="40" width="3" height="6"/><rect x="308" y="40" width="3" height="6"/><rect x="324" y="40" width="3" height="6"/><rect x="340" y="40" width="3" height="6"/><rect x="150" y="38" width="60" height="44"/><polygon points="146,40 180,22 214,40"/><rect x="178.5" y="6" width="2" height="18"/><rect x="180.5" y="6" width="13" height="7"/></g><g fill="var(--paper)"><rect x="157" y="46" width="3.5" height="34"/><rect x="168" y="46" width="3.5" height="34"/><rect x="179" y="46" width="3.5" height="34"/><rect x="190" y="46" width="3.5" height="34"/><rect x="201" y="46" width="3.5" height="34"/></g><rect x="174" y="62" width="12" height="18" fill="var(--ink)"/><g fill="var(--paper)"><rect x="26.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="40.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="54.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="68.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="82.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="96.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="110.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="124.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="138.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="210.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="224.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="238.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="252.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="266.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="280.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="294.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="308.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="322.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="26.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="40.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="54.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="68.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="82.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="96.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="110.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="124.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="138.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="210.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="224.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="238.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="252.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="266.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="280.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="294.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="308.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="322.0" y="71.0" width="7.0" height="7.0" rx="0.6"/></g></svg>
- <div class="mast-r">2028 DEMOCRATIC PRIMARY<br>SIMULATION DESK<br><span id="clock">&nbsp;</span><br><span class="badge" id="updBadge">Updated nightly</span></div>
+ <div class="mast-r">2028 DEMOCRATIC PRIMARY<br>SIMULATION DESK</div>
 </div>
 <div class="nav"><a href="gap.html">The gap: polls vs markets</a><a href="track.html">Track record</a><a href="methodology.html">How it works</a><a href="changelog.html">Changelog</a><a href="https://driscollglobe.substack.com">The Driscoll Globe</a></div>
 
@@ -364,7 +374,7 @@ body.show-adv h2.s.adv{display:block;}
 <h2 class="s">The turning point heatmap</h2>
 <div class="section">
  <div class="shead"><span>What moves whom · each turning point tested on and off in 5,000 paired runs</span><span class="row" style="gap:8px;"><span class="note" id="hmStatus">loading</span><button class="btn go sm" onclick="buildHeatmap()" id="hmBtn">Recompute with my settings</button></span></div>
- <div class="hm" id="heatmap"><div class="muted">Loading the heatmap, built overnight at the default settings. Click "Recompute with my settings" to rebuild it from your own.</div></div>
+ <div class="hmwrap" id="hmWrap"><div class="hm" id="heatmap"><div class="muted">Loading the heatmap, built overnight at the default settings. Click "Recompute with my settings" to rebuild it from your own.</div></div></div>
 </div>
 
 <h2 class="s">Turning point rankings</h2>
@@ -458,7 +468,7 @@ const CANDS=[
  {id:'talarico',reviewed:'2026-11',name:'James Talarico',role:'Sen.-elect, Texas',age:36,mkt:2.1,run:15,lane:'fight',rank:17,debate:1.1,str:'Viral, young, surprising',weak:'No infrastructure',base:8,fit:{SC:1.05,NH:0.80,NV:0.95,IA:0.95,MI:0.90,GA:0.95,NC:1.00,ST:1.10}},
  {id:'elsayed',reviewed:'2026-11',name:'Abdul El-Sayed',role:'Sen.-elect, Michigan',age:44,mkt:2.0,run:40,runIfAocOut:70,lane:'movement',rank:18,debate:1.05,str:'Sanders lineage, Michigan Senate platform',weak:'Untested nationally; splits the left with AOC',base:8,fit:{SC:0.70,NH:1.00,NV:1.10,IA:1.00,MI:1.60,GA:0.75,NC:0.85,ST:1.00}},
  {id:'stewart',reviewed:'2026-09',name:'Jon Stewart',role:'Broadcaster',age:65,mkt:0.4,run:12,lane:'out',rank:19,debate:1.2,str:'Attention, anti-elite credibility',weak:'66 on election day; wants influence not the job',base:5,fit:{SC:0.60,NH:1.10,NV:1.00,IA:0.90,MI:0.95,GA:0.80,NC:0.85,ST:1.00}},
- {id:'fain',reviewed:'2026-09',name:'Shawn Fain',role:'UAW President',age:56,mkt:1.0,run:15,runCap:15,lane:'movement',tag:'Labor',rank:20,debate:1.0,str:'Purest class-war vessel',weak:'Under federal investigation; fighting for his own union job first',base:5,fit:{SC:0.60,NH:0.80,NV:1.30,IA:1.10,MI:1.50,GA:0.70,NC:0.85,ST:0.95}},
+ {id:'fain',reviewed:'2026-09',name:'Shawn Fain',role:'UAW President',age:56,mkt:1.0,run:15,runCap:15,lane:'working',rank:20,debate:1.0,str:'Purest class-war vessel',weak:'Under federal investigation; fighting for his own union job first',base:5,fit:{SC:0.60,NH:0.80,NV:1.30,IA:1.10,MI:1.50,GA:0.70,NC:0.85,ST:0.95}},
  {id:'walz',reviewed:'2026-09',name:'Tim Walz',role:'Gov., Minnesota',age:64,mkt:0.1,run:13,lane:'working',rank:21,debate:1.0,str:'Folksy, soft-left',weak:'Losing VP rarely tops the ticket',base:5,fit:{SC:0.80,NH:0.90,NV:0.95,IA:1.20,MI:1.10,GA:0.80,NC:0.90,ST:0.95}},
  {id:'booker',reviewed:'2026-11',name:'Cory Booker',role:'Sen., New Jersey',age:59,mkt:0.6,run:40,lane:'anchor',rank:22,debate:1.05,str:'Record 25-hour Senate floor speech in 2025; Black voters; retail politics',weak:'The 2020 run never caught on',base:4,fit:{SC:1.25,NH:1.00,NV:0.95,IA:0.95,MI:1.00,GA:1.15,NC:1.15,ST:1.00}},
  {id:'gallego',reviewed:'2026-11',name:'Ruben Gallego',role:'Sen., Arizona',age:48,mkt:0.6,run:30,lane:'working',rank:23,debate:1.0,str:'Marine, working-class Latino message, won Arizona in 2024',weak:'Thin national profile',base:4,fit:{SC:0.85,NH:0.90,NV:1.35,IA:0.95,MI:1.05,GA:0.95,NC:0.95,ST:1.10}},
@@ -488,10 +498,10 @@ const POOL_META={
  movement:{label:'Movement Left',share:20,def:'Very liberal and younger Democrats who want a sharper economic and foreign policy break than the Biden and Harris years offered.'},
  out:{label:'Outsider',share:4,def:'Voters who want nobody from politics.'}
 };
-const POOLS={anchor:['harris','warnock','moore','beshear','booker'],fight:['newsom','pritzker','rahm','talarico','vanhollen'],suburb:['pete','whitmer','murphy','shapiro','ossoff','kelly','slotkin'],working:['walz','gallego'],movement:['aoc','sanders','khanna','elsayed','fain'],out:['stewart','other']};
+const POOLS={anchor:['harris','warnock','moore','beshear','booker'],fight:['newsom','pritzker','rahm','talarico','vanhollen'],suburb:['pete','whitmer','murphy','shapiro','ossoff','kelly','slotkin'],working:['walz','gallego','fain'],movement:['aoc','sanders','khanna','elsayed'],out:['stewart','other']};
 const POOLOF={};Object.keys(POOLS).forEach(p=>POOLS[p].forEach(id=>POOLOF[id]=p));
 // secondary pool: used only for dropout and endorsement transfers, at half weight
-const POOL2={ossoff:'anchor',shapiro:'working',kelly:'working',beshear:'working',talarico:'movement',stewart:'fight',fain:'working',moore:'suburb',rahm:'suburb',harris:'suburb',whitmer:'working',pritzker:'working',khanna:'suburb',elsayed:'working',walz:'suburb',booker:'fight',gallego:'suburb',slotkin:'working',vanhollen:'anchor'};
+const POOL2={ossoff:'anchor',shapiro:'working',kelly:'working',beshear:'working',talarico:'movement',stewart:'fight',fain:'movement',moore:'suburb',rahm:'suburb',harris:'suburb',whitmer:'working',pritzker:'working',khanna:'suburb',elsayed:'working',walz:'suburb',booker:'fight',gallego:'suburb',slotkin:'working',vanhollen:'anchor'};
 // why each candidate sits where they sit; shown on the pool tag and in the dossier
 const POOL_WHY={
  harris:'After 2024 her remaining primary strength is the institutional vote that made her the nominee, especially Black voters and Black women.',
@@ -513,7 +523,7 @@ const POOL_WHY={
  slotkin:'National security moderate who wins suburban swing districts in Michigan.',
  vanhollen:'The El Salvador trip made him a face of resistance to the deportation policy.',
  kelly:'Institutional moderate built for the suburbs: astronaut, gun safety, the Biden shortlist. Veterans are the crossover.',
- fain:'Class war unionist whose primary voters are the Sanders left more than the union hall.',
+ fain:'Trade unionist first. If his people vote in a primary, they are union households. The Sanders left is his second home.',
  aoc:'Incumbent face of the post-Sanders very liberal bloc, not of the church vote or the factory vote.',
  sanders:'The lane is his. A run at 87 is a long shot, but the talk never stops because nobody else can hold the whole coalition if AOC stays out.',
  khanna:'Sanders 2020 and Bay Area antitrust left. Geography is suburban. Ideology is the left.',
@@ -1151,7 +1161,10 @@ function renderHeatmap(results,watch){
  });
  h+='</table><div class="legend">Each cell is the change in a candidate\u2019s first place rate (percentage points) when the turning point flips from off to on, with the same starting seeds and averaging over the model\u2019s other uncertainties. Green helps, red hurts. What changes the answer matters more than who wins.</div>';
  document.getElementById('heatmap').innerHTML=h;
+ hmFade();
 }
+// the right-edge fade shows only while more columns sit off to the right
+function hmFade(){const hm=document.getElementById('heatmap'),w=document.getElementById('hmWrap');if(!hm||!w)return;w.classList.toggle('more',hm.scrollLeft+hm.clientWidth<hm.scrollWidth-2);}
 // ==POLLING DISPLAY LAYER== polls.csv is display only. It never feeds mkt or the simulation.
 // The average is weighted (pollavg.js, shared with gap.html and scripts/baseline.js; pollsters.csv holds
 // each pollster's quality and house adjustments).
@@ -1287,7 +1300,7 @@ function runPct(c){if(typeof c.runIfAocOut!=='number')return c.run;const a=+((do
 function runTip(c){return typeof c.runIfAocOut==='number'?' title="Runs only if AOC stays out, and then '+c.runIfAocOut+' percent of the time"':'';}
 function nidCell(c){if(!NAMEID.on||typeof NAMEID.x0[c.id]!=='number')return '';const x=Math.round(NAMEID.x0[c.id]*100),src=NAMEID.src[c.id];
  const tip=NAMEID.est[c.id]?'No Economist/YouGov reading yet. Estimated from our attention score of '+(NAMEID.score[c.id]?NAMEID.score[c.id].score:1)+' out of 10.':'Share who have heard enough to rate them. Economist/YouGov, '+edDate(src.date)+'. '+src.source;
- return '<span title="'+tip.replace(/"/g,'&quot;')+'"><i>known by'+(NAMEID.est[c.id]?', estimated':'')+'</i><b>'+x+'%</b></span>';}
+ return '<span title="'+tip.replace(/"/g,'&quot;')+'"><i>known by</i><b>'+x+'%'+(NAMEID.est[c.id]?'<small class="est">est.</small>':'')+'</b></span>';}
 function attnCell(c){const a=ATTN[c.id];if(!a)return '';const tot=a.v.reduce((s,x)=>s+(x||0),0);return '<span title="Google News results, last '+a.days+' days; not in the model'+(a.cap?'; a day at 100 means 100 or more':'')+'"><i>news, '+a.days+'d</i><b>'+tot+(a.cap?'+':'')+'</b>'+spark(a.v)+'</span>';}
 function mmm(c){const f=MODEL_FIRST[c.id];if(typeof f!=='number')return '';const g=Math.round((f-c.mkt)*10)/10;return '<span title="model share minus market price"><i>model vs mkt</i><b class="gap '+(g>=0?'pos':'neg')+'">'+(g>0?'+':'')+g.toFixed(1)+'</b></span>';}
 function setModelRank(first){MODEL_FIRST=first||{};const ids=CANDS.filter(c=>c.id!=='other').map(c=>c.id).sort((a,b)=>(first[b]||0)-(first[a]||0));MODEL_RANK={};ids.forEach((id,i)=>MODEL_RANK[id]=i+1);refreshOdds();}
@@ -1464,7 +1477,6 @@ function contestedTicker(){
  }catch(e){return null;}
 }
 function initTicker(extra){const items=WIRE.concat(extra?[extra]:[]);if(!items.length)return;const s=items.join('<span class="tsep">/</span>');document.getElementById('ticker').innerHTML=s+'<span class="tsep">/</span>'+s;}
-function tickClock(){const d=new Date();document.getElementById('clock').textContent=AP_MON[d.getMonth()]+' '+d.getDate()+', '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
 /*==SIM_CORE_END==*/
 // ==DAILY CHANGE STRIP== reads history.csv (written nightly by scripts/baseline.js)
 const HIST={rows:[],mode:'day'};
@@ -1685,6 +1697,7 @@ document.addEventListener('change',e=>{if(e.target&&e.target.tagName==='SELECT')
 document.getElementById('pollsHarris').addEventListener('change',queueFront);
 document.getElementById('resolveConv').addEventListener('change',queueFront);
 document.getElementById('apprMixed').addEventListener('change',e=>{const s=document.getElementById('pTrump'),o=document.getElementById('pTrumpOut');s.disabled=e.target.checked;o.textContent=e.target.checked?'drawn':s.value+'%';queueFront();});
+{const hm=document.getElementById('heatmap');if(hm)hm.addEventListener('scroll',hmFade,{passive:true});window.addEventListener('resize',hmFade);}
 // sticky masthead once the real one scrolls away
 (function(){const st=document.getElementById('sticky'),mast=document.querySelector('.mast');function chk(){st.classList.toggle('on',window.scrollY>mast.offsetTop+mast.offsetHeight);}window.addEventListener('scroll',chk,{passive:true});chk();})();
 // plus and minus steppers for touch devices (CSS shows them only when the pointer is coarse)
@@ -1692,7 +1705,7 @@ document.querySelectorAll('.ctl input[type=range]').forEach(r=>{
  const mk=(d,txt)=>{const b=document.createElement('button');b.type='button';b.className='step';b.textContent=txt;b.setAttribute('aria-label',(d>0?'Increase ':'Decrease ')+r.id);b.addEventListener('click',()=>{if(r.disabled)return;const v=Math.max(+r.min,Math.min(+r.max,+r.value+d));r.value=v;r.dispatchEvent(new Event('input',{bubbles:true}));});return b;};
  r.before(mk(-5,'-'));r.after(mk(5,'+'));
 });
-renderSettled();renderReviewed();loadDeskNote();loadWire();loadHeatmap();loadCalls();loadCrowd();loadAttention();loadApproval();document.getElementById('pTrump').addEventListener('input',()=>{APPR_TOUCHED=true;});buildCards();loadPolls();loadHistory();tickClock();setInterval(tickClock,30000);buildBracket();paintDefault();deepLink();bracketFromUrl();
+renderSettled();renderReviewed();loadDeskNote();loadWire();loadHeatmap();loadCalls();loadCrowd();loadAttention();loadApproval();document.getElementById('pTrump').addEventListener('input',()=>{APPR_TOUCHED=true;});buildCards();loadPolls();loadHistory();buildBracket();paintDefault();deepLink();bracketFromUrl();
 // fitted market strengths for the anchor slider (scripts/calibrate_anchor.js, nightly)
 fetch('anchor.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(A=>{if(!A||!A.mstr)return;CANDS.forEach(c=>{if(typeof A.mstr[c.id]==='number')c.mstr=A.mstr[c.id];});if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();}).catch(()=>{});
 // ==NAME ID INPUTS== nameid.csv, attention_scores.csv and attention.csv set up the name ID layer on the page
@@ -1723,7 +1736,7 @@ fetch('markets.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(M=>{
  });
  // AOC, Harris and Ossoff run probabilities live on sliders, so the run market (Kalshi and Polymarket average) sets those too
  [['pAoc','aoc'],['pHarris','harris'],['pOssRev','ossoff']].forEach(([sl,id])=>{const r=M.run?M.run[id]:undefined;const el=document.getElementById(sl);if(el&&typeof r==='number'){el.value=Math.round(r);const o=document.getElementById(sl+'Out');if(o)o.textContent=Math.round(r)+'%';}});
- if(M.date){const b=document.getElementById('updBadge');if(b)b.textContent='Updated '+edDate(M.date);const sd=document.getElementById('stDate');if(sd)sd.textContent='Markets as of '+edDate(M.date,false);const by=document.getElementById('bylineDate');if(by)by.textContent=' · Last updated '+edDate(M.date);}
+ if(M.date){const sd=document.getElementById('stDate');if(sd)sd.textContent='Markets as of '+edDate(M.date,false);const by=document.getElementById('bylineDate');if(by)by.textContent='Updated '+edDate(M.date);}
  if(CANDS.filter(onCards).map(c=>c.id).join(',')!==CARD_SET)buildCards();
  refreshOdds();renderPollBoard();paintDefaultRows();if(!BR.touched)buildBracket();
  if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();
