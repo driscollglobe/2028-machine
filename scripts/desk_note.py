@@ -55,6 +55,18 @@ def f0(x):
     return "%d" % int(x + 0.5) if x >= 0 else "-%d" % int(-x + 0.5)
 
 
+def f1(x):
+    """A level at one decimal: used when it sits beside a move (pts), or when two levels would round alike."""
+    return "%.1f" % x
+
+
+def lv(*xs):
+    """Levels for one sentence: whole numbers, unless two of them round to the same whole number,
+    in which case all of them get one decimal so the reader can see they differ."""
+    w = [f0(x) for x in xs]
+    return [f1(x) for x in xs] if len(set(w)) < len(w) else w
+
+
 def pts(x):
     x = abs(x)
     return ("%.1f point" % x) + ("" if x == 1 else "s")
@@ -119,7 +131,7 @@ def build(today, M, D, prev, calls, note="", changes=None):
     if mover:
         i, d = mover
         up = d > 0
-        p = f0(M["blend"][i])
+        p = f1(M["blend"][i])  # same precision as the move beside it
         S.append((0, pick([
             "%s had the biggest move in the nomination markets %s, %s %s to %s." % (full(i), when, "up" if up else "down", pts(d), p),
             "Traders %s %s %s, pushing the blended price %s %s to %s." % ("bought" if up else "sold", full(i), when, "up" if up else "down", pts(d), p),
@@ -170,6 +182,7 @@ def build(today, M, D, prev, calls, note="", changes=None):
         m0, m1 = num(prev.get("m_" + i)), D["first"].get(i)
         if m0 is not None and m1 is not None:
             dm = m1 - m0
+            a0, a1 = lv(m0, m1)  # 26.6 to 27.0 reads as a move, not "27 to 27"
             if abs(dm) < 0.5:
                 txt = pick([
                     "Our simulations hardly noticed; %s still wins %s percent of them." % (last(i), f0(m1)),
@@ -177,13 +190,13 @@ def build(today, M, D, prev, calls, note="", changes=None):
                 ], key, "model_flat")
             elif (dm > 0) == (mover[1] > 0):
                 txt = pick([
-                    "The model went along, and %s now wins %s percent of simulated primaries, against %s the day before." % (last(i), f0(m1), f0(m0)),
-                    "In the simulations %s went from %s to %s percent of first-place finishes." % (last(i), f0(m0), f0(m1)),
+                    "The model went along, and %s now wins %s percent of simulated primaries, against %s the day before." % (last(i), a1, a0),
+                    "In the simulations %s went from %s to %s percent of first-place finishes." % (last(i), a0, a1),
                 ], key, "model_same")
             else:
                 txt = pick([
-                    "The model moved the other way, taking %s from %s to %s percent of simulated wins." % (last(i), f0(m0), f0(m1)),
-                    "Our simulations disagreed with the traders: %s went from %s to %s percent of first-place finishes." % (last(i), f0(m0), f0(m1)),
+                    "The model moved the other way, taking %s from %s to %s percent of simulated wins." % (last(i), a0, a1),
+                    "Our simulations disagreed with the traders: %s went from %s to %s percent of first-place finishes." % (last(i), a0, a1),
                 ], key, "model_opp")
             S.append((1, txt))
 
@@ -205,24 +218,30 @@ def build(today, M, D, prev, calls, note="", changes=None):
     def rr(r):
         return ("likely %d to %d" % (round(r[0]), round(r[1]))) if r else ""
 
+    # the model leader's share and the market leader's price: one decimal for every level in the sentence
+    # when those two round to the same whole number
+    fine = f0(D["first"][ml]) == f0(M["blend"][mk])
+    fl = f1 if fine else f0
+    mkp = fl(M["blend"][mk])
+
     def share(i, r):
-        return "%s percent%s" % (f0(D["first"][i]), (" (" + rr(r) + ")") if r else "")
+        return "%s percent%s" % (fl(D["first"][i]), (" (" + rr(r) + ")") if r else "")
 
     if overlap:
         S.append((2, pick([
-            "The model calls it a two-way race: %s wins %s of simulated primaries and %s %s. %s leads the markets at %s." % (full(ml), share(ml, r1), full(m2), share(m2, r2), last(mk), f0(M["blend"][mk])),
-            "In our simulations it's a two-way race, too close to name a leader: %s at %s and %s at %s. The betting favorite is %s at %s." % (full(ml), share(ml, r1), full(m2), share(m2, r2), last(mk), f0(M["blend"][mk])),
+            "The model calls it a two-way race: %s wins %s of simulated primaries and %s %s. %s leads the markets at %s." % (full(ml), share(ml, r1), full(m2), share(m2, r2), last(mk), mkp),
+            "In our simulations it's a two-way race, too close to name a leader: %s at %s and %s at %s. The betting favorite is %s at %s." % (full(ml), share(ml, r1), full(m2), share(m2, r2), last(mk), mkp),
         ], key, "two_way")))
     elif mk == ml:
         S.append((2, pick([
-            "%s leads both the markets, at %s, and the model, winning %s percent of simulated primaries." % (full(mk), f0(M["blend"][mk]), f0(D["first"][ml])),
-            "Markets and model agree on the leader: %s, at %s in the blend and first in %s percent of our runs." % (full(mk), f0(M["blend"][mk]), f0(D["first"][ml])),
+            "%s leads both the markets, at %s, and the model, winning %s percent of simulated primaries." % (full(mk), mkp, fl(D["first"][ml])),
+            "Markets and model agree on the leader: %s, at %s in the blend and first in %s percent of our runs." % (full(mk), mkp, fl(D["first"][ml])),
         ], key, "lead_same")))
     else:
         S.append((2, pick([
-            "%s leads the markets at %s, but the model likes %s, who wins %s percent of simulated primaries." % (full(mk), f0(M["blend"][mk]), full(ml), f0(D["first"][ml])),
-            "The markets have %s on top at %s. In our simulations it's %s, first in %s percent of runs." % (full(mk), f0(M["blend"][mk]), full(ml), f0(D["first"][ml])),
-            "%s wins the most simulated primaries, %s percent, though the betting favorite is %s at %s." % (full(ml), f0(D["first"][ml]), full(mk), f0(M["blend"][mk])),
+            "%s leads the markets at %s, but the model likes %s, who wins %s percent of simulated primaries." % (full(mk), mkp, full(ml), fl(D["first"][ml])),
+            "The markets have %s on top at %s. In our simulations it's %s, first in %s percent of runs." % (full(mk), mkp, full(ml), fl(D["first"][ml])),
+            "%s wins the most simulated primaries, %s percent, though the betting favorite is %s at %s." % (full(ml), fl(D["first"][ml]), full(mk), mkp),
         ], key, "lead_diff")))
 
     # 5. the convention
