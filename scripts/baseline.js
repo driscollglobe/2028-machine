@@ -12,8 +12,6 @@ const ROOT = core.ROOT;
 const MARKETS = path.join(ROOT, 'markets.json');
 const HISTORY = path.join(ROOT, 'history.csv');
 const DEFAULT = path.join(ROOT, 'default.json');
-const WIRE = path.join(ROOT, 'wire.json');
-const wire = require('./wire');
 const RUNS = +(process.env.RUNS || 50000); // 50,000 since 2026-11-09: about 4 seconds locally, and about 37 percent less seed noise than 20,000
 
 const sim = core.load();
@@ -58,7 +56,7 @@ const def = {
   unresolved: res.unresolved,
   ballots: res.ballots,
   frontrunner: { id: order[0], share: share[order[0]] },
-  // first and second within 2 points: the page, card, wire and desk note name both (index.html twoWay)
+  // first and second within 2 points: the page, card and desk note name both (index.html twoWay)
   two_way: sim.twoWay(order.map(id => ({ id, first: share[id] }))),
   first: share,
   range: res.range || {},
@@ -118,10 +116,5 @@ const rows = existing.filter(r => r.date !== M.date).concat([newRow]);
 const out = [header.join(',')].concat(rows.map(r => header.map(h => r[h] === undefined ? '' : r[h]).join(','))).join('\n') + '\n';
 fs.writeFileSync(HISTORY, out);
 
-// wire.json: the ticker, from today's markets and default run, against the previous history row.
-const prevRow = rows.length > 1 ? rows[rows.length - 2] : null;
-const items = wire.wireItems(M, def, prevRow, CANDS, sim.RESOLVED);
-fs.writeFileSync(WIRE, JSON.stringify({ date: M.date, items }, null, 1) + '\n');
-
-console.log((replaced ? 'Replaced ' : 'Appended ') + M.date + ' in history.csv (' + RUNS + ' runs, ' + res.contested + '% contested); wrote default.json and wire.json');
+console.log((replaced ? 'Replaced ' : 'Appended ') + M.date + ' in history.csv (' + RUNS + ' runs, ' + res.contested + '% contested); wrote default.json');
 console.log(order.slice(0, 8).map(id => id + ' ' + share[id] + (res.range ? ' (likely ' + Math.round(res.range[id][0]) + ' to ' + Math.round(res.range[id][1]) + ')' : '')).join(', '));
