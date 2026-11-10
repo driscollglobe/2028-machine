@@ -38,7 +38,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',-appl
 .mast-r{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;color:var(--muted);text-align:right;line-height:1.5;}
 .subrule{display:flex;justify-content:space-between;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:1.1rem;}
 /* ticker */
-.bpstrip{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:1.1rem;}
+.bpstrip{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:1rem;}
 .bplabel{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--wire);font-weight:500;margin-right:2px;}
 .bpchip{font:inherit;font-size:12.5px;padding:5px 11px;border:1px solid var(--wire);border-radius:20px;background:var(--wire-soft);color:var(--wire);cursor:pointer;}
 .bpchip:hover{border-color:var(--ink);}
@@ -79,7 +79,6 @@ input[type=range]{accent-color:var(--wire);}
 .cardgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:9px;}
 .cc{border:1px solid var(--rule);border-radius:var(--rmd);padding:.6rem .7rem;background:var(--panel);position:relative;cursor:default;transition:border-color .15s;}
 .cc:hover{border-color:var(--ink);}
-.cc{min-height:100%;}
 .cc{display:flex;flex-direction:column;}
 .cc .photo{width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid var(--rule);margin-bottom:6px;background:var(--paper);}
 .cc .mono{width:54px;height:54px;border-radius:50%;border:2px solid var(--rule);margin-bottom:6px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:19px;color:var(--muted);background:var(--paper);}
@@ -223,7 +222,22 @@ body.show-adv .ctl.adv{display:flex;}
 .md-path{font-size:13.5px;}
 .md-path .pgood{color:var(--tealx);font-weight:500;}
 .md-path .pbad{color:var(--wire);font-weight:500;}
-.modetoggle{display:flex;gap:6px;margin-bottom:1.1rem;align-items:center;}
+.modetoggle{display:flex;gap:6px;align-items:center;}
+/* run your own: one panel, two even columns of controls */
+.ryo .shead{flex-wrap:wrap;gap:8px;}
+.rygrid{display:grid;grid-template-columns:1fr 1fr;gap:0 1.6rem;border-top:1px solid var(--rule);padding-top:.9rem;}
+.rycol{min-width:0;}
+.rygroup{margin-bottom:.9rem;}
+.rylab{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:.5rem;}
+.ryactions{border-top:1px solid var(--rule);padding-top:.9rem;}
+.onecard{margin-top:.4rem;}
+.onecard #onehead{margin-top:.6rem;}
+.ryo .cl{width:170px;}
+@media(max-width:860px){.rygrid{grid-template-columns:1fr;}}
+@media(max-width:740px){.ryo .cl{width:100%;}}
+.hmctl{margin-top:1rem;}
+.hmhead{margin-top:1rem;}
+.shead a{color:inherit;text-decoration:underline;text-underline-offset:2px;}
 .nav{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:.2rem 0 .9rem;display:flex;gap:14px;flex-wrap:wrap;}
 .nav a{color:var(--wire);text-decoration:none;border-bottom:1px solid var(--wire-soft);}
 .nav a:hover{border-bottom-color:var(--wire);}
@@ -302,21 +316,18 @@ body.show-adv .ctl.adv{display:flex;}
 .rv{display:inline-block;font-family:'Inter',system-ui,sans-serif;font-size:10px;font-variant:small-caps;letter-spacing:.06em;color:var(--faint);margin-left:8px;white-space:nowrap;}
 .desknote a,.hero-note a{color:inherit;text-decoration:underline;text-underline-offset:2px;}
 .hero-note a{font-family:'Inter',system-ui,sans-serif;font-size:14px;margin-left:4px;}
-.settled .rs{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:7px 0;border-top:1px solid var(--rule);}
-.settled .rs:first-child{border-top:0;}
-.settled .rl{font-weight:600;}
-.settled .rb{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.06em;text-transform:uppercase;background:var(--tealx-soft);color:var(--tealx);padding:2px 7px;border-radius:4px;}
-.settled .rn{width:100%;font-size:13px;color:var(--muted);}
-.settled .rn a{color:inherit;}
+.settled{margin:1.6rem 0 0;}
+.settled p{margin:0;font-size:14.5px;line-height:1.5;}
+.settled a{color:var(--wire);text-decoration:none;border-bottom:1px solid var(--wire-soft);}
+.settled a:hover{border-bottom-color:var(--wire);}
 .ctlnote{width:100%;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;color:var(--faint);margin:-4px 0 2px;line-height:1.4;}
 .step{display:none;font:inherit;font-size:15px;width:32px;height:30px;border:1px solid var(--ink);border-radius:var(--rmd);background:transparent;color:var(--ink);cursor:pointer;align-items:center;justify-content:center;line-height:1;}
 @media(pointer:coarse){.ctl input[type=range]{display:none;}.step{display:inline-flex;}}
 .section.adv,h2.s.adv{display:none;}
 body.show-adv .section.adv{display:block;}
 body.show-adv h2.s.adv{display:block;}
-.cardgrid{grid-auto-rows:1fr;}
+.cardgrid{align-items:start;}
 .onecard .final,.onecard .sharecard{margin-top:12px;}
-.bpstrip .btn{margin-left:auto;}
 .foot{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;color:var(--faint);border-top:1px solid var(--rule);padding-top:1rem;margin-top:2rem;line-height:1.6;}
 </style>
 </head>
@@ -349,65 +360,39 @@ body.show-adv h2.s.adv{display:block;}
 
 <div id="aggregate" class="section"><div class="shead"><span>Who finishes first</span><span class="note">loading</span></div><div id="aggBody" class="muted">Loading last night's run.</div></div>
 
-<div class="bpstrip" id="bpstrip">
- <span class="bplabel">Today's turning points</span>
- <button class="bpchip" onclick="cueBranch('aoc')">AOC runs</button>
- <button class="bpchip" onclick="cueBranch('calendar')">New Hampshire jumps the line</button>
- <button class="bpchip" onclick="cueBranch('newsom')">Newsom scrutiny</button>
- <button class="bpchip" onclick="cueBranch('ai')">AI is the issue</button>
- <button class="bpchip" onclick="cueBranch('harris')">Polls right on Harris</button>
- <button class="btn sm" onclick="shareRun()">Share this run</button>
-</div>
+<h2 class="s">What moved</h2>
+<div class="section changestrip" id="changestrip"><div class="shead"><span id="csTitle">Since yesterday</span><span class="row" style="gap:5px;"><button class="seg on" id="csDay" onclick="setChangeMode('day')">Latest change</button><button class="seg" id="csLaunch" onclick="setChangeMode('launch')">Since launch</button></span></div><div id="csBody" class="muted">Loading the daily history.</div></div>
 
-<div class="section onecard" id="onecard">
- <div class="shead"><span>See one primary play out</span><span class="note" id="oneStatus">not yet run</span></div>
- <div id="onehead" class="muted">One primary plays out month by month from the current settings. The card shows who wins and why; expand it for the full timeline.</div>
- <div class="row" style="margin-top:12px;">
-  <button class="btn go" id="runBtn" onclick="play()">Run one primary</button>
-  <button class="btn" id="run10kBtn" onclick="run10k()">Run 10,000 primaries</button>
-  <button class="btn sm" id="tlToggle" onclick="toggleTimeline()" hidden>Show the full timeline</button>
+<h2 class="s" id="runyourown">Run your own</h2>
+<div class="section ryo">
+ <div class="shead"><span>Change any setting and the model reruns with it</span><span class="modetoggle"><button class="seg on" id="segBasic" onclick="setMode('basic')">Basic</button><button class="seg" id="segAdv" onclick="setMode('advanced')">Advanced</button></span></div>
+ <div class="bpstrip" id="bpstrip">
+  <span class="bplabel">Today's turning points</span>
+  <button class="bpchip" onclick="cueBranch('aoc')">AOC runs</button>
+  <button class="bpchip" onclick="cueBranch('calendar')">New Hampshire jumps the line</button>
+  <button class="bpchip" onclick="cueBranch('newsom')">Newsom scrutiny</button>
+  <button class="bpchip" onclick="cueBranch('ai')">AI is the issue</button>
+  <button class="bpchip" onclick="cueBranch('harris')">Polls right on Harris</button>
  </div>
- <div id="stage" hidden><div class="tl" id="tl"></div></div>
-</div>
-
-<h2 class="s">The field</h2>
-<div class="section">
- <div class="shead"><span>Hover a card for the dossier · set In/Out to override the market</span><button class="btn sm" onclick="resetField()">Reset field</button></div>
- <div class="cardgrid" id="cardgrid"></div>
- <div class="pollnote">Poll average weights national Democratic primary polls from the last 90 days by how recent they are (a poll counts half as much every 30 days), by sample size, and by pollster. Harvard CAPS Harris samples all Democrats rather than likely primary voters and runs hot on Harris, so its Harris number is taken down 15 points and the poll counts at 0.7 of a normal one. Polls this far out track name recognition, and the model adjusts for it: a candidate fewer voters know runs at a discount that shrinks as news coverage grows. Markets drive the model. The gap is the story.</div>
-</div>
-
-<h2 class="s">The turning point heatmap</h2>
-<div class="section">
- <div class="shead"><span>What moves whom · each turning point tested on and off in 5,000 paired runs</span><span class="row" style="gap:8px;"><span class="note" id="hmStatus">loading</span><button class="btn go sm" onclick="buildHeatmap()" id="hmBtn">Recompute with my settings</button></span></div>
- <div class="hmwrap" id="hmWrap"><div class="hm" id="heatmap"><div class="muted">Loading the heatmap, built overnight at the default settings. Click "Recompute with my settings" to rebuild it from your own.</div></div></div>
-</div>
-
-<h2 class="s">Turning point rankings</h2>
-<div class="section">
- <div class="shead"><span>The turning points that move the most outcomes</span><span class="note" id="rankStatus">loading</span></div>
- <div id="rankings"><div class="muted">Loading the rankings: each turning point, measured by how far it shifts first-place finishes across the field.</div></div>
-</div>
-
-<h2 class="s">The world</h2>
-<div class="section settled" id="settled"><div class="shead">What 2026 settled</div><div id="settledBody"></div></div>
-<div class="modetoggle"><button class="seg on" id="segBasic" onclick="setMode('basic')">Basic</button><button class="seg" id="segAdv" onclick="setMode('advanced')">Advanced</button><span class="note">Basic shows the five biggest levers. Advanced reveals everything, including your bracket.</span></div>
-<div class="cols2">
- <div class="section anchorbox">
-  <div class="shead">How much to trust the markets</div>
+ <div class="rygrid">
+  <div class="rycol">
+   <div class="rygroup anchorbox">
+    <div class="rylab">How much to trust the markets</div>
   <div class="ctl"><label class="cl">Market weight</label><input type="range" min="0" max="100" value="50" id="pAnchor"><span class="cv" id="pAnchorOut">50%</span><div class="ctlnote" data-reviewed="2026-11">At 0 the model runs on my own read of each candidate. At 100 it starts from the Kalshi and Polymarket prices. Everything else on this page runs on top either way.</div></div>
- </div>
- <div class="section">
-  <div class="shead">Candidate gates</div>
+   </div>
+   <div class="rygroup">
+    <div class="rylab">Candidate gates</div>
   <div class="ctl"><label class="cl">AOC runs</label><input type="range" min="0" max="100" value="66" id="pAoc"><span class="cv" id="pAocOut">66%</span></div>
   <div class="ctl adv"><label class="cl">If AOC stays out, she...</label><select id="selAoc"><option value="mixed" selected>Drawn per run</option><option value="sanders">Endorses Sanders</option><option value="khanna">Endorses Khanna</option><option value="elsayed">Endorses El-Sayed</option><option value="fain">Endorses Fain</option><option value="stewart">Endorses Stewart</option><option value="neutral">Stays neutral</option></select></div>
   <div class="ctl"><label class="cl">Harris runs</label><input type="range" min="0" max="100" value="78" id="pHarris"><span class="cv" id="pHarrisOut">78%</span></div>
   <div class="ctl"><label class="cl">Newsom scrutiny: chance Newsom holds up</label><input type="range" min="0" max="100" value="60" id="pNewsom"><span class="cv" id="pNewsomOut">60%</span></div>
   <div class="ctl adv"><label class="cl">Polls right on Harris</label><label class="dpr"><input type="checkbox" id="pollsHarris">On: Harris runs at 95% and her base strength is multiplied by 1.5</label></div>
   <div class="ctl adv"><label class="cl">Ossoff runs</label><input type="range" min="0" max="100" value="90" id="pOssRev"><span class="cv" id="pOssRevOut">90%</span></div>
- </div>
- <div class="section">
-  <div class="shead">Environment</div>
+   </div>
+  </div>
+  <div class="rycol">
+   <div class="rygroup">
+    <div class="rylab">Environment</div>
   <div class="ctl adv"><label class="cl">Trump approval, late 2027</label><input type="range" min="30" max="60" value="38" id="pTrump"><span class="cv" id="pTrumpOut">38%</span><label class="dpr"><input type="checkbox" id="apprMixed">Drawn per run</label><div class="ctlnote" id="apprNote">Default is the latest public approval average, pulled nightly. Silver Bulletin, Sept. 10, 2026: 38.5 percent approve.</div></div>
   <div class="ctl"><label class="cl">What 2028 is about</label><select id="selTheme"><option value="mixed" selected>Drawn per run</option><option value="afford">Affordability issue</option><option value="ai">AI is the issue</option><option value="fight">Democracy and fighting Trumpism</option><option value="norm">Competence and electability</option></select></div>
   <div class="ctl adv"><label class="cl">Lesson of 2026</label><select id="selLesson"><option value="mixed">Drawn per run</option><option value="inst">Institutional Democrats won</option><option value="pop">Economic populists won</option><option value="muddle" selected>Both sides claim victory</option></select></div>
@@ -423,6 +408,19 @@ body.show-adv h2.s.adv{display:block;}
   <div class="ctl adv"><label class="cl">Resolve conventions</label><label class="dpr"><input type="checkbox" id="resolveConv" checked>On: a convention with no pledged majority goes to more ballots</label></div>
   <div class="ctl adv"><label class="cl">Automatic delegates lean to Party Anchor and Suburb</label><input type="range" min="0" max="100" value="60" id="pAutoLean"><span class="cv" id="pAutoLeanOut">60%</span><div class="ctlnote" data-reviewed="2026-11">Share of automatic delegates that split among Party Anchor and Suburb Democrats still standing. The rest split in proportion to delegates won.</div></div>
   <div class="ctl adv"><label class="cl">Debate skill matters</label><input type="range" min="0" max="100" value="50" id="pDebate"><span class="cv" id="pDebateOut">50%</span></div>
+   </div>
+  </div>
+ </div>
+ <div class="row ryactions">
+  <button class="btn go" id="runBtn" onclick="play()">Run one primary</button>
+  <button class="btn" id="run10kBtn" onclick="run10k()">Run 10,000 primaries</button>
+  <button class="btn" onclick="shareRun()">Share this run</button>
+  <span class="note" id="oneStatus"></span>
+ </div>
+ <div class="onecard" id="onecard">
+  <div id="onehead" class="muted">One primary plays out month by month from the current settings. The card shows who wins and why; expand it for the full timeline.</div>
+  <div class="row"><button class="btn sm" id="tlToggle" onclick="toggleTimeline()" hidden>Show the full timeline</button></div>
+  <div id="stage" hidden><div class="tl" id="tl"></div></div>
  </div>
 </div>
 
@@ -434,9 +432,25 @@ body.show-adv h2.s.adv{display:block;}
  <div id="brResult"></div>
 </div>
 
+<h2 class="s" id="turning">Turning points</h2>
+<div class="section">
+ <div class="shead"><span>The turning points that move the most outcomes</span><span class="note" id="rankStatus">loading</span></div>
+ <div id="rankings"><div class="muted">Loading the rankings: each turning point, measured by how far it shifts first-place finishes across the field.</div></div>
+ <div class="row hmctl"><button class="btn sm" id="hmShow" onclick="toggleGrid()" aria-expanded="false" aria-controls="hmBox">Show the full grid</button><span class="note" id="hmStatus">loading</span><button class="btn go sm" onclick="buildHeatmap()" id="hmBtn">Recompute with my settings</button></div>
+ <div id="hmBox" hidden>
+  <div class="shead hmhead"><span>What moves whom: each turning point tested on and off in 5,000 paired runs</span></div>
+ <div class="hmwrap" id="hmWrap"><div class="hm" id="heatmap"><div class="muted">Loading the heatmap, built overnight at the default settings. Click "Recompute with my settings" to rebuild it from your own.</div></div></div>
+ </div>
+</div>
 
-<h2 class="s">What moved</h2>
-<div class="section changestrip" id="changestrip"><div class="shead"><span id="csTitle">Since yesterday</span><span class="row" style="gap:5px;"><button class="seg on" id="csDay" onclick="setChangeMode('day')">Latest change</button><button class="seg" id="csLaunch" onclick="setChangeMode('launch')">Since launch</button></span></div><div id="csBody" class="muted">Loading the daily history.</div></div>
+<h2 class="s">The field</h2>
+<div class="section">
+ <div class="shead"><span>Hover a card for the dossier · set In/Out to override the market</span><button class="btn sm" onclick="resetField()">Reset field</button></div>
+ <div class="cardgrid" id="cardgrid"></div>
+ <div class="pollnote">Poll average weights national Democratic primary polls from the last 90 days by how recent they are (a poll counts half as much every 30 days), by sample size, and by pollster. Harvard CAPS Harris samples all Democrats rather than likely primary voters and runs hot on Harris, so its Harris number is taken down 15 points and the poll counts at 0.7 of a normal one. Polls this far out track name recognition, and the model adjusts for it: a candidate fewer voters know runs at a discount that shrinks as news coverage grows. Markets drive the model. The gap is the story.</div>
+</div>
+
+<div class="settled" id="settled"><p id="settledBody"></p></div>
 
 <h2 class="s">Calls</h2>
 <div class="section" id="calls"><div class="shead"><span>Dated claims, graded nightly against the books and the model</span><span class="note" id="callRecord">loading</span></div><div id="callsBody" class="muted">Loading the calls.</div><div class="legend">A call resolves true the first day its condition holds and false at its deadline if it never does. Past calls cannot be edited; a build check enforces it. <a href="track.html#calls">Full ledger</a></div></div>
@@ -491,10 +505,10 @@ CANDS.forEach(c=>{c.fit.NM=c.fit.NV;c.fit.VA=c.fit.NC;});
 // Levers the 2026 midterms settled. A resolved lever renders locked with a badge, has no slider,
 // and the sim reads it as a constant through P(). outcome is 0 or 100.
 const RESOLVED={
- pOssWin:{label:'Ossoff wins Georgia',date:'2026-11-03',outcome:100,note:'Jon Ossoff beat Mike Collins. AP call Nov. 3. Roughly 59 to 41, unofficial.',source_url:'https://www.opb.org/article/2026/11/03/democrat-jon-ossoff-wins-reelection-to-u-s-senate-from-georgia/'},
- pTexas:{label:'Talarico wins Texas',date:'2026-11-03',outcome:100,note:'James Talarico beat Ken Paxton. AP call Nov. 3. First Democratic statewide win in Texas since 1994.',source_url:'https://www.michiganpublic.org/2026-11-03/democrat-james-talarico-wins-texas-senate-seat'},
- pMich:{label:'El-Sayed wins Michigan',date:'2026-11-03',outcome:100,note:'Abdul El-Sayed beat Mike Rogers. AP call 2:27 a.m. Nov. 4.',source_url:'https://www.clickondetroit.com/news/local/2026/11/04/abdul-el-sayed-wins-michigan-us-senate-race-ap-projects/'},
- pMaine:{label:'Maine Democrat beats Collins',date:'2026-11-03',outcome:100,note:'Troy Jackson beat Susan Collins. AP call. Roughly 54 to 46 with 86 percent counted.',source_url:'https://www.kptv.com/2026/11/04/maine-sen-susan-collins-concedes-democrat-troy-jackson-ending-her-run-sixth-term/'}
+ pOssWin:{label:'Ossoff wins Georgia',winner:'Ossoff',state:'Georgia',date:'2026-11-03',outcome:100,note:'Jon Ossoff beat Mike Collins. AP call Nov. 3. Roughly 59 to 41, unofficial.',source_url:'https://www.opb.org/article/2026/11/03/democrat-jon-ossoff-wins-reelection-to-u-s-senate-from-georgia/'},
+ pTexas:{label:'Talarico wins Texas',winner:'Talarico',state:'Texas',date:'2026-11-03',outcome:100,note:'James Talarico beat Ken Paxton. AP call Nov. 3. First Democratic statewide win in Texas since 1994.',source_url:'https://www.michiganpublic.org/2026-11-03/democrat-james-talarico-wins-texas-senate-seat'},
+ pMich:{label:'El-Sayed wins Michigan',winner:'El-Sayed',state:'Michigan',date:'2026-11-03',outcome:100,note:'Abdul El-Sayed beat Mike Rogers. AP call 2:27 a.m. Nov. 4.',source_url:'https://www.clickondetroit.com/news/local/2026/11/04/abdul-el-sayed-wins-michigan-us-senate-race-ap-projects/'},
+ pMaine:{label:'Maine Democrat beats Collins',winner:'Jackson',beat:'Collins',state:'Maine',date:'2026-11-03',outcome:100,note:'Troy Jackson beat Susan Collins. AP call. Roughly 54 to 46 with 86 percent counted.',source_url:'https://www.kptv.com/2026/11/04/maine-sen-susan-collins-concedes-democrat-troy-jackson-ending-her-run-sixth-term/'}
 };
 const POOL_META={
  anchor:{label:'Party Anchor',share:22,def:'Older, institutional, church going Democrats who have decided recent nominations, strongest in South Carolina, the South, and Northern cities with large Black electorates.'},
@@ -1062,7 +1076,7 @@ function play(){
     +'<div class="sh-actions"><button class="btn sm" onclick=\'copyShare('+JSON.stringify(JSON.stringify(shareTxt))+')\'>Copy result</button></div></div>';
    document.getElementById('onehead').innerHTML=sc;document.getElementById('onehead').classList.remove('muted');
    runs++;bpFired+=bpThisRun;if(!s.majority)contestedCount++;
-   document.getElementById('oneStatus').textContent=runs+' run'+(runs===1?'':'s')+' · '+Math.round(contestedCount/runs*100)+'% without a pledged majority · '+bpThisRun+' turning point'+(bpThisRun===1?'':'s')+' this run';
+   document.getElementById('oneStatus').textContent=runs+' run'+(runs===1?'':'s')+' · '+pct1(contestedCount/runs*100)+' without a pledged majority · '+bpThisRun+' turning point'+(bpThisRun===1?'':'s')+' this run';
   }
  });
  }
@@ -1116,6 +1130,7 @@ function computeHeatmap(base,PAIRS){
 }
 function buildHeatmap(){
  const status=document.getElementById('hmStatus');
+ const box=document.getElementById('hmBox');if(box&&box.hidden)toggleGrid();
  const base=cfg();
  const PAIRS=QUICK?2500:5000, CHUNK=400;
  const results=[];
@@ -1170,6 +1185,8 @@ function renderHeatmap(results,watch){
  document.getElementById('heatmap').innerHTML=h;
  hmFade();
 }
+// the heatmap sits behind "Show the full grid"; rankings show first
+function toggleGrid(){const box=document.getElementById('hmBox'),b=document.getElementById('hmShow');if(!box)return;box.hidden=!box.hidden;if(b){b.textContent=box.hidden?'Show the full grid':'Hide the full grid';b.setAttribute('aria-expanded',String(!box.hidden));}hmFade();}
 // the right-edge fade shows only while more columns sit off to the right
 function hmFade(){const hm=document.getElementById('heatmap'),w=document.getElementById('hmWrap');if(!hm||!w)return;w.classList.toggle('more',hm.scrollLeft+hm.clientWidth<hm.scrollWidth-2);}
 // ==POLLING DISPLAY LAYER== polls.csv is display only. It never feeds mkt or the simulation.
@@ -1252,7 +1269,7 @@ function buildCards(){
 }
 function run10k(){
  const agg=document.getElementById('aggregate');
- agg.style.display='block';
+ agg.style.display='block';if(agg.scrollIntoView)agg.scrollIntoView({behavior:'smooth',block:'start'});
  const TOTAL=simBudget(10000), CHUNK=1000;
  const title='Who finishes first · '+(QUICK&&TOTAL<10000?'<span class="quick">quick run</span> · ':'')+TOTAL.toLocaleString()+' primaries with your settings';
  agg.classList.remove('open');agg.innerHTML='<div class="shead"><span>'+title+'</span><span class="note" id="aggStatus">running...</span></div><div id="aggBody"><div class="muted">Simulating...</div></div>';
@@ -1334,7 +1351,7 @@ function paintDefault(){
    heroFromRows(hrows,(two?'Within two points of each other in ':'Wins the most of ')+d.runs.toLocaleString()+' simulated primaries, run on '+edDate(d.date,false)+' market prices',two);}
   setModelRank(d.first);
   const agg=document.getElementById('aggregate');agg.style.display='block';agg.classList.remove('open');
-  agg.innerHTML='<div class="shead"><span>Who finishes first</span><span class="note">Run overnight '+edDate(d.date,false)+' · change any control to run your own</span></div><div id="aggBody"></div>';
+  agg.innerHTML='<div class="shead"><span>Who finishes first</span><span class="note">Run overnight '+edDate(d.date,false)+' · <a href="#runyourown">change any control to run your own</a></span></div><div id="aggBody"></div>';
   paintDefaultRows();
   renderBracketResult(null);
  }).catch(()=>{DEF.pending=false;fallbackDefault();});
@@ -1374,7 +1391,7 @@ function applyPreset(which){
 function cueBranch(which){
  // preset controls to dramatize a turning point, scroll to controls, then run
  if(!applyPreset(which))return;
- const hm=document.querySelector('h2.s');if(hm)hm.scrollIntoView({behavior:'smooth',block:'start'});
+ const oc=document.getElementById('onecard');if(oc&&oc.scrollIntoView)oc.scrollIntoView({behavior:'smooth',block:'center'});
  play();
  if(typeof queueFront==='function')queueFront(); // the preset changed controls, so the frontrunner box must re-simulate
 }
@@ -1581,11 +1598,15 @@ function changeText(date){
  return {text:'We changed how the model works on '+edDate(date,false)+', so part of any move that day came from the model, not the markets.',href,link:'What changed'};
 }
 function changeHtml(date,lead){const c=changeText(date);return (lead?'<b>Model changed '+edDate(date,false)+'.</b> ':'')+callEsc(c.text)+' <a href="'+c.href+'">'+c.link+'</a>';}
-// ==WHAT 2026 SETTLED== resolved levers render locked, no slider
+// ==WHAT 2026 SETTLED== one line from RESOLVED: how many, when, and who won where. Each winner links to the source.
+const NUMWORDS=['No','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten'];
 function renderSettled(){
  const el=document.getElementById('settledBody');if(!el)return;
- el.innerHTML=Object.keys(RESOLVED).map(id=>{const r=RESOLVED[id];
-  return '<div class="rs"><span class="rl">'+r.label+'</span><span class="rb">Settled '+edDate(r.date,false)+'</span><span class="cv">'+r.outcome+'%</span><div class="rn">'+r.note+' <a href="'+r.source_url+'" target="_blank" rel="noopener">Source</a></div></div>';}).join('');
+ const rs=Object.keys(RESOLVED).map(k=>RESOLVED[k]).filter(r=>r.winner&&r.state);if(!rs.length){el.parentNode.hidden=true;return;}
+ const dates=[...new Set(rs.map(r=>r.date))].sort(), n=rs.length;
+ const one=r=>'<a href="'+r.source_url+'" target="_blank" rel="noopener" title="'+callEsc(r.note).replace(/"/g,'&quot;')+'">'+r.winner+'</a>'+(r.beat?' beat '+r.beat+' in '+r.state:' won '+r.state);
+ const items=rs.map(one), list=items.length>1?items.slice(0,-1).join(', ')+', '+items[items.length-1]:items[0];
+ el.innerHTML=(NUMWORDS[n]||n)+' midterm race'+(n===1?'':'s')+' settled '+(dates.length===1?edDate(dates[0],false):'by '+edDate(dates[dates.length-1],false))+': '+list+'.';
 }
 // reviewed stamps on lever notes, and the footer date from the newest stamp anywhere
 function renderReviewed(){
@@ -1600,8 +1621,7 @@ function renderChips(ranked){
  const strip=document.getElementById('bpstrip');if(!strip)return;
  const top=ranked.filter(r=>r.bp&&BP_PRESETS[r.bp]).slice(0,CHIP_COUNT);if(!top.length)return;
  strip.querySelectorAll('.bpchip').forEach(b=>b.remove());
- const share=strip.querySelector('.btn');
- top.forEach(r=>{const b=document.createElement('button');b.className='bpchip';b.textContent=BP_PRESETS[r.bp].label;b.title=r.key+' · average swing '+r.avgSwing.toFixed(1)+' points';b.onclick=()=>cueBranch(r.bp);strip.insertBefore(b,share);});
+ top.forEach(r=>{const b=document.createElement('button');b.className='bpchip';b.textContent=BP_PRESETS[r.bp].label;b.title='Average swing '+r.avgSwing.toFixed(1)+' points';b.onclick=()=>cueBranch(r.bp);strip.appendChild(b);});
 }
 function loadHeatmap(){
  Promise.all(['heatmap.json','rankings.json'].map(f=>fetch(f+'?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null))).then(([H,R])=>{
