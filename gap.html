@@ -6,52 +6,36 @@
 <title>The Gap | The 2028 Machine</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
 <style>
-:root{--ink:#16171a;--paper:#f5f3ec;--panel:#ffffff;--rule:rgba(20,21,24,.14);--muted:#5c5b55;--faint:#8a897f;--wire:#b8442b;--wire-soft:#f3ddd4;--tealx:#1f7a5c;--rmd:7px;--rlg:11px;}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.55;}
-.wrap{max-width:1040px;margin:0 auto;padding:22px 18px 60px;}
-.mast{border-bottom:3px double var(--ink);padding-bottom:.75rem;margin-bottom:.4rem;display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;}
-.mast-r{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;color:var(--muted);text-align:right;line-height:1.5;}
-.badge{display:inline-block;margin-top:4px;padding:1px 8px;border:1px solid var(--rule);border-radius:10px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
-.globe{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase;}
-h1{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:34px;line-height:1.02;margin:.1rem 0 0;}
-h2.pagetitle{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:26px;margin:.9rem 0 .2rem;}
-h2.s{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px;margin:1.6rem 0 .6rem;}
-.getdata{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-top:10px;}
-.getdata a{color:var(--wire);text-decoration:none;margin-right:14px;}
-#polltbl td,#polltbl th{cursor:default;}
-#polltbl th.hd{text-align:left;}
-#polltbl td.hd{text-align:left;font-family:'Inter',sans-serif;white-space:normal;min-width:120px;}
-.nav{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:.4rem 0 1.2rem;display:flex;gap:14px;flex-wrap:wrap;}
-.nav a{color:var(--wire);text-decoration:none;}
-.dek{font-size:16px;color:var(--muted);max-width:720px;margin-bottom:1.2rem;}
-.section{border:1px solid var(--rule);border-radius:var(--rlg);background:var(--panel);padding:1rem 1.1rem;overflow-x:auto;}
-.shead{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;}
-table{border-collapse:collapse;width:100%;font-size:13.5px;}
-th{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:500;text-align:right;padding:6px 8px;cursor:pointer;user-select:none;white-space:nowrap;border-bottom:1px solid var(--ink);}
-th:hover{color:var(--ink);}
-th.on{color:var(--ink);}
+th{cursor:pointer;user-select:none;}
+th:hover,th.on{color:var(--ink);}
 th.on::after{content:' \25BE';}
 th.on.asc::after{content:' \25B4';}
-td{padding:7px 8px;text-align:right;border-top:1px solid var(--rule);font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:13px;vertical-align:top;white-space:nowrap;}
-th:first-child,td:first-child{text-align:left;font-family:'Inter',sans-serif;white-space:nowrap;}
-th.note,td.note{text-align:left;font-family:'Inter',sans-serif;white-space:normal;min-width:260px;color:var(--muted);font-size:13px;}
+td{white-space:nowrap;}
+th.note,td.note{text-align:left;white-space:normal;min-width:260px;color:var(--muted);}
 td.note.empty{color:var(--faint);font-style:italic;}
-.up{color:var(--tealx);}.down{color:var(--wire);}
 tr.hl td{background:var(--wire-soft);}
-.legend{font-size:11.5px;color:var(--faint);margin-top:10px;line-height:1.5;}
-.foot{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;color:var(--faint);border-top:1px solid var(--rule);padding-top:1rem;margin-top:2rem;line-height:1.6;}
+.getdata{font-size:12.5px;color:var(--muted);margin-top:12px;}
+.getdata a{margin-left:12px;}
+#polltbl td,#polltbl th{cursor:default;}
+#polltbl th.hd,#polltbl td.hd{text-align:left;}
+#polltbl td.hd{white-space:normal;min-width:120px;}
 </style>
 </head>
 <body>
 <div class="wrap">
 <div class="mast">
- <div class="mast-l"><div class="globe">The Driscoll Globe</div><h1>The 2028 Machine</h1></div>
- <div class="mast-r">2028 DEMOCRATIC PRIMARY<br>SIMULATION DESK<br><span class="badge" id="updBadge">Updated nightly</span></div>
+ <div class="mast-l">
+  <div class="globe">The Driscoll Globe</div>
+  <h1><a href="./">The 2028 Machine</a></h1>
+  <div class="byline">By <b>Kevin Driscoll</b> · The Driscoll Globe</div>
+ </div>
+ <div class="mast-r">2028 Democratic primary<br>Simulation desk<br><span id="updBadge">Updated nightly</span></div>
 </div>
+<div class="nav"><a href="./">The Machine</a><a href="gap.html" aria-current="page">The gap: polls vs markets</a><a href="track.html">Track record</a><a href="moved.html">What moved</a><a href="methodology.html">How it works</a><a href="changelog.html">Changelog</a><a href="https://driscollglobe.substack.com">The Driscoll Globe</a></div>
 <h2 class="pagetitle">The gap: polls versus markets</h2>
-<div class="nav"><a href="index.html">The 2028 Machine</a><a href="track.html">Track record</a><a href="moved.html">What moved</a><a href="https://driscollglobe.substack.com">The Driscoll Globe</a></div>
 <p class="dek">Polls measure name recognition this far out. Markets price the whole path to the nomination. The distance between them, candidate by candidate, is the story. Click a column to sort.</p>
 <div class="section">
  <div class="shead"><span>National Democratic primary polls, weighted, against the Kalshi and Polymarket blend</span><span id="status">loading</span></div>
@@ -68,7 +52,7 @@ tr.hl td{background:var(--wire-soft);}
  <table id="polltbl"><thead></thead><tbody></tbody></table>
  <div class="getdata">Get the data: <a href="https://github.com/driscollglobe/2028-machine/blob/main/polls.csv">polls.csv</a><a href="https://github.com/driscollglobe/2028-machine/blob/main/history.csv">history.csv</a></div>
 </div>
-<p class="foot">THE 2028 MACHINE · THE DRISCOLL GLOBE · POLITICAL SYSTEMS DESK</p>
+<p class="foot">The 2028 Machine. The Driscoll Globe, political systems desk.</p>
 </div>
 <script src="pollavg.js"></script>
 <script>

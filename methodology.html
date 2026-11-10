@@ -8,36 +8,34 @@
      (inputs frozen in methodology/: markets 2026-11-08, anchor fit of that day, approval 38). -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
 <style>
-:root{--ink:#1a1a1a;--paper:#faf8f4;--rule:#d8d2c6;--accent:#8a1f11;--muted:#6b6455;}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,sans-serif;line-height:1.6;}
-.wrap{max-width:760px;margin:0 auto;padding:28px 18px 60px;}
-h1{font-family:Fraunces,serif;font-size:32px;margin:0 0 4px;}
-h2{font-family:Fraunces,serif;font-size:21px;margin:34px 0 6px;}
-.sub{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:22px;}
-.draft{border:1px dashed var(--accent);color:var(--accent);padding:8px 12px;font-size:13px;margin-bottom:22px;}
-.note{font-size:14px;color:var(--muted);margin:-8px 0 22px;}
-table{border-collapse:collapse;width:100%;font-size:13px;margin:10px 0 6px;}
-th,td{border-bottom:1px solid var(--rule);padding:6px 8px;text-align:right;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;}
-th:first-child,td:first-child{text-align:left;font-family:Inter,sans-serif;}
-th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
-code{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:13px;background:#efe9dd;padding:1px 4px;border-radius:3px;}
-.nav a{margin-right:14px;color:var(--accent);font-size:14px;}
-dt{font-weight:600;margin-top:8px;}
-dd{margin:0 0 4px 0;}
-.foot{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;color:var(--muted);letter-spacing:.06em;margin-top:40px;border-top:1px solid var(--rule);padding-top:10px;}
-a{color:var(--accent);}
+.sub{font-family:var(--sans);font-size:13px;color:var(--muted);margin:0 0 1.2rem;}
+.draft{font-family:var(--sans);border:1px dashed var(--wire);color:var(--wire);border-radius:var(--rmd);padding:8px 12px;font-size:13px;margin-bottom:22px;}
+.note{font-family:var(--sans);font-size:14px;line-height:1.6;color:var(--muted);margin:0 0 22px;}
+dl{margin:0;}
+dt{font-weight:600;margin-top:10px;font-size:15px;}
+dd{margin:0 0 4px 0;font-family:var(--serif);font-size:17px;}
 </style>
 </head>
 <body>
-<div class="wrap">
-<div class="nav"><a href="./">The Machine</a><a href="gap.html">The gap</a><a href="track.html">Track record</a><a href="moved.html">What moved</a></div>
-<h1>How the machine works</h1>
+<div class="wrap narrow">
+<div class="mast">
+ <div class="mast-l">
+  <div class="globe">The Driscoll Globe</div>
+  <h1><a href="./">The 2028 Machine</a></h1>
+  <div class="byline">By <b>Kevin Driscoll</b> · The Driscoll Globe</div>
+ </div>
+ <div class="mast-r">2028 Democratic primary<br>Simulation desk</div>
+</div>
+<div class="nav"><a href="./">The Machine</a><a href="gap.html">The gap: polls vs markets</a><a href="track.html">Track record</a><a href="moved.html">What moved</a><a href="methodology.html" aria-current="page">How it works</a><a href="changelog.html">Changelog</a><a href="https://driscollglobe.substack.com">The Driscoll Globe</a></div>
+<h2 class="pagetitle">How the machine works</h2>
 <div class="sub">One primary, start to finish · seed 5 · market prices of Nov. 8, 2026</div>
 <div class="draft">Draft. Kevin rewrites this prose before it runs. The numbers are final for this seed.</div>
 <p class="note">This run uses the rules in place on Nov. 8, 2026. Since Nov. 9 no single state can multiply a candidate's strength by more than 1.2, and the calendar's bonus for its early-state favorites ends with the early window. The field also narrows faster: only the top two by delegates stay in after Super Tuesday, a candidate drops out after two contests under 11 percent of the vote, and a crowded lane costs its candidates less (lane crowding 0.05, down from 0.15). The <a href="changelog.html#2026-11-09-publication-pass">changelog</a> has the reason.</p>
 
+<div class="prose">
 <p>The machine plays out the 2028 Democratic primary 50,000 times every morning. Each run is one possible primary. This page follows a single run from the first random draw to the convention. Its seed is 5, which fixes every random number in it. Anyone can rerun it and get the same primary with <code>node scripts/methodology_run.js 5</code>.</p>
 
 <h2>Words this page uses</h2>
@@ -144,37 +142,38 @@ a{color:var(--accent);}
 <!--KNOBS-->
 <table><tr><th>Setting</th><th>Value</th><th>Set</th></tr>
 <tr><td>Lane crowding</td><td>5%</td><td>Nov. 9, 2026</td></tr>
-<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">Each extra candidate in a pool trims everyone in it a little; at 0.15 a third candidate cost 23 percent, more than anything in the data supports, and 0.05 costs about 9.</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:var(--sans);color:var(--muted)">Each extra candidate in a pool trims everyone in it a little; at 0.15 a third candidate cost 23 percent, more than anything in the data supports, and 0.05 costs about 9.</td></tr>
 <tr><td>Secondary pool transfer share</td><td>50%</td><td>Sept. 10, 2026</td></tr>
-<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">When a candidate drops out, rivals whose second home is the same pool count half as much as rivals whose first home is.</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:var(--sans);color:var(--muted)">When a candidate drops out, rivals whose second home is the same pool count half as much as rivals whose first home is.</td></tr>
 <tr><td>Field leak</td><td>30%</td><td>Nov. 9, 2026</td></tr>
-<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">Not every voter follows a departing candidate to a pool mate, so 30 percent of the transfer goes to the whole field in proportion to strength.</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:var(--sans);color:var(--muted)">Not every voter follows a departing candidate to a pool mate, so 30 percent of the transfer goes to the whole field in proportion to strength.</td></tr>
 <tr><td>Establishment coordination</td><td>50%</td><td>June 14, 2026</td></tr>
-<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">Even odds that the strongest establishment pool consolidates behind its delegate leader after the early states, raised when Trump is strong.</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:var(--sans);color:var(--muted)">Even odds that the strongest establishment pool consolidates behind its delegate leader after the early states, raised when Trump is strong.</td></tr>
 <tr><td>Coordination failure</td><td>35%</td><td>June 14, 2026</td></tr>
-<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">About one run in three the establishment never consolidates, nobody steps aside, and candidates hang on to a lower vote share.</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:var(--sans);color:var(--muted)">About one run in three the establishment never consolidates, nobody steps aside, and candidates hang on to a lower vote share.</td></tr>
 <tr><td>Automatic delegate lean</td><td>60%</td><td>Nov. 9, 2026</td></tr>
-<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">Automatic delegates are party insiders, so 60 percent of their votes from the second ballot go to Party Anchor and Suburb candidates still standing.</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:var(--sans);color:var(--muted)">Automatic delegates are party insiders, so 60 percent of their votes from the second ballot go to Party Anchor and Suburb candidates still standing.</td></tr>
 <tr><td>Debate skill</td><td>50%</td><td>June 14, 2026</td></tr>
-<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">Half of the debating edge or weakness of each of the top four finishers carries into their strength after every contest.</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:var(--sans);color:var(--muted)">Half of the debating edge or weakness of each of the top four finishers carries into their strength after every contest.</td></tr>
 <tr><td>Random branch-point events</td><td>40%</td><td>June 14, 2026</td></tr>
-<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">Four runs in ten get one surprise event before the field forms; this is today's rate, and the clock lowers it to a quarter by South Carolina.</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:var(--sans);color:var(--muted)">Four runs in ten get one surprise event before the field forms; this is today's rate, and the clock lowers it to a quarter by South Carolina.</td></tr>
 <tr><td>Dropout support transfer</td><td>35%</td><td>Sept. 10, 2026</td></tr>
-<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">About a third of a departing candidate's strength moves on to the candidates still running; the rest of their voters scatter or stay home.</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:var(--sans);color:var(--muted)">About a third of a departing candidate's strength moves on to the candidates still running; the rest of their voters scatter or stay home.</td></tr>
 <tr><td>Name ID growth rate</td><td>5%</td><td>Nov. 9, 2026</td></tr>
-<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">Fitted to Pete Buttigieg going from 15 percent name ID in January 2019 to 80 percent at the Iowa caucus on his 2019 news volume (node scripts/fit_nameid.js gives 0.0474).</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:var(--sans);color:var(--muted)">Fitted to Pete Buttigieg going from 15 percent name ID in January 2019 to 80 percent at the Iowa caucus on his 2019 news volume (node scripts/fit_nameid.js gives 0.0474).</td></tr>
 <tr><td>Favorability weight</td><td>50%</td><td>Nov. 9, 2026</td></tr>
-<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">Net favorable among Democrats moves strength by half its size, so a candidate at plus 50 runs 25 percent stronger than one at zero.</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:var(--sans);color:var(--muted)">Net favorable among Democrats moves strength by half its size, so a candidate at plus 50 runs 25 percent stronger than one at zero.</td></tr>
 <tr><td>Estimated name ID floor</td><td>15%</td><td>Nov. 9, 2026</td></tr>
-<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">A candidate YouGov has never asked about starts as if 15 percent of voters knew them, about where a statewide officeholder with no national profile sits.</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:var(--sans);color:var(--muted)">A candidate YouGov has never asked about starts as if 15 percent of voters knew them, about where a statewide officeholder with no national profile sits.</td></tr>
 <tr><td>Estimated name ID per attention point</td><td>5%</td><td>Nov. 9, 2026</td></tr>
-<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">Each point on the 10-point attention score adds 5 points of estimated name ID to a candidate with no YouGov reading.</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:var(--sans);color:var(--muted)">Each point on the 10-point attention score adds 5 points of estimated name ID to a candidate with no YouGov reading.</td></tr>
 <tr><td>Estimated name ID ceiling</td><td>60%</td><td>Nov. 9, 2026</td></tr>
-<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">No estimate goes above 60 percent; a candidate known that widely would show up in a YouGov wave.</td></tr>
+<tr><td colspan="3" style="text-align:left;font-family:var(--sans);color:var(--muted)">No estimate goes above 60 percent; a candidate known that widely would show up in a YouGov wave.</td></tr>
 </table>
 <!--/KNOBS-->
 
-<p class="foot">THE 2028 MACHINE · HOW IT WORKS · DRAFT · SEED 5 · INPUTS FROZEN IN <a href="https://github.com/driscollglobe/2028-machine/tree/main/methodology">methodology/</a> · REPRODUCE WITH node scripts/methodology_run.js 5</p>
+</div>
+<p class="foot">The 2028 Machine, how it works. A draft built on seed 5, with its inputs frozen in <a href="https://github.com/driscollglobe/2028-machine/tree/main/methodology">methodology/</a> · REPRODUCE WITH node scripts/methodology_run.js 5</p>
 </div>
 </body>
 </html>

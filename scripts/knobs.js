@@ -65,7 +65,7 @@ function knobsTable(K) {
   const { edDate } = require('./eddate');
   const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
   return MARK_A + '\n<table><tr><th>Setting</th><th>Value</th><th>Set</th></tr>\n'
-    + Object.keys(K).map(k => '<tr><td>' + esc(K[k].label) + '</td><td>' + Math.round(K[k].value * 100) + '%</td><td>' + edDate(K[k].date) + '</td></tr>\n<tr><td colspan="3" style="text-align:left;font-family:Inter,sans-serif;color:var(--muted)">' + esc(K[k].reason) + '</td></tr>').join('\n')
+    + Object.keys(K).map(k => '<tr><td>' + esc(K[k].label) + '</td><td>' + Math.round(K[k].value * 100) + '%</td><td>' + edDate(K[k].date) + '</td></tr>\n<tr><td colspan="3" style="text-align:left;font-family:var(--sans);color:var(--muted)">' + esc(K[k].reason) + '</td></tr>').join('\n')
     + '\n</table>\n' + MARK_B;
 }
 function methodologyErrors(K, page) {

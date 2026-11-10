@@ -31,25 +31,25 @@ function cardHtml(title, sub, rows, date, runs) {
   const bars = rows.map(r => '<div class="row"><div class="name">' + esc(r.name) + '</div>'
     + '<div class="track"><div class="fill" style="width:' + (r.pct / max * 100).toFixed(1) + '%;background:' + (POOL_COLOR[r.lane] || POOL_COLOR.out) + '"></div></div>'
     + '<div class="pct">' + r.pct.toFixed(1) + '%</div><div class="rng">' + (r.range ? 'likely ' + Math.round(r.range[0]) + ' to ' + Math.round(r.range[1]) : '') + '</div></div>').join('');
-  return '<!DOCTYPE html><html><head><meta charset="utf-8"><style>'
-    + 'body{margin:0;width:1200px;height:630px;background:#f5f3ec;color:#16171a;font-family:Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden;}'
+  return '<!DOCTYPE html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet"><style>'
+    + 'body{margin:0;width:1200px;height:630px;background:#f5f3ec;color:#16171a;font-family:"Libre Franklin",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden;}'
     + '.card{box-sizing:border-box;width:1200px;height:630px;padding:54px 64px;display:flex;flex-direction:column;}'
-    + '.globe{font-family:Georgia,serif;font-weight:700;font-size:18px;letter-spacing:.2em;text-transform:uppercase;}'
-    + 'h1{font-family:Georgia,serif;font-weight:700;font-size:54px;line-height:1.02;margin:6px 0 4px;}'
+    + '.globe{font-family:"Source Serif 4",Georgia,serif;font-weight:700;font-size:18px;}'
+    + 'h1{font-family:"Source Serif 4",Georgia,serif;font-weight:700;font-size:54px;line-height:1.02;margin:6px 0 4px;}'
     + '.sub{font-size:22px;color:#5c5b55;margin-bottom:26px;}'
-    + '.lever{display:inline-block;font-family:Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;font-size:16px;letter-spacing:.12em;text-transform:uppercase;background:#b8442b;color:#fff;padding:6px 14px;border-radius:6px;margin-bottom:22px;}'
+    + '.lever{display:inline-block;font-family:"Libre Franklin",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;font-size:16px;background:#b8442b;color:#fff;padding:6px 14px;border-radius:6px;margin-bottom:22px;}'
     + '.row{display:flex;align-items:center;gap:18px;margin:9px 0;}'
     + '.name{width:230px;font-size:26px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}'
     + '.track{flex:1;height:30px;background:#fff;border:1.5px solid rgba(20,21,24,.18);border-radius:5px;overflow:hidden;}'
     + '.fill{height:100%;}'
-    + '.pct{width:110px;text-align:right;font-family:Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;font-size:26px;font-weight:600;}'
-    + '.rng{width:170px;font-family:Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;font-size:17px;color:#5c5b55;white-space:nowrap;}'
-    + '.foot{margin-top:auto;display:flex;justify-content:space-between;font-family:Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;font-size:17px;letter-spacing:.08em;color:#5c5b55;border-top:3px double #16171a;padding-top:14px;}'
+    + '.pct{width:110px;text-align:right;font-family:"Libre Franklin",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;font-size:26px;font-weight:600;}'
+    + '.rng{width:170px;font-family:"Libre Franklin",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;font-size:17px;color:#5c5b55;white-space:nowrap;}'
+    + '.foot{margin-top:auto;display:flex;justify-content:space-between;font-family:"Libre Franklin",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;font-size:17px;color:#5c5b55;border-top:3px double #16171a;padding-top:14px;}'
     + '</style></head><body><div class="card">'
     + '<div class="globe">The Driscoll Globe</div><h1>The 2028 Machine</h1>'
     + '<div class="sub">' + esc(sub) + '</div><div><span class="lever">' + esc(title) + '</span></div>'
     + bars
-    + '<div class="foot"><span>' + esc(edDate(date).toUpperCase()) + ' · ' + (runs || RUNS).toLocaleString('en-US') + ' SIMULATED PRIMARIES</span><span>' + SITE_LABEL + '</span></div>'
+    + '<div class="foot"><span>' + esc(edDate(date)) + ' · ' + (runs || RUNS).toLocaleString('en-US') + ' simulated primaries</span><span>' + SITE_LABEL + '</span></div>'
     + '</div></body></html>';
 }
 
@@ -108,8 +108,9 @@ async function main() {
     // the two-way rule, same as the hero: the default card reads default.json, preset cards apply it to their own run
     const two = job.key === 'default' && res === D ? D.two_way : fresh.twoWay(Object.keys(res.first).sort((a, b) => res.first[b] - res.first[a]).map(id => ({ id, first: res.first[id] })));
     const sub = two ? 'A two-way race: ' + lastName(two[0]) + ' and ' + lastName(two[1]) + ' are within two points of each other' : job.sub;
-    const rows = Object.keys(res.first).map(id => ({ id, name: lastName(id), lane: cand(id).lane, pct: res.first[id], range: res.range ? res.range[id] : null })).sort((a, b) => b.pct - a.pct).slice(0, 5);
-    await page.setContent(cardHtml(job.title, sub, rows, M.date, res.runs || RUNS), { waitUntil: 'load' });
+    const rows = Object.keys(res.first).filter(id => cand(id)).map(id => ({ id, name: lastName(id), lane: cand(id).lane, pct: res.first[id], range: res.range ? res.range[id] : null })).sort((a, b) => b.pct - a.pct).slice(0, 5);
+    await page.setContent(cardHtml(job.title, sub, rows, M.date, res.runs || RUNS), { waitUntil: 'networkidle' });
+    await page.evaluate(() => document.fonts.ready);
     const file = path.join(OUT, job.key + '.png');
     await page.screenshot({ path: file, type: 'png' });
     console.log('wrote cards/' + job.key + '.png: ' + rows.map(r => r.id + ' ' + r.pct).join(', '));
@@ -120,7 +121,8 @@ async function main() {
   if (fs.existsSync(notePath)) {
     const n = JSON.parse(fs.readFileSync(notePath, 'utf8'));
     const np = await browser.newPage({ viewport: { width: 1200, height: 675 } });
-    await np.setContent(noteCardHtml(n), { waitUntil: 'load' });
+    await np.setContent(noteCardHtml(n), { waitUntil: 'networkidle' });
+    await np.evaluate(() => document.fonts.ready);
     await np.screenshot({ path: path.join(OUT, 'desk-note.png'), type: 'png' });
     console.log('wrote cards/desk-note.png for ' + n.date);
   }
@@ -129,17 +131,17 @@ async function main() {
 
 function noteCardHtml(n) {
   const size = n.text.length > 820 ? 23 : 25;
-  return '<!DOCTYPE html><html><head><meta charset="utf-8"><style>'
-    + 'body{margin:0;width:1200px;height:675px;background:#f5f3ec;color:#16171a;font-family:Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden;}'
+  return '<!DOCTYPE html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet"><style>'
+    + 'body{margin:0;width:1200px;height:675px;background:#f5f3ec;color:#16171a;font-family:"Libre Franklin",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden;}'
     + '.card{box-sizing:border-box;width:1200px;height:675px;padding:50px 64px;display:flex;flex-direction:column;}'
-    + '.globe{font-family:Georgia,serif;font-weight:700;font-size:18px;letter-spacing:.2em;text-transform:uppercase;}'
-    + 'h1{font-family:Georgia,serif;font-weight:700;font-size:40px;margin:6px 0 18px;}'
-    + '.lever{display:inline-block;font-family:Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;font-size:15px;letter-spacing:.12em;text-transform:uppercase;background:#b8442b;color:#fff;padding:5px 12px;border-radius:6px;margin-bottom:18px;}'
-    + 'p{font-size:' + size + 'px;line-height:1.42;margin:0;}'
-    + '.foot{margin-top:auto;display:flex;justify-content:space-between;font-family:Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;font-size:16px;letter-spacing:.08em;color:#5c5b55;border-top:3px double #16171a;padding-top:12px;}'
+    + '.globe{font-family:"Source Serif 4",Georgia,serif;font-weight:700;font-size:18px;}'
+    + 'h1{font-family:"Source Serif 4",Georgia,serif;font-weight:700;font-size:40px;margin:6px 0 18px;}'
+    + '.lever{display:inline-block;font-family:"Libre Franklin",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;font-size:15px;background:#b8442b;color:#fff;padding:5px 12px;border-radius:6px;margin-bottom:18px;}'
+    + 'p{font-family:"Source Serif 4",Georgia,serif;font-size:' + (size + 1) + 'px;line-height:1.42;margin:0;}'
+    + '.foot{margin-top:auto;display:flex;justify-content:space-between;font-family:"Libre Franklin",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;font-size:16px;color:#5c5b55;border-top:3px double #16171a;padding-top:12px;}'
     + '</style></head><body><div class="card"><div class="globe">The Driscoll Globe</div><h1>The 2028 Machine</h1>'
     + '<div><span class="lever">Desk note · ' + esc(edDate(n.date)) + '</span></div><p>' + esc(n.text) + '</p>'
-    + '<div class="foot"><span>THE 2028 MACHINE · UPDATED NIGHTLY</span><span>' + SITE_LABEL + '</span></div></div></body></html>';
+    + '<div class="foot"><span>The 2028 Machine · Updated nightly</span><span>' + SITE_LABEL + '</span></div></div></body></html>';
 }
 
 main().catch(e => { console.error(e); process.exit(1); });

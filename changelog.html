@@ -6,46 +6,49 @@
 <title>Changelog | The 2028 Machine</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
 <style>
-:root{--ink:#16171a;--paper:#f5f3ec;--panel:#ffffff;--rule:rgba(20,21,24,.14);--muted:#5c5b55;--faint:#8a897f;--wire:#b8442b;}
-@media (prefers-color-scheme:dark){:root{--ink:#ecebe4;--paper:#15161a;--panel:#1d1e22;--rule:rgba(255,255,255,.15);--muted:#a6a59d;--faint:#76756d;--wire:#e06a4d;}}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.6;}
-.wrap{max-width:760px;margin:0 auto;padding:22px 16px 60px;}
-.mast{border-bottom:3px double var(--ink);padding-bottom:.75rem;margin-bottom:.4rem;}
-.globe{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase;}
-h1{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:34px;line-height:1.02;margin:.1rem 0 0;}
-.nav{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin:.4rem 0 1.2rem;display:flex;gap:14px;flex-wrap:wrap;}
-.nav a{color:var(--wire);text-decoration:none;}
-.dek{font-size:16px;color:var(--muted);margin-bottom:1.4rem;}
-.entry{border-top:1px solid var(--rule);padding:1.1rem 0 .4rem;scroll-margin-top:12px;}
+.entry{border-top:1px solid var(--rule);padding:1.3rem 0 .5rem;scroll-margin-top:12px;}
 .entry:target{background:var(--panel);box-shadow:0 0 0 12px var(--panel);}
-.entry h2{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px;margin:0 0 .2rem;}
-.entry .d{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;color:var(--faint);letter-spacing:.06em;}
-.entry p{margin:.6rem 0;}
-.foot{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;letter-spacing:.08em;color:var(--faint);margin-top:2rem;}
+.entry h2{font-family:var(--serif);font-weight:700;font-size:23px;line-height:1.2;margin:0 0 .15rem;}
+.entry .d{font-family:var(--sans);font-size:12.5px;color:var(--faint);}
+.entry p{margin:.7rem 0;}
 </style>
 </head>
 <body>
-<div class="wrap">
-<div class="mast"><div class="globe">The Driscoll Globe</div><h1>The 2028 Machine: changelog</h1></div>
-<div class="nav"><a href="index.html">The 2028 Machine</a><a href="track.html">Track record</a><a href="moved.html">What moved</a><a href="methodology.html">How it works</a></div>
+<div class="wrap narrow">
+<div class="mast">
+ <div class="mast-l">
+  <div class="globe">The Driscoll Globe</div>
+  <h1><a href="./">The 2028 Machine</a></h1>
+  <div class="byline">By <b>Kevin Driscoll</b> · The Driscoll Globe</div>
+ </div>
+ <div class="mast-r">2028 Democratic primary<br>Simulation desk</div>
+</div>
+<div class="nav"><a href="./">The Machine</a><a href="gap.html">The gap: polls vs markets</a><a href="track.html">Track record</a><a href="moved.html">What moved</a><a href="methodology.html">How it works</a><a href="changelog.html" aria-current="page">Changelog</a><a href="https://driscollglobe.substack.com">The Driscoll Globe</a></div>
+<h2 class="pagetitle">Changelog</h2>
 <p class="dek">Every change to how the model works, and the weekly record of what moved. Newest first.</p>
-<div id="log">Loading.</div>
-<p class="foot">THE 2028 MACHINE · THE DRISCOLL GLOBE · SOURCE FILES IN <a href="https://github.com/driscollglobe/2028-machine/tree/main/changelog" style="color:inherit">CHANGELOG/</a></p>
+<div id="log" class="prose">Loading.</div>
+<p class="foot">The 2028 Machine. The Driscoll Globe. Source files are in <a href="https://github.com/driscollglobe/2028-machine/tree/main/changelog">changelog/</a>.</p>
 </div>
 <script>
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+const MON=['Jan.','Feb.','March','April','May','June','July','Aug.','Sept.','Oct.','Nov.','Dec.'],FULL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function ed(iso,yr){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);return m?MON[+m[2]-1]+' '+(+m[3])+(yr?', '+m[1]:''):iso;}
+// ISO dates in the source files read as "Nov. 10"; a spelled-out month is shortened the same way
+function dates(t){return t.replace(/\b(\d{4})-(\d{2})-(\d{2})\b/g,(x,y,m,d)=>MON[+m-1]+' '+(+d)).replace(new RegExp('\\b('+FULL.join('|')+') (\\d{1,2}), 2026\\b','g'),(x,mo,d)=>MON[FULL.indexOf(mo)]+' '+d);}
+function title(t){t=t.replace(/^The 2028 Machine, /,'').replace(/ of \d{4}-\d{2}-\d{2}$/,'');return dates(t.charAt(0).toUpperCase()+t.slice(1));}
 fetch('changelog/index.json?v='+Date.now()).then(r=>r.ok?r.json():[]).then(list=>{
  const seen={};
  return Promise.all(list.map(e=>fetch('changelog/'+e.file).then(r=>r.ok?r.text():'').catch(()=>''))).then(texts=>{
   document.getElementById('log').innerHTML=list.map((e,i)=>{
    const paras=texts[i].replace(/\r/g,'').split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
    if(!paras.length)return '';
-   const title=paras.shift();
+   const head=paras.shift();
    // the bare date is an anchor too, on the newest entry of that day
    const alt=seen[e.date]?'':'<span id="'+e.date+'"></span>';seen[e.date]=1;
-   return '<div class="entry" id="'+e.id+'">'+alt+'<h2>'+esc(title)+'</h2><div class="d">'+e.date+'</div>'+paras.map(p=>'<p>'+esc(p)+'</p>').join('')+'</div>';
+   return '<div class="entry" id="'+e.id+'">'+alt+'<h2>'+esc(title(head))+'</h2><div class="d">'+ed(e.date,true)+'</div>'+paras.map(p=>'<p>'+esc(dates(p))+'</p>').join('')+'</div>';
   }).join('');
   if(location.hash){const t=document.getElementById(location.hash.slice(1));if(t)t.scrollIntoView();}
  });
