@@ -42,8 +42,8 @@ const T = {
   modelLeader(ctx) {
     const { D, name } = ctx;
     if (!D || !D.frontrunner) return null;
-    if (D.two_way && D.two_way.length === 2) return 'MODEL: A TWO-WAY RACE, ' + name(D.two_way[0]) + ' ' + f1(D.first[D.two_way[0]]) + '% AND ' + name(D.two_way[1]) + ' ' + f1(D.first[D.two_way[1]]) + '% OF ' + D.runs.toLocaleString('en-US') + ' PRIMARIES';
-    return 'MODEL: ' + name(D.frontrunner.id) + ' FINISHES FIRST IN ' + f1(D.frontrunner.share) + '% OF ' + D.runs.toLocaleString('en-US') + ' PRIMARIES';
+    if (D.two_way && D.two_way.length === 2) return 'MODEL: A TWO-WAY RACE, ' + name(D.two_way[0]) + ' ' + f1(D.first[D.two_way[0]]) + '% AND ' + name(D.two_way[1]) + ' ' + f1(D.first[D.two_way[1]]) + '% OF SIMULATED PRIMARIES';
+    return 'MODEL: ' + name(D.frontrunner.id) + ' FINISHES FIRST IN ' + f1(D.frontrunner.share) + '% OF SIMULATED PRIMARIES';
   },
   widestGap(ctx) {
     const { M, D, ids, name } = ctx;

@@ -3,5 +3,10 @@
   "text": "We rebuilt the model after the midterms, and it now shows how sure it is: every share comes with a likely range, and the range narrows as South Carolina nears.",
   "href": "changelog.html#2026-11-09-drawn-priors",
   "link": "What changed"
+ },
+ "2026-11-10": {
+  "text": "Shawn Fain moved back to the Working Families pool, where the September pool map had him, which moves a little support from Ossoff to Newsom.",
+  "href": "changelog.html#2026-11-10-fain-pool",
+  "link": "What changed"
  }
 }

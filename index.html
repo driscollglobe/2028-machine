@@ -87,8 +87,9 @@ input[type=range]{accent-color:var(--wire);}
 .cc .meta{font-size:11px;color:var(--faint);margin-top:1px;}
 .cc .odds{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;}
 .cc .odds span{display:flex;flex-direction:column;min-width:0;}
-.cc .odds span i{font-style:normal;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);overflow-wrap:anywhere;}
-.cc .odds .est{font-size:9.5px;font-weight:400;color:var(--faint);margin-left:3px;}
+.cc .odds span i{font-style:normal;font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--faint);overflow-wrap:anywhere;}
+.cc .odds .est{display:block;font-size:9.5px;font-weight:400;color:var(--faint);}
+.cc .odds b{overflow-wrap:anywhere;}
 .cc .odds .spark{max-width:100%;}
 .cc .odds.pair{grid-template-columns:repeat(3,1fr);}
 .cc .odds b{color:var(--ink);font-weight:500;}
@@ -288,14 +289,18 @@ body.show-adv .ctl.adv{display:flex;}
 #aggregate.open .mrest{display:block;}
 .mmore{margin-top:8px;}
 @media(max-width:740px){.mr{flex-wrap:wrap;}.mr .mstats{width:100%;justify-content:flex-start;padding-left:58px;}.mr .mname{width:80px;font-size:14px;}}
-.csnote{font-size:13px;margin-top:8px;padding:7px 10px;background:var(--amber-soft);border-radius:5px;}
+.csnote{font-size:12.5px;color:var(--muted);}
+.cstable th.mchg{color:var(--faint);}
+.cstable td.mchg{color:var(--faint);background:var(--paper);text-align:center;font-style:italic;font-family:'Inter',sans-serif;font-size:11.5px;white-space:normal;vertical-align:middle;}
+.nopoll{color:var(--faint);font-weight:400;cursor:help;}
+.hero-why{font-family:'Inter',system-ui,sans-serif;font-size:14.5px;line-height:1.5;color:var(--muted);max-width:720px;margin-top:8px;}
 .desknote{border:1px solid var(--rule);border-left:3px solid var(--wire);background:var(--panel);padding:10px 14px;margin:0 0 10px;}
 .desknote .dnlabel{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--wire);margin-bottom:4px;}
 .desknote .dnlabel span{color:var(--faint);margin-left:6px;}
 .desknote p{margin:0;font-size:14.5px;line-height:1.5;}
 .spark{display:block;margin-top:2px;color:var(--wire);}
 .rv{display:inline-block;font-family:'Inter',system-ui,sans-serif;font-size:10px;font-variant:small-caps;letter-spacing:.06em;color:var(--faint);margin-left:8px;white-space:nowrap;}
-.desknote a,.hero-note a,.csnote a{color:inherit;text-decoration:underline;text-underline-offset:2px;}
+.desknote a,.hero-note a{color:inherit;text-decoration:underline;text-underline-offset:2px;}
 .hero-note a{font-family:'Inter',system-ui,sans-serif;font-size:14px;margin-left:4px;}
 .settled .rs{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:7px 0;border-top:1px solid var(--rule);}
 .settled .rs:first-child{border-top:0;}
@@ -337,6 +342,7 @@ body.show-adv h2.s.adv{display:block;}
  <div class="hero-range" id="heroRange"></div>
  <div class="hero-date" id="heroDate">Share of 50,000 simulated primaries won</div>
  <div class="hero-note" id="heroNote"></div>
+ <div class="hero-why" id="heroWhy" hidden></div>
 </div>
 
 <div class="desknote" id="deskNote" hidden><div class="dnlabel">Desk note <span id="deskDate"></span></div><p id="deskText"></p></div>
@@ -345,11 +351,11 @@ body.show-adv h2.s.adv{display:block;}
 
 <div class="bpstrip" id="bpstrip">
  <span class="bplabel">Today's turning points</span>
- <button class="bpchip" onclick="cueBranch('aoc')">AOC decision</button>
- <button class="bpchip" onclick="cueBranch('calendar')">NH jumps the line</button>
+ <button class="bpchip" onclick="cueBranch('aoc')">AOC runs</button>
+ <button class="bpchip" onclick="cueBranch('calendar')">New Hampshire jumps the line</button>
  <button class="bpchip" onclick="cueBranch('newsom')">Newsom scrutiny</button>
- <button class="bpchip" onclick="cueBranch('ai')">AI economy</button>
- <button class="bpchip" onclick="cueBranch('harris')">Harris polls</button>
+ <button class="bpchip" onclick="cueBranch('ai')">AI is the issue</button>
+ <button class="bpchip" onclick="cueBranch('harris')">Polls right on Harris</button>
  <button class="btn sm" onclick="shareRun()">Share this run</button>
 </div>
 
@@ -368,7 +374,7 @@ body.show-adv h2.s.adv{display:block;}
 <div class="section">
  <div class="shead"><span>Hover a card for the dossier · set In/Out to override the market</span><button class="btn sm" onclick="resetField()">Reset field</button></div>
  <div class="cardgrid" id="cardgrid"></div>
- <div class="pollnote">Poll average weights national Democratic primary polls from the last 90 days by how recent they are (a poll counts half as much every 30 days), by sample size, and by pollster. Harvard CAPS Harris samples all Democrats rather than likely primary voters and runs hot on Harris, so its Harris number is taken down 15 points and the poll counts at 0.7 of a normal one. Polls this far out track name recognition, and the model now adjusts for it: a candidate fewer voters know runs at a discount that shrinks as news coverage grows. Markets drive the model. The gap is the story.</div>
+ <div class="pollnote">Poll average weights national Democratic primary polls from the last 90 days by how recent they are (a poll counts half as much every 30 days), by sample size, and by pollster. Harvard CAPS Harris samples all Democrats rather than likely primary voters and runs hot on Harris, so its Harris number is taken down 15 points and the poll counts at 0.7 of a normal one. Polls this far out track name recognition, and the model adjusts for it: a candidate fewer voters know runs at a discount that shrinks as news coverage grows. Markets drive the model. The gap is the story.</div>
 </div>
 
 <h2 class="s">The turning point heatmap</h2>
@@ -393,27 +399,27 @@ body.show-adv h2.s.adv{display:block;}
  </div>
  <div class="section">
   <div class="shead">Candidate gates</div>
-  <div class="ctl"><label class="cl">AOC runs for president</label><input type="range" min="0" max="100" value="66" id="pAoc"><span class="cv" id="pAocOut">66%</span></div>
+  <div class="ctl"><label class="cl">AOC runs</label><input type="range" min="0" max="100" value="66" id="pAoc"><span class="cv" id="pAocOut">66%</span></div>
   <div class="ctl adv"><label class="cl">If AOC stays out, she...</label><select id="selAoc"><option value="mixed" selected>Drawn per run</option><option value="sanders">Endorses Sanders</option><option value="khanna">Endorses Khanna</option><option value="elsayed">Endorses El-Sayed</option><option value="fain">Endorses Fain</option><option value="stewart">Endorses Stewart</option><option value="neutral">Stays neutral</option></select></div>
   <div class="ctl"><label class="cl">Harris runs</label><input type="range" min="0" max="100" value="78" id="pHarris"><span class="cv" id="pHarrisOut">78%</span></div>
-  <div class="ctl"><label class="cl">Newsom holds up under scrutiny</label><input type="range" min="0" max="100" value="60" id="pNewsom"><span class="cv" id="pNewsomOut">60%</span></div>
-  <div class="ctl adv"><label class="cl">Polls are right about Harris</label><label class="dpr"><input type="checkbox" id="pollsHarris">On: Harris runs at 95% and her base strength is multiplied by 1.5</label></div>
+  <div class="ctl"><label class="cl">Newsom scrutiny: chance Newsom holds up</label><input type="range" min="0" max="100" value="60" id="pNewsom"><span class="cv" id="pNewsomOut">60%</span></div>
+  <div class="ctl adv"><label class="cl">Polls right on Harris</label><label class="dpr"><input type="checkbox" id="pollsHarris">On: Harris runs at 95% and her base strength is multiplied by 1.5</label></div>
   <div class="ctl adv"><label class="cl">Ossoff runs</label><input type="range" min="0" max="100" value="90" id="pOssRev"><span class="cv" id="pOssRevOut">90%</span></div>
  </div>
  <div class="section">
   <div class="shead">Environment</div>
-  <div class="ctl adv"><label class="cl">Trump approval (late 2027)</label><input type="range" min="30" max="60" value="38" id="pTrump"><span class="cv" id="pTrumpOut">38%</span><label class="dpr"><input type="checkbox" id="apprMixed">Drawn per run</label><div class="ctlnote" id="apprNote">Default is the latest public approval average, pulled nightly. Silver Bulletin, Sept. 10, 2026: 38.5 percent approve.</div></div>
-  <div class="ctl"><label class="cl">What 2028 is about</label><select id="selTheme"><option value="mixed" selected>Drawn per run</option><option value="afford">Affordability and class</option><option value="ai">AI and the future of work</option><option value="fight">Democracy and fighting Trumpism</option><option value="norm">Competence and electability</option></select></div>
+  <div class="ctl adv"><label class="cl">Trump approval, late 2027</label><input type="range" min="30" max="60" value="38" id="pTrump"><span class="cv" id="pTrumpOut">38%</span><label class="dpr"><input type="checkbox" id="apprMixed">Drawn per run</label><div class="ctlnote" id="apprNote">Default is the latest public approval average, pulled nightly. Silver Bulletin, Sept. 10, 2026: 38.5 percent approve.</div></div>
+  <div class="ctl"><label class="cl">What 2028 is about</label><select id="selTheme"><option value="mixed" selected>Drawn per run</option><option value="afford">Affordability issue</option><option value="ai">AI is the issue</option><option value="fight">Democracy and fighting Trumpism</option><option value="norm">Competence and electability</option></select></div>
   <div class="ctl adv"><label class="cl">Lesson of 2026</label><select id="selLesson"><option value="mixed">Drawn per run</option><option value="inst">Institutional Democrats won</option><option value="pop">Economic populists won</option><option value="muddle" selected>Both sides claim victory</option></select></div>
   <div class="ctl adv"><label class="cl">Black Democratic voters</label><select id="selBlack"><option value="mixed" selected>Drawn per run</option><option value="hold">Harris holds the coalition</option><option value="div">Remains divided</option><option value="another">Consolidates behind another</option><option value="gen">Generational realignment</option></select></div>
   <div class="ctl adv"><label class="cl">Latino Democratic voters</label><select id="selLatino"><option value="mixed" selected>Drawn per run</option><option value="aoc">Consolidate behind AOC</option><option value="pop">Break for the Movement Left</option><option value="split">Remain divided</option><option value="soft">Stay soft for Democrats</option></select></div>
-  <div class="ctl"><label class="cl">Early state calendar</label><select id="selCal"><option value="R" selected>DNC calendar: SC, NV, NH, NM, MI, VA</option><option value="NH">New Hampshire jumps the line (state law)</option><option value="IA">Iowa crashes the window</option><option value="mixed">Drawn per run</option></select><div class="ctlnote" data-reviewed="2026-09">The DNC approved this order on August 15, 2026: South Carolina January 22, Nevada February 1, New Hampshire February 8, New Mexico February 15, Michigan February 22, Virginia February 29, Super Tuesday March 7. New Hampshire state law requires it to vote first, and Iowa Democrats have threatened their own contest.</div></div>
+  <div class="ctl"><label class="cl">Early state calendar</label><select id="selCal"><option value="R" selected>DNC calendar: SC, NV, NH, NM, MI, VA</option><option value="NH">New Hampshire jumps the line</option><option value="IA">Iowa crashes the window</option><option value="mixed">Drawn per run</option></select><div class="ctlnote" data-reviewed="2026-09">The DNC approved this order on Aug. 15, 2026: South Carolina Jan. 22, Nevada Feb. 1, New Hampshire Feb. 8, New Mexico Feb. 15, Michigan Feb. 22, Virginia Feb. 29, Super Tuesday March 7. New Hampshire state law requires it to vote first, and Iowa Democrats have threatened their own contest.</div></div>
   <div class="ctl adv"><label class="cl">Media darling momentum favors</label><select id="selDarling"><option value="mixed">Drawn per run</option><option value="none" selected>No clear darling</option><option value="aoc">AOC</option><option value="ossoff">Ossoff</option><option value="moore">Moore</option><option value="khanna">Khanna</option><option value="murphy">Murphy</option></select></div>
   <div class="ctl adv"><label class="cl">Establishment coordination</label><input type="range" min="0" max="100" value="50" id="pCoord"><span class="cv" id="pCoordOut">50%</span></div>
-  <div class="ctl adv"><label class="cl">...or coordination FAILURE (nobody drops)</label><input type="range" min="0" max="100" value="35" id="pCoordFail"><span class="cv" id="pCoordFailOut">35%</span></div>
+  <div class="ctl adv"><label class="cl">Coordination fails (nobody drops out)</label><input type="range" min="0" max="100" value="35" id="pCoordFail"><span class="cv" id="pCoordFailOut">35%</span></div>
   <div class="ctl adv"><label class="cl">Random branch-point events</label><input type="range" min="0" max="100" value="40" id="pEvents"><span class="cv" id="pEventsOut">40%</span></div>
-  <div class="ctl adv"><label class="cl">Dropout support transfer</label><input type="range" min="0" max="70" value="35" id="pDrop"><span class="cv" id="pDropOut">35%</span><div class="ctlnote" data-reviewed="2026-09">Share of a departing candidate's strength that moves to pool mates, primary pool at full weight and secondary at half.</div></div>
-  <div class="ctl adv"><label class="cl">Lane crowding</label><input type="range" min="0" max="50" value="5" id="pCrowd"><span class="cv" id="pCrowdOut">5%</span><div class="ctlnote" data-reviewed="2026-11">Each pool's strength scales by 1 / (1 + c * (n - 1)), where n is how many of its candidates run. At 5, a third candidate in a lane cuts everyone in it by about 9 percent. Lowered from 15 on Nov. 9, 2026: at 15 the crowded Suburb and Fight lanes were cut so hard that Khanna, alone in a thin lane when AOC stays out, rose to 10 percent against a 2 percent market.</div></div>
+  <div class="ctl adv"><label class="cl">Dropout transfer</label><input type="range" min="0" max="70" value="35" id="pDrop"><span class="cv" id="pDropOut">35%</span><div class="ctlnote" data-reviewed="2026-09">Share of a departing candidate's strength that moves to pool mates, primary pool at full weight and secondary at half.</div></div>
+  <div class="ctl adv"><label class="cl">Lane crowding</label><input type="range" min="0" max="50" value="5" id="pCrowd"><span class="cv" id="pCrowdOut">5%</span><div class="ctlnote" data-reviewed="2026-11">Each pool's strength scales by 1 / (1 + c * (n - 1)), where n is how many of its candidates run. At 5, a third candidate in a lane cuts everyone in it by about 9 percent.</div></div>
   <div class="ctl adv"><label class="cl">Resolve conventions</label><label class="dpr"><input type="checkbox" id="resolveConv" checked>On: a convention with no pledged majority goes to more ballots</label></div>
   <div class="ctl adv"><label class="cl">Automatic delegates lean to Party Anchor and Suburb</label><input type="range" min="0" max="100" value="60" id="pAutoLean"><span class="cv" id="pAutoLeanOut">60%</span><div class="ctlnote" data-reviewed="2026-11">Share of automatic delegates that split among Party Anchor and Suburb Democrats still standing. The rest split in proportion to delegates won.</div></div>
   <div class="ctl adv"><label class="cl">Debate skill matters</label><input type="range" min="0" max="100" value="50" id="pDebate"><span class="cv" id="pDebateOut">50%</span></div>
@@ -430,7 +436,7 @@ body.show-adv h2.s.adv{display:block;}
 
 
 <h2 class="s">What moved</h2>
-<div class="section changestrip" id="changestrip"><div class="shead"><span id="csTitle">Since yesterday</span><span class="row" style="gap:5px;"><button class="seg on" id="csDay" onclick="setChangeMode('day')">Latest change</button><button class="seg" id="csLaunch" onclick="setChangeMode('launch')">Since launch</button></span></div><div id="csBody" class="muted">Loading history.csv</div></div>
+<div class="section changestrip" id="changestrip"><div class="shead"><span id="csTitle">Since yesterday</span><span class="row" style="gap:5px;"><button class="seg on" id="csDay" onclick="setChangeMode('day')">Latest change</button><button class="seg" id="csLaunch" onclick="setChangeMode('launch')">Since launch</button></span></div><div id="csBody" class="muted">Loading the daily history.</div></div>
 
 <h2 class="s">Calls</h2>
 <div class="section" id="calls"><div class="shead"><span>Dated claims, graded nightly against the books and the model</span><span class="note" id="callRecord">loading</span></div><div id="callsBody" class="muted">Loading the calls.</div><div class="legend">A call resolves true the first day its condition holds and false at its deadline if it never does. Past calls cannot be edited; a build check enforces it. <a href="track.html#calls">Full ledger</a></div></div>
@@ -603,17 +609,18 @@ const DELS={SC:55,NH:33,NV:36,NM:34,VA:99,IA:40,MI:117,GA:108,NC:116,ST:1500,LS:
 const THL={afford:'affordability and class',ai:'AI and the future of work',fight:'democracy and fighting Trumpism',norm:'competence and electability'};
 const LL={inst:'institutional Democrats won 2026',pop:'economic populists won 2026',muddle:'2026 settled nothing'};
 // random events: id -> {p, who, desc, eff}
-// turning point presets: the chips, the ?bp= deep links, and the nightly share cards all read this
+// turning point presets: the chips, the ?bp= deep links, and the nightly share cards all read this.
+// Each label is the lever's HM_LEVERS key, so a turning point has one name everywhere on the page.
 const BP_PRESETS={
- aoc:{label:'AOC decision',set:{pAoc:47,selTheme:'afford'}},
- calendar:{label:'NH jumps the line',set:{selCal:'NH'}},
+ aoc:{label:'AOC runs',set:{pAoc:47,selTheme:'afford'}},
+ calendar:{label:'New Hampshire jumps the line',set:{selCal:'NH'}},
  newsom:{label:'Newsom scrutiny',set:{pNewsom:20}},
- ai:{label:'AI economy',set:{selTheme:'ai',pAoc:20}},
- harris:{label:'Harris polls',set:{pollsHarris:true},adv:true},
+ ai:{label:'AI is the issue',set:{selTheme:'ai',pAoc:20}},
+ harris:{label:'Polls right on Harris',set:{pollsHarris:true},adv:true},
  iowa:{label:'Iowa crashes the window',set:{selCal:'IA'}},
- afford:{label:'Affordability race',set:{selTheme:'afford'}},
+ afford:{label:'Affordability issue',set:{selTheme:'afford'}},
  coordfail:{label:'Coordination fails',set:{pCoordFail:100},adv:true},
- dropout:{label:'Dropouts transfer',set:{pDrop:70},adv:true},
+ dropout:{label:'Dropout transfer',set:{pDrop:70},adv:true},
  approval:{label:'Trump approval high',set:{pTrump:58,apprMixed:false},adv:true}
 };
 const EVENTS=[
@@ -1180,6 +1187,11 @@ function pollAverages(rows,today){
  return PollAvg.weighted(rows,POLLS.pollsters,today,CANDS.map(c=>c.id));
 }
 function fmtGap(g){return (g>0?'+':'')+g.toFixed(1);}
+// one format for every share, price and probability on the page: one decimal and a percent sign.
+// Differences (gap, model vs market, What moved) are signed points with one decimal and no sign.
+function pct1(x){return (+x).toFixed(1)+'%';}
+// a missing poll or gap is a grey dash that says why
+const NOPOLL='<b class="nopoll" title="No qualifying poll">\u2013</b>';
 function pollNums(c){
  const mkt=Math.round(c.mkt*10)/10;
  const poll=POLLS.avg[c.id];
@@ -1188,17 +1200,18 @@ function pollNums(c){
 }
 function oddsRow(c){
  const x=pollNums(c);
- const pollTxt=x.poll===null?'<b>&nbsp;</b>':'<b>'+x.poll.toFixed(1)+'%</b>';
- const gapTxt=x.gap===null?'<b>&nbsp;</b>':'<b class="gap '+(x.gap>=0?'pos':'neg')+'">'+fmtGap(x.gap)+'</b>';
- return '<span'+(typeof c.madj==='number'?' title="Corrected for long-shot bias: '+c.madj.toFixed(1)+'%. The model anchors to the corrected price."':'')+'><i>market</i><b>'+x.mkt.toFixed(1)+'%</b></span><span><i>poll</i>'+pollTxt+'</span><span><i>gap</i>'+gapTxt+'</span>';
+ const pollTxt=x.poll===null?NOPOLL:'<b>'+pct1(x.poll)+'</b>';
+ const gapTxt=x.gap===null?NOPOLL:'<b class="gap '+(x.gap>=0?'pos':'neg')+'">'+fmtGap(x.gap)+'</b>';
+ return '<span'+(typeof c.madj==='number'?' title="Corrected for long-shot bias: '+pct1(c.madj)+'. The model anchors to the corrected price."':'')+'><i>Market</i><b>'+pct1(x.mkt)+'</b></span><span><i>Poll</i>'+pollTxt+'</span><span><i>Gap</i>'+gapTxt+'</span>';
 }
-function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=oddsRow(c);const r=document.getElementById('runrow_'+c.id);if(r)r.innerHTML='<span'+runTip(c)+'><i>run</i><b>'+runPct(c)+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+nidCell(c)+attnCell(c);});}
+function runRow(c){return '<span'+runTip(c)+'><i>Run</i><b>'+pct1(runPct(c))+'</b></span><span><i>Rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+nidCell(c)+attnCell(c);}
+function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=oddsRow(c);const r=document.getElementById('runrow_'+c.id);if(r)r.innerHTML=runRow(c);});}
 function renderPollBoard(){
  const body=document.getElementById('pollboardBody');if(!body)return;
  const top=CANDS.filter(c=>c.id!=='other').slice().sort((a,b)=>b.mkt-a.mkt).slice(0,6);
- let h='<table><tr><th>Candidate</th><th>Market blend</th><th>Poll average</th><th>Gap</th></tr>';
+ let h='<table><tr><th>Candidate</th><th>Market</th><th>Poll</th><th>Gap</th></tr>';
  top.forEach(c=>{const x=pollNums(c);
-  h+='<tr><td>'+c.name+'</td><td>'+x.mkt.toFixed(1)+'%</td><td>'+(x.poll===null?'n/a':x.poll.toFixed(1)+'%')+'</td><td class="gap '+(x.gap===null?'':(x.gap>=0?'pos':'neg'))+'">'+(x.gap===null?'n/a':fmtGap(x.gap))+'</td></tr>';});
+  h+='<tr><td>'+c.name+'</td><td>'+pct1(x.mkt)+'</td><td>'+(x.poll===null?NOPOLL:pct1(x.poll))+'</td><td class="gap '+(x.gap===null?'':(x.gap>=0?'pos':'neg'))+'">'+(x.gap===null?NOPOLL:fmtGap(x.gap))+'</td></tr>';});
  h+='</table>';
  body.innerHTML=h;
 }
@@ -1218,16 +1231,20 @@ function loadPolls(){
 // while the blend has them under 1 percent. Nobody ever gets an initials avatar.
 function onCards(c){return c.id!=='other'&&(PHOTOS[c.id]||c.mkt>=1);}
 let CARD_SET='';
+// field cards sort in leaderboard order (LB_ORDER, set whenever the leaderboard renders); before it loads, by market
+let LB_ORDER=[];
+function cardPos(id){const i=LB_ORDER.indexOf(id);return i<0?1000-(CANDS.find(c=>c.id===id)||{mkt:0}).mkt:i;}
+function sortCards(ids){LB_ORDER=ids.slice();const g=document.getElementById('cardgrid');if(!g)return;[...g.querySelectorAll('.cc')].sort((a,b)=>cardPos(a.dataset.id)-cardPos(b.dataset.id)).forEach(el=>g.appendChild(el));}
 function buildCards(){
  const grid=document.getElementById('cardgrid');
- const shown=CANDS.filter(onCards);CARD_SET=shown.map(c=>c.id).join(',');
+ const shown=CANDS.filter(onCards).sort((a,b)=>cardPos(a.id)-cardPos(b.id));CARD_SET=shown.map(c=>c.id).sort().join(',');
  grid.innerHTML=shown.map(c=>{
   const pic=PHOTOS[c.id]?'<img class="photo" src="'+PHOTOS[c.id]+'" alt="'+c.name+'">':'<div class="mono">'+'</div>';
-  return '<div class="cc" onclick="openDossier(\''+c.id+'\')"><div class="set" onclick="event.stopPropagation()"><select id="tg_'+c.id+'"><option value="sample" selected>Auto</option><option value="in">In</option><option value="out">Out</option></select></div>'
+  return '<div class="cc" data-id="'+c.id+'" onclick="openDossier(\''+c.id+'\')"><div class="set" onclick="event.stopPropagation()"><select id="tg_'+c.id+'"><option value="sample" selected>Auto</option><option value="in">In</option><option value="out">Out</option></select></div>'
    +pic
    +'<div class="nm">'+c.name+'</div><div class="meta">'+c.role+' · '+c.age+' in \u201928</div>'
    +'<div class="odds polls" id="odds_'+c.id+'">'+oddsRow(c)+'</div>'
-   +'<div class="odds pair" id="runrow_'+c.id+'"><span'+runTip(c)+'><i>run</i><b>'+runPct(c)+'%</b></span><span><i>rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+nidCell(c)+attnCell(c)+'</div>'
+   +'<div class="odds pair" id="runrow_'+c.id+'">'+runRow(c)+'</div>'
    +'<span class="lane '+c.lane+'" title="'+poolTip(c).replace(/"/g,'&quot;')+'">'+tagLabel(c)+'</span>'
    +'<div class="sw"><b>Strength:</b> '+c.str+'<br><b>Weakness:</b> '+c.weak+'</div>'
    +'<a class="gaplink" href="gap.html#'+c.id+'" onclick="event.stopPropagation()">Polls vs market</a></div>';
@@ -1263,22 +1280,23 @@ function renderAggregate(rows,TOTAL,contestedPct,ballots){
  const row=r=>{
   const c=CANDS.find(x=>x.id===r.id);const pn=pollNums(c);
   const pic=PHOTOS[r.id]?'<img class="mpic" src="'+PHOTOS[r.id]+'" alt="">':'<span class="mmono">'+'</span>';
-  const gap=pn.gap===null?'':'<b class="gap '+(pn.gap>=0?'pos':'neg')+'">'+fmtGap(pn.gap)+'</b>';
-  return '<div class="mr">'+pic+'<div class="mname">'+lastName(r.id)+'</div><div class="mtrack"><div class="mfill '+(c.lane||'out')+'" data-w="'+(r.first/mx*100).toFixed(1)+'"></div></div><div class="mshare">'+r.first.toFixed(1)+'%</div><div class="mrange" title="10th to 90th percentile when our own strength estimates are redrawn">'+rangeTxt(r.range)+'</div>'
-   +'<div class="mstats"><span>mkt <b>'+pn.mkt.toFixed(1)+'</b></span><span>poll '+(pn.poll===null?'':'<b>'+pn.poll.toFixed(1)+'</b>')+'</span><span>gap '+gap+'</span></div></div>';
+  const gap=pn.gap===null?NOPOLL:'<b class="gap '+(pn.gap>=0?'pos':'neg')+'">'+fmtGap(pn.gap)+'</b>';
+  return '<div class="mr">'+pic+'<div class="mname">'+lastName(r.id)+'</div><div class="mtrack"><div class="mfill '+(c.lane||'out')+'" data-w="'+(r.first/mx*100).toFixed(1)+'"></div></div><div class="mshare">'+pct1(r.first)+'</div><div class="mrange" title="10th to 90th percentile when our own strength estimates are redrawn">'+rangeTxt(r.range)+'</div>'
+   +'<div class="mstats"><span>Market <b>'+pct1(pn.mkt)+'</b></span><span>Poll '+(pn.poll===null?NOPOLL:'<b>'+pct1(pn.poll)+'</b>')+'</span><span>Gap '+gap+'</span></div></div>';
  };
  let h='<div class="mtop">'+rows.slice(0,5).map(row).join('')+'</div>';
  if(rows.length>5)h+='<div class="mrest">'+rows.slice(5).map(row).join('')+'</div><button class="btn sm mmore" onclick="toggleAll(this)">Show all '+rows.length+'</button>';
- h+='<div class="legend">Share of '+TOTAL.toLocaleString()+' simulated primaries where each candidate finishes first, at '+(TOTAL>=20000?'the default settings':'your current settings')+'. The small range beside each share is where it lands 80 percent of the time when we redraw our own estimates of each candidate\u2019s strength and each pool\u2019s size. Bar color is the candidate\u2019s pool: <span style="color:var(--p-anchor)">Party Anchor</span>, <span style="color:var(--p-fight)">Fight</span>, <span style="color:var(--p-suburb)">Suburb Democrats</span>, <span style="color:var(--p-working)">Working Families</span>, <span style="color:var(--p-movement)">Movement Left</span>, <span style="color:var(--p-out)">Outsider</span>. '+contestedPct+'% of these runs reach the convention without a pledged majority'+(ballots&&!ballots.unresolved?'; the model settles them on later ballots':', which the model leaves unresolved')+'. mkt is the Kalshi and Polymarket blend, poll the weighted national average, gap poll minus market.</div>';
+ h+='<div class="legend">Share of simulated primaries where each candidate finishes first, at '+(TOTAL>=20000?'the default settings':'your current settings')+'. The small range beside each share is where it lands 80 percent of the time when we redraw our own estimates of each candidate\u2019s strength and each pool\u2019s size. Bar color is the candidate\u2019s pool: <span style="color:var(--p-anchor)">Party Anchor</span>, <span style="color:var(--p-fight)">Fight</span>, <span style="color:var(--p-suburb)">Suburb Democrats</span>, <span style="color:var(--p-working)">Working Families</span>, <span style="color:var(--p-movement)">Movement Left</span>, <span style="color:var(--p-out)">Outsider</span>. '+contestedPct+'% of these runs reach the convention without a pledged majority'+(ballots&&!ballots.unresolved?'; the model settles them on later ballots':', which the model leaves unresolved')+'. Market is the Kalshi and Polymarket blend, Poll the weighted national average, and Gap is poll minus market.</div>';
  h+=ballotLine(ballots);
  setTimeout(()=>{document.querySelectorAll('#aggregate .mfill').forEach(el=>{el.style.width=el.dataset.w+'%';});},30);
+ setTimeout(()=>sortCards(rows.map(r=>r.id)),0);
  return h;
 }
 function toggleAll(btn){const agg=document.getElementById('aggregate');agg.classList.toggle('open');const open=agg.classList.contains('open');btn.textContent=open?'Show top five':'Show all '+document.querySelectorAll('#aggregate .mr').length;if(open)setTimeout(()=>{document.querySelectorAll('#aggregate .mrest .mfill').forEach(el=>{el.style.width=el.dataset.w+'%';});},30);}
 let MODEL_RANK={};
 let MODEL_FIRST={};
 // model share minus market price for a field card; updates whenever the live model reruns
-function crowdCell(c){const x=CROWD&&CROWD.candidates&&CROWD.candidates[c.id];return x?'<span title="median run odds from '+CROWD.count+' anonymous reader brackets"><i>Globe readers</i><b>'+Math.round(x.median)+'%</b></span>':'';}
+function crowdCell(c){const x=CROWD&&CROWD.candidates&&CROWD.candidates[c.id];return x?'<span title="median run odds from '+CROWD.count+' anonymous reader brackets"><i>Globe readers</i><b>'+pct1(x.median)+'</b></span>':'';}
 // ==ATTENTION== attention.csv: Google News results per candidate per day (scripts/fetch_attention.py).
 // Display only. It never enters the model.
 let ATTN={};
@@ -1300,9 +1318,9 @@ function runPct(c){if(typeof c.runIfAocOut!=='number')return c.run;const a=+((do
 function runTip(c){return typeof c.runIfAocOut==='number'?' title="Runs only if AOC stays out, and then '+c.runIfAocOut+' percent of the time"':'';}
 function nidCell(c){if(!NAMEID.on||typeof NAMEID.x0[c.id]!=='number')return '';const x=Math.round(NAMEID.x0[c.id]*100),src=NAMEID.src[c.id];
  const tip=NAMEID.est[c.id]?'No Economist/YouGov reading yet. Estimated from our attention score of '+(NAMEID.score[c.id]?NAMEID.score[c.id].score:1)+' out of 10.':'Share who have heard enough to rate them. Economist/YouGov, '+edDate(src.date)+'. '+src.source;
- return '<span title="'+tip.replace(/"/g,'&quot;')+'"><i>known by</i><b>'+x+'%'+(NAMEID.est[c.id]?'<small class="est">est.</small>':'')+'</b></span>';}
-function attnCell(c){const a=ATTN[c.id];if(!a)return '';const tot=a.v.reduce((s,x)=>s+(x||0),0);return '<span title="Google News results, last '+a.days+' days; not in the model'+(a.cap?'; a day at 100 means 100 or more':'')+'"><i>news, '+a.days+'d</i><b>'+tot+(a.cap?'+':'')+'</b>'+spark(a.v)+'</span>';}
-function mmm(c){const f=MODEL_FIRST[c.id];if(typeof f!=='number')return '';const g=Math.round((f-c.mkt)*10)/10;return '<span title="model share minus market price"><i>model vs mkt</i><b class="gap '+(g>=0?'pos':'neg')+'">'+(g>0?'+':'')+g.toFixed(1)+'</b></span>';}
+ return '<span title="'+tip.replace(/"/g,'&quot;')+'"><i>Known by</i><b>'+pct1(x)+(NAMEID.est[c.id]?' <small class="est">est.</small>':'')+'</b></span>';}
+function attnCell(c){const a=ATTN[c.id];if(!a)return '';const tot=a.v.reduce((s,x)=>s+(x||0),0);return '<span title="Google News results, last '+a.days+' days; not in the model'+(a.cap?'; a day at 100 means 100 or more':'')+'"><i>News, '+a.days+' days</i><b>'+tot+(a.cap?'+':'')+'</b>'+spark(a.v)+'</span>';}
+function mmm(c){const f=MODEL_FIRST[c.id];if(typeof f!=='number')return '';const g=Math.round((f-c.mkt)*10)/10;return '<span title="Model share minus market price, in points"><i>Model vs market</i><b class="gap '+(g>=0?'pos':'neg')+'">'+(g>0?'+':'')+g.toFixed(1)+'</b></span>';}
 function setModelRank(first){MODEL_FIRST=first||{};const ids=CANDS.filter(c=>c.id!=='other').map(c=>c.id).sort((a,b)=>(first[b]||0)-(first[a]||0));MODEL_RANK={};ids.forEach((id,i)=>MODEL_RANK[id]=i+1);refreshOdds();}
 // ==PRECOMPUTED DEFAULT== default.json is written nightly by scripts/baseline.js. On load the page paints from it
 // and only simulates once a reader changes a control.
@@ -1316,7 +1334,7 @@ function paintDefault(){
    heroFromRows(hrows,(two?'Within two points of each other in ':'Wins the most of ')+d.runs.toLocaleString()+' simulated primaries, run on '+edDate(d.date,false)+' market prices',two);}
   setModelRank(d.first);
   const agg=document.getElementById('aggregate');agg.style.display='block';agg.classList.remove('open');
-  agg.innerHTML='<div class="shead"><span>Who finishes first · '+d.runs.toLocaleString()+' simulated primaries</span><span class="note">Run overnight '+edDate(d.date,false)+' · change any control to run your own</span></div><div id="aggBody"></div>';
+  agg.innerHTML='<div class="shead"><span>Who finishes first</span><span class="note">Run overnight '+edDate(d.date,false)+' · change any control to run your own</span></div><div id="aggBody"></div>';
   paintDefaultRows();
   renderBracketResult(null);
  }).catch(()=>{DEF.pending=false;fallbackDefault();});
@@ -1395,7 +1413,7 @@ function openDossier(id){
  const laneL=tagLabel(c)+(c.tag?' ('+poolLabel(c.lane)+')':'')+(c.lane2?' (secondary: '+poolLabel(c.lane2)+')':'');
  const coalition=(POOL_META[c.lane]||POOL_META.out).def+(POOL_WHY[id]?' '+POOL_WHY[id]:'');
  let h='<div class="md-head">'+pic+'<div><div class="md-name">'+c.name+'</div><div class="md-meta">'+c.role+' · age '+c.age+' in 2028 · '+laneL+'</div></div></div>';
- h+='<div class="md-odds"><span>market <b>'+c.mkt+'%</b></span><span'+runTip(c)+'>runs <b>'+runPct(c)+'%</b></span><span>my rank <b>#'+c.rank+'</b></span></div>';
+ h+='<div class="md-odds"><span>Market <b>'+pct1(c.mkt)+'</b></span><span'+runTip(c)+'>Run <b>'+pct1(runPct(c))+'</b></span><span>Desk rank <b>#'+c.rank+'</b></span></div>';
  const rv=c.reviewed?'<span class="rv">Reviewed '+edMonth(c.reviewed)+'</span>':'';
  const as=NAMEID.score[id];
  h+='<div class="md-sec"><h4>Strength</h4><p>'+c.str+rv+'</p></div>';
@@ -1431,10 +1449,10 @@ function computePaths(id){
   // most sensitive: largest absolute deviation from base
   const sens=scored.slice().sort((a,b)=>Math.abs(b.r-baseRate)-Math.abs(a.r-baseRate))[0];
   let h='<h4>Best path</h4><ul class="md-path">';
-  best.forEach(b=>h+='<li><span class="pgood">When '+b.l+'</span>, finishes first '+b.r.toFixed(0)+'%</li>');
+  best.forEach(b=>h+='<li><span class="pgood">When '+b.l+'</span>, finishes first '+pct1(b.r)+'</li>');
   h+='</ul><h4 style="margin-top:10px;">Worst path</h4><ul class="md-path">';
-  worst.forEach(b=>h+='<li><span class="pbad">When '+b.l+'</span>, finishes first '+b.r.toFixed(0)+'%</li>');
-  h+='</ul><div class="md-sec"><h4>Most sensitive to</h4><p>'+sens.l.charAt(0).toUpperCase()+sens.l.slice(1)+' ('+(sens.r>baseRate?'+':'')+(sens.r-baseRate).toFixed(0)+' points vs baseline of '+baseRate.toFixed(0)+'%)</p></div>';
+  worst.forEach(b=>h+='<li><span class="pbad">When '+b.l+'</span>, finishes first '+pct1(b.r)+'</li>');
+  h+='</ul><div class="md-sec"><h4>Most sensitive to</h4><p>'+sens.l.charAt(0).toUpperCase()+sens.l.slice(1)+' ('+(sens.r>baseRate?'+':'')+(sens.r-baseRate).toFixed(0)+' points against a baseline of '+pct1(baseRate)+')</p></div>';
   box.innerHTML=h;
  },20);
 }
@@ -1449,16 +1467,76 @@ function updateFrontrunner(){
  if(bk){const hrows=Object.keys(w).map(id=>({id,first:w[id]/tot*100})).filter(x=>x.id!=='other').sort((a,b)=>b.first-a.first);if(hrows.length)heroFromRows(hrows,(twoWay(hrows)?'Within two points of each other in ':'Wins the most of ')+N.toLocaleString()+' simulated primaries with your settings');}
 }
 function rangeTxt(r){return r&&r.length===2?Math.round(r[0])+' to '+Math.round(r[1]):'';}
-function setHero(name,pct,label,range){document.getElementById('heroShare').textContent=name+' '+pct+'%';const hr=document.getElementById('heroRange');if(hr)hr.textContent=range?'likely '+rangeTxt(range):'';if(label)document.getElementById('heroDate').textContent=label;}
+function setHero(name,pct,label,range){document.getElementById('heroShare').textContent=name+' '+pct1(pct);const hr=document.getElementById('heroRange');if(hr)hr.textContent=range?'likely '+rangeTxt(range):'';if(label)document.getElementById('heroDate').textContent=label;}
 // the hero from a sorted result list: one name, or both when twoWay says the top two are inside the noise
 function heroFromRows(rows,label,two){
  two=two===undefined?twoWay(rows):two;
- if(!two){const r=rows[0];setHero(nm(r.id),Math.round(r.first),label,r.range);return;}
+ HERO_ROWS=rows;renderState(rows);renderWhy();
+ if(!two){const r=rows[0];setHero(nm(r.id),r.first,label,r.range);return;}
  const a=rows.find(x=>x.id===two[0]),b=rows.find(x=>x.id===two[1]);
  document.getElementById('heroShare').textContent=lastName(a.id)+' and '+lastName(b.id);
  const hr=document.getElementById('heroRange');
- if(hr)hr.textContent='A two-way race: '+lastName(a.id)+' '+Math.round(a.first)+'%'+(a.range?', likely '+rangeTxt(a.range):'')+'; '+lastName(b.id)+' '+Math.round(b.first)+'%'+(b.range?', likely '+rangeTxt(b.range):'');
+ if(hr)hr.textContent='A two-way race: '+lastName(a.id)+' '+pct1(a.first)+(a.range?', likely '+rangeTxt(a.range):'')+'; '+lastName(b.id)+' '+pct1(b.first)+(b.range?', likely '+rangeTxt(b.range):'');
  if(label)document.getElementById('heroDate').textContent=label;
+}
+// ==HERO LINES== Two sentences under the hero number, both written from the numbers on the page.
+// renderState: the state of the race from the current result rows. renderWhy: when the model's leader is not the
+// market's, why, from the drivers that actually separate the two: our own strength ratings and name ID (both on the
+// operator side, weighted by 1 minus market weight), run odds, how crowded each one's pool is, and the theme the
+// model draws most often. A driver counts when it favors the model's leader by more than 5 percent; the two
+// biggest are named. Nothing here is hardcoded to today's field.
+let HERO_ROWS=null;
+function renderState(rows){
+ const el=document.getElementById('heroNote');if(!el||!rows||!rows.length)return;
+ const r=rows.filter(x=>x.id!=='other');if(!r.length)return;
+ const big=r.filter(x=>x.first>=10).slice(0,3), rest=r[big.length];
+ const names=big.map(x=>lastName(x.id)), list=names.length>2?names.slice(0,-1).join(', ')+' and '+names[names.length-1]:names.join(' and ');
+ const sum=big.reduce((a,x)=>a+x.first,0);
+ let t;
+ if(!big.length)t='No candidate wins more than '+r[0].first.toFixed(1)+' percent of simulated primaries.';
+ else if(big.length===1)t=list+' wins '+big[0].first.toFixed(1)+' percent of simulated primaries'+(rest?', and no one else wins more than '+rest.first.toFixed(1)+' percent.':'.');
+ else t=list+' win '+sum.toFixed(1)+' percent of simulated primaries between them'+(rest?', and no one else wins more than '+rest.first.toFixed(1)+' percent.':'.');
+ el.textContent=t;
+}
+function runProb(id){
+ const tg=document.getElementById('tg_'+id);if(tg&&tg.value==='in')return 100;if(tg&&tg.value==='out')return 0;
+ if(id==='aoc')return +document.getElementById('pAoc').value;
+ if(id==='harris')return document.getElementById('pollsHarris').checked?95:+document.getElementById('pHarris').value;
+ if(id==='ossoff')return +document.getElementById('pOssRev').value;
+ const c=CANDS.find(x=>x.id===id);return c?runPct(c):0;
+}
+function whyDrivers(L,K){
+ const cL=CANDS.find(c=>c.id===L),cK=CANDS.find(c=>c.id===K),out=[],a=P('pAnchor'),w=1-a;
+ const nL=lastName(L),nK=lastName(K),ln=Math.log;
+ if(w>0&&cL.base>cK.base)out.push({s:w*ln(cL.base/cK.base),t:'our own strength ratings, which count for '+(Math.round(w*100)===50?'half':Math.round(w*100)+' percent')+' of the model, rate '+nL+' above '+nK+' ('+cL.base+' to '+cK.base+')'});
+ if(w>0&&NAMEID.on&&typeof NAMEID.x0[L]==='number'&&typeof NAMEID.x0[K]==='number'){
+  const m0=monthsTo(CAL_DATES.early[0]),r=nidMultAt(L,m0)/nidMultAt(K,m0);
+  if(r>1)out.push({s:w*ln(r),t:'more Democrats know '+nL+' ('+Math.round(NAMEID.x0[L]*100)+' percent to '+Math.round(NAMEID.x0[K]*100)+(NAMEID.est[L]||NAMEID.est[K]?', partly estimated':'')+')'});
+ }
+ const rL=runProb(L),rK=runProb(K);
+ if(rK>0&&rL>rK)out.push({s:ln(rL/rK),t:nL+' is likelier to run ('+rL.toFixed(1)+' percent to '+rK.toFixed(1)+')'});
+ const crowd=P('pCrowd');
+ if(crowd>0){
+  const mates=id=>POOLS[POOLOF[id]].filter(x=>x!==id&&x!=='other').reduce((t,x)=>t+runProb(x)/100,0);
+  const mL=mates(L),mK=mates(K),f=m=>1/(1+crowd*m);
+  if(f(mL)>f(mK))out.push({s:ln(f(mL)/f(mK)),t:nK+' splits the '+poolLabel(POOLOF[K])+' vote with about '+Math.round(mK)+' other likely candidate'+(Math.round(mK)===1?'':'s')+', against '+Math.round(mL)+' for '+nL});
+ }
+ const th=V('selTheme');
+ if(TM[L]&&TM[K]){
+  let W;if(th!=='mixed'){W={};W[th]=1;}else{const ap=document.getElementById('apprMixed').checked?45.5:+V('pTrump'),pn=Math.min(1,Math.max(0,(ap-35)/30));W={afford:0.48-0.18*pn,fight:0.16+0.20*pn,norm:0.14+0.12*pn,ai:0.22-0.14*pn};}
+  const s=Object.keys(W).reduce((t,k)=>t+W[k]*ln(TM[L][k]/TM[K][k]),0), top=Object.keys(W).sort((x,y)=>W[y]-W[x])[0];
+  if(s>0&&TM[L][top]>TM[K][top])out.push({s,t:(th==='mixed'?'the race the model draws most often, on '+THL[top]+', suits '+nL+' better':'a race about '+THL[top]+' suits '+nL+' better')});
+ }
+ return out.filter(d=>d.s>Math.log(1.05)).sort((x,y)=>y.s-x.s).slice(0,2);
+}
+function renderWhy(){
+ const el=document.getElementById('heroWhy');if(!el)return;
+ const rows=(HERO_ROWS||[]).filter(x=>x.id!=='other');
+ const mk=CANDS.filter(c=>c.id!=='other').slice().sort((a,b)=>b.mkt-a.mkt)[0];
+ if(!rows.length||!mk||rows[0].id===mk.id){el.hidden=true;el.textContent='';return;}
+ const L=rows[0].id,d=whyDrivers(L,mk.id);
+ el.textContent='The markets have '+lastName(mk.id)+' ahead at '+pct1(mk.mkt)+'. The model puts '+lastName(L)+' first'+(d.length?' because '+d.map(x=>x.t).join(', and '):'')+'.';
+ el.hidden=false;
 }
 function lastName(id){const c=CANDS.find(x=>x.id===id);return c&&c.short?c.short:nm(id).split(' ').slice(-1)[0];}
 function resetField(){CANDS.forEach(c=>{const e=document.getElementById('tg_'+c.id);if(e)e.value='sample';});updateFrontrunner();}
@@ -1484,26 +1562,25 @@ function loadHistory(){
  fetch('history.csv?v='+Date.now()).then(r=>r.ok?r.text():null).then(t=>{
   if(!t){document.getElementById('csBody').textContent='The daily history didn\u2019t load.';return;}
   HIST.rows=parseCSV(t).filter(r=>r.date);
-  return fetch('notes/changes.json?v='+Date.now()).then(r=>r.ok?r.json():{}).catch(()=>({})).then(c=>{CHANGES=c||{};renderChangeStrip();renderHeroNote();});
+  return Promise.all([fetch('notes/changes.json?v='+Date.now()).then(r=>r.ok?r.json():{}).catch(()=>({})),fetch('changelog/index.json?v='+Date.now()).then(r=>r.ok?r.json():[]).catch(()=>[])]).then(([c,ix])=>{
+   CHANGES=c||{};
+   // a model change is a changelog entry with a slug after its date; the weekly market roundups are just the date
+   MODEL_CHANGE_DATES=new Set((Array.isArray(ix)?ix:[]).filter(e=>e&&e.id&&e.date&&e.id!==e.date).map(e=>e.date));
+   HIST.rows.forEach(r=>{if((r.note||'').trim())MODEL_CHANGE_DATES.add(r.date);});
+   renderChangeStrip();});
  }).catch(()=>{document.getElementById('csBody').textContent='The daily history didn\u2019t load.';});
 }
-// The line under the headline. history.csv notes are internal shorthand, so readers never see them. A reader
-// sentence for each model change lives in notes/changes.json, keyed by date; a note row without one gets a
-// generic sentence. Both link to the changelog page.
-let CHANGES={};
+// The method-change notice lives in What moved only, once. history.csv notes are internal shorthand, so readers
+// never see them. A reader sentence for each model change lives in notes/changes.json, keyed by date; a change
+// without one gets a generic sentence. Both link to the changelog page.
+let CHANGES={}, MODEL_CHANGE_DATES=new Set();
 function changeText(date){
  const c=CHANGES[date];
  const href='changelog.html#'+date;
  if(c&&c.text)return {text:c.text,href:c.href||href,link:c.link||'What changed'};
  return {text:'We changed how the model works on '+edDate(date,false)+', so part of any move that day came from the model, not the markets.',href,link:'What changed'};
 }
-function changeHtml(date,lead){const c=changeText(date);return (lead?'<b>'+edDate(date,false)+'</b> ':'')+callEsc(c.text)+' <a href="'+c.href+'">'+c.link+'</a>';}
-function renderHeroNote(){
- const el=document.getElementById('heroNote');if(!el)return;
- const cutoff=new Date(Date.now()-7*86400000).toISOString().slice(0,10);
- const r=HIST.rows.slice().reverse().find(x=>(x.note||'').trim()&&x.date>=cutoff);
- el.innerHTML=r?changeHtml(r.date,false):'';
-}
+function changeHtml(date,lead){const c=changeText(date);return (lead?'<b>Model changed '+edDate(date,false)+'.</b> ':'')+callEsc(c.text)+' <a href="'+c.href+'">'+c.link+'</a>';}
 // ==WHAT 2026 SETTLED== resolved levers render locked, no slider
 function renderSettled(){
  const el=document.getElementById('settledBody');if(!el)return;
@@ -1596,12 +1673,16 @@ function renderChangeStrip(){
   const kal=(numOr(last['kal_'+id])!==null&&numOr(base['kal_'+id])!==null)?numOr(last['kal_'+id])-numOr(base['kal_'+id]):null;
   const pol=(numOr(last['poly_'+id])!==null&&numOr(base['poly_'+id])!==null)?numOr(last['poly_'+id])-numOr(base['poly_'+id]):null;
   const r1=numOr(last['run_'+id]),r0=numOr(base['run_'+id]);
+  // (model deltas on a model change day are shown greyed out below, not as movement)
   return {id,dk:k0===null?null:k1-k0,dm:m0===null?null:m1-m0,kal,pol,dr:(r1===null||r0===null)?null:r1-r0};
  }).sort((a,b)=>Math.abs(b.dk===null?0:b.dk)-Math.abs(a.dk===null?0:a.dk));
  // only render the book and run columns when at least one row has the data
  const hasBook=items.some(x=>x.kal!==null&&x.pol!==null), hasRun=items.some(x=>x.dr!==null);
  const baseMonth=base.date.slice(0,7);
- let h='<table class="cstable"><tr><th>Candidate</th><th>Market</th><th>Model</th>'+(hasBook?'<th style="text-align:left">Which book moved</th>':'')+(hasRun?'<th>Run odds</th>':'')+'</tr>';
+ // a model change inside the window: the model column is method, not movement, so it is greyed out
+ const chg=[...MODEL_CHANGE_DATES].filter(d=>d>base.date&&d<=last.date).sort(), cd=chg.length?chg[chg.length-1]:null;
+ const shown=Math.min(items.length,6);
+ let h='<table class="cstable"><tr><th>Candidate</th><th>Market</th><th'+(cd?' class="mchg"':'')+'>Model</th>'+(hasBook?'<th style="text-align:left">Which book moved</th>':'')+(hasRun?'<th>Run odds</th>':'')+'</tr>';
  items.forEach((x,i)=>{
   let book='';
   if(x.kal!==null&&x.pol!==null){
@@ -1611,7 +1692,12 @@ function renderChangeStrip(){
    else book='both books '+sgn(x.kal);
   }
   h+='<tr'+(i>=6?' class="csmore" hidden':'')+'><td><span class="pooldot" style="background:var(--p-'+(POOLOF[x.id]||'out')+')"></span>'+nm(x.id)+'</td>';
-  if(x.dk===null&&x.dm===null)h+='<td colspan="2" class="nottracked">not tracked in '+edMonth(baseMonth)+'</td>';
+  if(cd){
+   h+=x.dk===null?'<td class="nottracked">not tracked in '+edMonth(baseMonth)+'</td>':'<td class="'+cls(x.dk)+'">'+sgn(x.dk)+'</td>';
+   if(i===0)h+='<td class="mchg" rowspan="'+shown+'">Model changed '+(cd===last.date&&HIST.mode==='day'?'today':edDate(cd,false))+'</td>';
+   else if(i>=shown)h+='<td class="mchg"></td>';
+  }
+  else if(x.dk===null&&x.dm===null)h+='<td colspan="2" class="nottracked">not tracked in '+edMonth(baseMonth)+'</td>';
   else h+='<td class="'+(x.dk===null?'':cls(x.dk))+'">'+(x.dk===null?'':sgn(x.dk))+'</td><td class="'+(x.dm===null?'':cls(x.dm))+'">'+(x.dm===null?'':sgn(x.dm))+'</td>';
   if(hasBook)h+='<td class="book">'+book+'</td>';
   if(hasRun)h+='<td class="'+(x.dr===null?'':cls(x.dr))+'">'+(x.dr===null?'':sgn(x.dr))+'</td>';
@@ -1620,10 +1706,9 @@ function renderChangeStrip(){
  h+='</table>';
  if(items.length>6)h+='<a class="csmorelink" href="#" onclick="event.preventDefault();document.querySelectorAll(\'#csBody .csmore\').forEach(r=>r.hidden=!r.hidden);this.textContent=this.textContent===\'Show more\'?\'Show fewer\':\'Show more\';">Show more</a>';
  if(!hasBook&&!hasRun)h+='<div class="legend">Book detail and run odds start with the next overnight update.</div>';
- h+='<div class="legend">Market is the Kalshi and Polymarket blend, model is first place share at default settings, both in points.</div>';
- // structural notes: any row after the base that carries one explains a jump the books did not cause
- const bi=rows.indexOf(base);
- rows.slice(bi+1).filter(r=>(r.note||'').trim()).forEach(r=>{h+='<div class="csnote">'+changeHtml(r.date,true)+'</div>';});
+ h+='<div class="legend">Market is the Kalshi and Polymarket blend, Model is first place share at default settings, both in points.</div>';
+ // the method-change notice, once: the newest model change in the window
+ if(cd)h+='<div class="legend csnote">'+changeHtml(cd,true)+'</div>';
  body.innerHTML=h;
 }
 // ==YOUR BRACKET== reader priors for the top six by market, encoded in the URL as ?me=
@@ -1658,9 +1743,9 @@ function renderBracketResult(res){
  let mkt=null;
  if(DEF.data)mkt=DEF.data.order.slice(0,5).map(id=>({id,pct:DEF.data.first[id]}));
  if(!mine&&!mkt){el.innerHTML='';return;}
- const col=(title,list,note)=>'<div class="brcol"><h4>'+title+'</h4>'+(list?list.map(x=>'<div class="brrow"><span>'+nm(x.id)+'</span><b>'+x.pct.toFixed(1)+'%</b></div>').join(''):'<div class="muted">'+note+'</div>')+'</div>';
+ const col=(title,list,note)=>'<div class="brcol"><h4>'+title+'</h4>'+(list?list.map(x=>'<div class="brrow"><span>'+nm(x.id)+'</span><b>'+pct1(x.pct)+'</b></div>').join(''):'<div class="muted">'+note+'</div>')+'</div>';
  const crowd=CROWD?BR.ids.map(id=>({id,pct:CROWD.candidates[id]?CROWD.candidates[id].median:NaN})).filter(x=>isFinite(x.pct)):null;
- el.innerHTML='<div class="brcols">'+col('Your top five',mine,'Move a slider and run.')+col('Market default top five',mkt,'default.json not loaded yet')+(crowd&&crowd.length?col('Globe readers, median run odds ('+CROWD.count+')',crowd,''):'')+'</div>';
+ el.innerHTML='<div class="brcols">'+col('Your top five',mine,'Move a slider and run.')+col('Default top five',mkt,'Loading last night\u2019s run.')+(crowd&&crowd.length?col('Globe readers, median run odds ('+CROWD.count+')',crowd,''):'')+'</div>';
 }
 // ==READER CROWD== anonymous brackets go to a Cloudflare Worker (worker/). Empty until Kevin deploys it.
 const CROWD_URL='https://globe-2028-crowd.kevindriscoll.workers.dev';
@@ -1710,7 +1795,7 @@ renderSettled();renderReviewed();loadDeskNote();loadWire();loadHeatmap();loadCal
 fetch('anchor.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(A=>{if(!A||!A.mstr)return;CANDS.forEach(c=>{if(typeof A.mstr[c.id]==='number')c.mstr=A.mstr[c.id];});if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();}).catch(()=>{});
 // ==NAME ID INPUTS== nameid.csv, attention_scores.csv and attention.csv set up the name ID layer on the page
 Promise.all(['nameid.csv','attention_scores.csv','attention.csv'].map(f=>fetch(f+'?v='+Date.now()).then(r=>r.ok?r.text():null).catch(()=>null))).then(([a,b,c])=>{
- if(!a||!b)return;nameIdSetup(parseCSV(a),parseCSV(b),c?parseCSV(c):[]);refreshOdds();
+ if(!a||!b)return;nameIdSetup(parseCSV(a),parseCSV(b),c?parseCSV(c):[]);refreshOdds();renderWhy();
 }).catch(()=>{});
 // ==KNOBS== knobs.json holds the frozen defaults for the Advanced sliders and the transfer rules. The markup
 // carries the same numbers (scripts/knobs.js check fails the build if they differ), so this only matters if they
@@ -1737,8 +1822,8 @@ fetch('markets.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(M=>{
  // AOC, Harris and Ossoff run probabilities live on sliders, so the run market (Kalshi and Polymarket average) sets those too
  [['pAoc','aoc'],['pHarris','harris'],['pOssRev','ossoff']].forEach(([sl,id])=>{const r=M.run?M.run[id]:undefined;const el=document.getElementById(sl);if(el&&typeof r==='number'){el.value=Math.round(r);const o=document.getElementById(sl+'Out');if(o)o.textContent=Math.round(r)+'%';}});
  if(M.date){const sd=document.getElementById('stDate');if(sd)sd.textContent='Markets as of '+edDate(M.date,false);const by=document.getElementById('bylineDate');if(by)by.textContent='Updated '+edDate(M.date);}
- if(CANDS.filter(onCards).map(c=>c.id).join(',')!==CARD_SET)buildCards();
- refreshOdds();renderPollBoard();paintDefaultRows();if(!BR.touched)buildBracket();
+ if(CANDS.filter(onCards).map(c=>c.id).sort().join(',')!==CARD_SET)buildCards();
+ refreshOdds();renderPollBoard();paintDefaultRows();renderWhy();if(!BR.touched)buildBracket();
  if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();
 }).catch(()=>{});
 </script>
