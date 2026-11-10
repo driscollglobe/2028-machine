@@ -310,7 +310,6 @@ body.show-adv .ctl.adv{display:flex;}
 .csnote{font-size:12.5px;color:var(--muted);}
 .cstable th.mchg{color:var(--faint);}
 .cstable td.mchg{color:var(--faint);background:var(--paper);text-align:center;font-style:italic;font-family:'Inter',sans-serif;font-size:11.5px;white-space:normal;vertical-align:middle;}
-.nopoll{color:var(--faint);font-weight:400;cursor:help;}
 .desknote{border:1px solid var(--rule);border-left:3px solid var(--wire);background:var(--panel);padding:10px 14px;margin:0 0 10px;}
 .desknote .dnlabel{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:13px;font-weight:600;color:var(--wire);margin-bottom:4px;}
 .desknote .dnlabel span{color:var(--faint);margin-left:6px;}
@@ -478,7 +477,7 @@ body.show-adv h2.s.adv{display:block;}
 <h2 class="s">Calls</h2>
 <div class="section" id="calls"><div class="shead"><span>Dated claims, graded nightly against the books and the model</span><span class="note" id="callRecord">loading</span></div><div id="callsBody" class="muted">Loading the calls.</div><div class="legend">A call resolves true the first day its condition holds and false at its deadline if it never does. Past calls cannot be edited; a build check enforces it. <a href="track.html#calls">Full ledger</a></div></div>
 
-<p class="foot">The 2028 Machine is a model built from one operator’s priors, not a forecast. The strengths are arguable on purpose; the value is in what moves the outcome, not the headline odds. Priors reviewed through <span id="priorsDate">Sept. 2026</span>. Market prices update nightly from Kalshi and Polymarket, and polls are pulled nightly from public aggregators. Reader brackets are anonymous and aggregated, and nothing identifies you. News attention is a Google News count, shown for context and not used in the model. Pool assignments and shares are operator priors, not measured voter data. The Driscoll Globe, political systems desk.</p>
+<p class="foot">The 2028 Machine is a model built from one operator’s priors, not a forecast. The strengths are arguable on purpose; the value is in what moves the outcome, not the headline odds. Priors reviewed through <span id="priorsDate">Sept. 2026</span>. Market prices update nightly from Kalshi and Polymarket, and polls are pulled nightly from public aggregators. Reader brackets are anonymous and aggregated, and nothing identifies you. The Google News count feeds the name recognition adjustment and nothing else. Pool assignments and shares are operator priors, not measured voter data. The Driscoll Globe, political systems desk.</p>
 <div class="modal-bg" id="modalBg" onclick="closeModal(event)">
  <div class="modal" id="modalBox" onclick="event.stopPropagation()">
   <button class="modal-x" onclick="closeModal()">×</button>
@@ -1248,7 +1247,7 @@ function gapCls(g){const r=Math.round(g);return r>0?'pos':(r<0?'neg':'');}
 function pct0(x){return Math.round(+x)+'%';}
 function pct1(x){return (+x).toFixed(1)+'%';}
 // a missing poll or gap is a grey dash that says why
-const NOPOLL='<b class="nopoll" title="No qualifying poll">\u2013</b>';
+const NOPOLL='';
 function pollNums(c){
  const mkt=Math.round(c.mkt*10)/10;
  const poll=POLLS.avg[c.id];
@@ -1263,7 +1262,7 @@ function oddsRow(c){
 }
 function runRow(c){return '<span'+runTip(c)+'><i>Run</i><b>'+pct0(runPct(c))+'</b></span><span title="Rank by model share"><i>Model rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+nidCell(c)+attnCell(c);}
 // a card shows three numbers: model first-place share, market and run odds. Everything else is in the dossier.
-function modelCell(c){const f=MODEL_FIRST[c.id];return '<span title="Share of simulated primaries this candidate wins"><i>Model</i><b>'+(typeof f==='number'?pct0(f):'\u2013')+'</b></span>';}
+function modelCell(c){const f=MODEL_FIRST[c.id];return '<span title="Share of simulated primaries this candidate wins"><i>Model</i><b>'+(typeof f==='number'?pct0(f):'')+'</b></span>';}
 function cardNums(c){return modelCell(c)+'<span'+(typeof c.madj==='number'?' title="Corrected for long-shot bias: '+pct0(c.madj)+'. The model anchors to the corrected price."':'')+'><i>Market</i><b>'+pct0(c.mkt)+'</b></span><span'+runTip(c)+'><i>Run</i><b>'+pct0(runPct(c))+'</b></span>';}
 function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=cardNums(c);});const md=document.getElementById('mdStats');if(md)md.innerHTML=dossierStats(md.dataset.id);}
 function renderPollBoard(){
@@ -1345,7 +1344,7 @@ function renderAggregate(rows,TOTAL,contestedPct,ballots){
   const c=CANDS.find(x=>x.id===r.id);const pn=pollNums(c);
   const pic=PHOTOS[r.id]?'<img class="mpic" src="'+PHOTOS[r.id]+'" alt="">':'<span class="mmono">'+'</span>';
   const gap=pn.gap===null?NOPOLL:'<b class="gap '+gapCls(pn.gap)+'">'+fmtGap(pn.gap)+'</b>';
-  return '<div class="mr">'+pic+'<div class="mname">'+lastName(r.id)+'<span class="mrange" title="10th to 90th percentile when our own strength estimates are redrawn">'+(r.range?'likely '+rangeTxt(r.range):'')+'</span></div><div class="mtrack"><div class="mfill '+(c.lane||'out')+'" data-w="'+(r.first/mx*100).toFixed(1)+'"></div></div><div class="mshare">'+pct1(r.first)+'</div>'
+  return '<div class="mr">'+pic+'<div class="mname">'+lastName(r.id)+'<span class="mrange" title="10th to 90th percentile when our own strength estimates are redrawn">'+(Math.round(r.first*10)<10?'under 1':(r.range?'likely '+rangeTxt(r.range):''))+'</span></div><div class="mtrack"><div class="mfill '+(c.lane||'out')+'" data-w="'+(r.first/mx*100).toFixed(1)+'"></div></div><div class="mshare">'+pct1(r.first)+'</div>'
    +'<div class="mstats"><span>Market <b>'+pct0(pn.mkt)+'</b></span><span>Poll '+(pn.poll===null?NOPOLL:'<b>'+pct0(pn.poll)+'</b>')+'</span><span>Gap '+gap+'</span></div></div>';
  };
  let h='<div class="mtop">'+rows.slice(0,5).map(row).join('')+'</div>';
@@ -1383,7 +1382,7 @@ function runTip(c){return typeof c.runIfAocOut==='number'?' title="Runs only if 
 function nidCell(c){if(!NAMEID.on||typeof NAMEID.x0[c.id]!=='number')return '';const x=Math.round(NAMEID.x0[c.id]*100),src=NAMEID.src[c.id];
  const tip=NAMEID.est[c.id]?'No Economist/YouGov reading yet. Estimated from our attention score of '+(NAMEID.score[c.id]?NAMEID.score[c.id].score:1)+' out of 10.':'Share who have heard enough to rate them. Economist/YouGov, '+edDate(src.date)+'. '+src.source;
  return '<span title="'+tip.replace(/"/g,'&quot;')+'"><i>Known by</i><b>'+pct0(x)+(NAMEID.est[c.id]?' <small class="est">est.</small>':'')+'</b></span>';}
-function attnCell(c){const a=ATTN[c.id];if(!a)return '';const tot=a.v.reduce((s,x)=>s+(x||0),0);return '<span title="Google News results, last '+a.days+' days; not in the model'+(a.cap?'; a day at 100 means 100 or more':'')+'"><i>News, '+a.days+' days</i><b>'+tot+(a.cap?'+':'')+'</b>'+spark(a.v)+'</span>';}
+function attnCell(c){const a=ATTN[c.id];if(!a)return '';const tot=a.v.reduce((s,x)=>s+(x||0),0);return '<span title="Google News results, last '+a.days+' days; feeds the name recognition adjustment and nothing else'+(a.cap?'; a day at 100 means 100 or more':'')+'"><i>News, '+a.days+' days</i><b>'+tot+(a.cap?'+':'')+'</b>'+spark(a.v)+'</span>';}
 function mmm(c){const f=MODEL_FIRST[c.id];if(typeof f!=='number')return '';const g=f-c.mkt;return '<span title="Model share minus market price, in points"><i>Model vs market</i><b class="gap '+gapCls(g)+'">'+fmtGap(g)+'</b></span>';}
 function setModelRank(first){MODEL_FIRST=first||{};const ids=CANDS.filter(c=>c.id!=='other').map(c=>c.id).sort((a,b)=>(first[b]||0)-(first[a]||0));MODEL_RANK={};ids.forEach((id,i)=>MODEL_RANK[id]=i+1);refreshOdds();}
 // ==PRECOMPUTED DEFAULT== default.json is written nightly by scripts/baseline.js. On load the page paints from it
