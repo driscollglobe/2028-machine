@@ -10,7 +10,8 @@ model is involved. Inputs are markets.json, default.json, history.csv and calls.
 Voice rules the templates follow (anti-ai-writing house rules, and the publication pass of Nov. 9, 2026):
   * lead with the story: who moved, how far, on which book. Never open with the model's internals
   * never name a parameter (anchor, lane crowding, ballots, levers) and never quote the history.csv note
-  * a structural change gets one plain sentence at the end and a link to the changelog, nothing more
+  * a structural change is never mentioned here; the What moved strip on the page carries that notice, once
+  * the run count (50,000) is said once on the page, in the hero, so the note never repeats it
   * editorial dates (Nov. 9), contractions allowed, varied openings
   * no em or en dashes, no "not X but Y" turns, no groups of three in rhythm, no rhetorical questions,
     no quotable kicker; the last sentence is the next thing to watch
@@ -98,8 +99,8 @@ def since(today, prev_date):
 
 def build(today, M, D, prev, calls, note="", changes=None):
     """Return (text, link) for one day. prev is the history row before today, or None.
-    note is today's structural note from history.csv. It is never quoted: readers get one plain
-    sentence at the end and a link to the changelog. link is None or {"text", "href"}."""
+    note is today's structural note from history.csv. It is never quoted or mentioned; on a structural
+    day the note simply skips the model-movement sentence. link is always None now (kept for callers)."""
     key = today
     ids = [i for i in M["blend"] if i != "other"]
     S = []  # (priority, sentence); lower numbers survive trimming
@@ -212,12 +213,12 @@ def build(today, M, D, prev, calls, note="", changes=None):
         ], key, "two_way")))
     elif mk == ml:
         S.append((2, pick([
-            "%s leads both the markets, at %s, and the model, winning %s percent of %s simulated primaries." % (full(mk), f1(M["blend"][mk]), f1(D["first"][ml]), "{:,}".format(D.get("runs") or 50000)),
+            "%s leads both the markets, at %s, and the model, winning %s percent of simulated primaries." % (full(mk), f1(M["blend"][mk]), f1(D["first"][ml])),
             "Markets and model agree on the leader: %s, at %s in the blend and first in %s percent of our runs." % (full(mk), f1(M["blend"][mk]), f1(D["first"][ml])),
         ], key, "lead_same")))
     else:
         S.append((2, pick([
-            "%s leads the markets at %s, but the model likes %s, who wins %s percent of %s simulated primaries." % (full(mk), f1(M["blend"][mk]), full(ml), f1(D["first"][ml]), "{:,}".format(D.get("runs") or 50000)),
+            "%s leads the markets at %s, but the model likes %s, who wins %s percent of simulated primaries." % (full(mk), f1(M["blend"][mk]), full(ml), f1(D["first"][ml])),
             "The markets have %s on top at %s. In our simulations it's %s, first in %s percent of runs." % (full(mk), f1(M["blend"][mk]), full(ml), f1(D["first"][ml])),
             "%s wins the most simulated primaries, %s percent, though the betting favorite is %s at %s." % (full(ml), f1(D["first"][ml]), full(mk), f1(M["blend"][mk])),
         ], key, "lead_diff")))
@@ -254,10 +255,6 @@ def build(today, M, D, prev, calls, note="", changes=None):
 
     link = None
     tail = ""
-    if structural:
-        c = (changes or {}).get(today) or {}
-        tail = " We also changed how the model works today, which accounts for much of its movement."
-        link = {"text": c.get("link") or "What changed", "href": c.get("href") or ("changelog.html#" + today)}
 
     def assemble(keep):
         return " ".join(s for p, s in S if p <= keep) + " " + close + tail
