@@ -16,13 +16,13 @@
 <style>
 :root{
  --ink:#16171a;--paper:#f5f3ec;--panel:#ffffff;--rule:rgba(20,21,24,.14);
- --muted:#5c5b55;--faint:#8a897f;--wire:#b8442b;--wire-soft:#f3ddd4;
+ --muted:#5c5b55;--faint:#6b6a63;--wire:#b8442b;--wire-soft:#f3ddd4;
  --tealx:#1f7a5c;--tealx-soft:#dcefe7;--amber:#c98a18;--amber-soft:#f5e7c8;
  --rmd:7px;--rlg:11px;
  --p-anchor:#c98a18;--p-anchor-soft:#f5e7c8;--p-fight:#b8442b;--p-fight-soft:#f3ddd4;--p-suburb:#1f7a5c;--p-suburb-soft:#dcefe7;--p-working:#3b6ea5;--p-working-soft:#dbe6f3;--p-movement:#7a3e9d;--p-movement-soft:#e9dcf1;--p-out:#8c5a2b;--p-out-soft:#efe2d3;
 }
 @media (prefers-color-scheme:dark){
- :root{--ink:#ecebe4;--paper:#15161a;--panel:#1d1e22;--rule:rgba(255,255,255,.15);--muted:#a6a59d;--faint:#76756d;--wire:#e06a4d;--wire-soft:#3a201a;--tealx:#6cc7a5;--tealx-soft:#16332a;--amber:#e0ad4e;--amber-soft:#3a2f17;--p-anchor:#e0ad4e;--p-anchor-soft:#3a2f17;--p-fight:#e06a4d;--p-fight-soft:#3a201a;--p-suburb:#6cc7a5;--p-suburb-soft:#16332a;--p-working:#7fa9d9;--p-working-soft:#1a2a3d;--p-movement:#b98ad6;--p-movement-soft:#2e2038;--p-out:#d1a06a;--p-out-soft:#3a2a1a;}
+ :root{--ink:#ecebe4;--paper:#15161a;--panel:#1d1e22;--rule:rgba(255,255,255,.15);--muted:#a6a59d;--faint:#8f8e86;--wire:#e06a4d;--wire-soft:#3a201a;--tealx:#6cc7a5;--tealx-soft:#16332a;--amber:#e0ad4e;--amber-soft:#3a2f17;--p-anchor:#e0ad4e;--p-anchor-soft:#3a2f17;--p-fight:#e06a4d;--p-fight-soft:#3a201a;--p-suburb:#6cc7a5;--p-suburb-soft:#16332a;--p-working:#7fa9d9;--p-working-soft:#1a2a3d;--p-movement:#b98ad6;--p-movement-soft:#2e2038;--p-out:#d1a06a;--p-out-soft:#3a2a1a;}
 }
 *{box-sizing:border-box;}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
@@ -31,35 +31,26 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',-appl
 .mast{border-bottom:3px double var(--ink);padding-bottom:.75rem;margin-bottom:.4rem;display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;}
 .mast .wh{height:62px;width:auto;opacity:.9;margin:0 auto;flex-shrink:0;}
 @media(max-width:740px){.mast .wh{display:block;height:44px;order:3;width:100%;margin:.5rem auto 0;}}
-.mast-l .globe{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase;}
+.mast-l .globe{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:14px;}
 .mast-l h1{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:34px;line-height:1.02;margin:.1rem 0 0;}
 .byline{font-family:'Inter',system-ui,sans-serif;font-size:13px;color:var(--muted);margin-top:.35rem;}
 .byline b{color:var(--ink);font-weight:600;}
+#bylineDate{white-space:nowrap;}
 .mast-r{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;color:var(--muted);text-align:right;line-height:1.5;}
-.subrule{display:flex;justify-content:space-between;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:1.1rem;}
-/* ticker */
+.subrule{display:flex;justify-content:space-between;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;color:var(--faint);border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:1.1rem;}
 .bpstrip{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:1rem;}
-.bplabel{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--wire);font-weight:500;margin-right:2px;}
+.bplabel{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:13px;color:var(--wire);font-weight:500;margin-right:2px;}
 .bpchip{font:inherit;font-size:12.5px;padding:5px 11px;border:1px solid var(--wire);border-radius:20px;background:var(--wire-soft);color:var(--wire);cursor:pointer;}
 .bpchip:hover{border-color:var(--ink);}
-.ticker{display:flex;align-items:stretch;min-height:30px;background:var(--ink);color:var(--paper);border-radius:var(--rmd);overflow:hidden;white-space:nowrap;margin-bottom:1.1rem;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;}
-.ticker .tlabel{background:#d23b1e;color:#fff;display:flex;align-items:center;padding:0 13px;font-weight:600;letter-spacing:.14em;flex-shrink:0;}
-.ticker .tickwrap{flex:1;min-width:0;overflow:hidden;display:flex;align-items:center;}
-.ticker .tscroll{flex-shrink:0;display:inline-block;animation:tick 60s linear infinite;}
-.ticker:hover .tscroll{animation-play-state:paused;}
-@keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-@media (prefers-reduced-motion:reduce){.ticker .tscroll{animation:none;}}
-.ticker .tsep{color:var(--faint);padding:0 13px;}
-@media(max-width:740px){.ticker{min-height:26px;font-size:10px;}.ticker .tlabel{padding:0 9px;letter-spacing:.1em;}.ticker .tsep{padding:0 10px;}}
 /* scoreboard */
 .scoreboard-old{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1.1rem;}
 .sb{background:var(--panel);border:1px solid var(--rule);border-radius:var(--rmd);padding:.7rem .85rem;}
-.sb .lab{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);}
+.sb .lab{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;color:var(--faint);}
 .sb .val{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:21px;margin-top:1px;}
 /* layout */
 .grid{display:grid;grid-template-columns:1fr;gap:1.1rem;}
 .section{border:1px solid var(--rule);border-radius:var(--rlg);background:var(--panel);padding:1rem 1.1rem;}
-.shead{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;display:flex;justify-content:space-between;align-items:center;}
+.shead{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);margin-bottom:.75rem;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px 12px;}
 .btn{font:inherit;font-size:14px;padding:9px 15px;background:transparent;border:1px solid var(--ink);border-radius:var(--rmd);color:var(--ink);cursor:pointer;}
 .btn:hover{border-color:var(--ink);background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);}
 .btn:active{transform:scale(.98);}
@@ -77,33 +68,33 @@ input[type=range]{accent-color:var(--wire);}
 .ctl select{flex:1;min-width:190px;font-size:13.5px;padding:6px 9px;}
 /* candidate cards */
 .cardgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:9px;}
-.cc{border:1px solid var(--rule);border-radius:var(--rmd);padding:.6rem .7rem;background:var(--panel);position:relative;cursor:default;transition:border-color .15s;}
+.cc{border:1px solid var(--rule);border-radius:var(--rmd);padding:.6rem .7rem;background:var(--panel);position:relative;cursor:pointer;transition:border-color .15s;}
 .cc:hover{border-color:var(--ink);}
 .cc{display:flex;flex-direction:column;}
 .cc .photo{width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid var(--rule);margin-bottom:6px;background:var(--paper);}
 .cc .mono{width:54px;height:54px;border-radius:50%;border:2px solid var(--rule);margin-bottom:6px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:19px;color:var(--muted);background:var(--paper);}
-.cc .nm{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:15px;line-height:1.1;}
+.cc .nm{font-weight:600;font-size:15px;line-height:1.2;}
 .cc .meta{font-size:11px;color:var(--faint);margin-top:1px;}
-.cc .odds{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;}
+.cc .odds{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;}
 .cc .odds span{display:flex;flex-direction:column;min-width:0;}
-.cc .odds span i{font-style:normal;font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--faint);overflow-wrap:anywhere;}
+.cc .odds span i{font-style:normal;font-size:11px;color:var(--faint);overflow-wrap:anywhere;}
 .cc .odds .est{display:block;font-size:9.5px;font-weight:400;color:var(--faint);}
 .cc .odds b{overflow-wrap:anywhere;}
 .cc .odds .spark{max-width:100%;}
 .cc .odds.pair{grid-template-columns:repeat(3,1fr);}
-.cc .odds b{color:var(--ink);font-weight:500;}
+.cc .odds b{color:var(--ink);font-weight:500;font-size:13px;}
 .cc .odds.polls{margin-top:3px;}
 .cc .odds .gap.pos{color:var(--tealx);}
 .cc .odds .gap.neg{color:var(--wire);}
 .pollboard{background:var(--panel);border:1px solid var(--rule);border-radius:var(--rmd);padding:.7rem .85rem;margin-bottom:1.1rem;}
 .pollboard table{border-collapse:collapse;width:100%;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:12px;}
-.pollboard th{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:500;text-align:right;padding:2px 8px;}
+.pollboard th{font-size:10px;color:var(--faint);font-weight:500;text-align:right;padding:2px 8px;}
 .pollboard td{padding:3px 8px;text-align:right;border-top:1px solid var(--rule);}
 .pollboard th:first-child,.pollboard td:first-child{text-align:left;font-family:'Inter',sans-serif;}
 .pollboard .gap.pos{color:var(--tealx);}
 .pollboard .gap.neg{color:var(--wire);}
 .pollnote{font-size:11.5px;color:var(--faint);margin-top:10px;line-height:1.5;}
-.cc .lane{display:inline-block;margin-top:6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:8px;}
+.cc .lane{display:inline-block;margin-top:6px;font-size:11.5px;padding:1px 7px;border-radius:8px;}
 .lane.anchor{background:var(--p-anchor-soft);color:var(--p-anchor);}
 .lane.fight{background:var(--p-fight-soft);color:var(--p-fight);}
 .lane.suburb{background:var(--p-suburb-soft);color:var(--p-suburb);}
@@ -123,8 +114,8 @@ input[type=range]{accent-color:var(--wire);}
 @keyframes fade{from{opacity:0;}to{opacity:1;}}
 .node::before{content:"";position:absolute;left:-16px;top:5px;width:9px;height:9px;border-radius:50%;background:var(--paper);border:2px solid var(--wire);}
 .node.win::before{background:var(--wire);}
-.month{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);}
-.nhead{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:16px;margin:1px 0 5px;}
+.month{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:12px;color:var(--faint);}
+.nhead{font-weight:600;font-size:15px;margin:1px 0 5px;}
 .bar{display:flex;align-items:center;gap:7px;margin-bottom:3px;}
 .bpic{width:20px;height:20px;border-radius:50%;object-fit:cover;border:1px solid var(--rule);flex-shrink:0;}
 .bmono{width:20px;height:20px;border-radius:50%;border:1px solid var(--rule);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:9px;color:var(--muted);}
@@ -140,26 +131,26 @@ input[type=range]{accent-color:var(--wire);}
 .score2 b{color:var(--ink);font-weight:500;}
 /* turning point alert */
 .bpalert{border-left:3px solid var(--wire);background:var(--wire-soft);border-radius:0 var(--rmd) var(--rmd) 0;padding:.55rem .8rem;margin:7px 0;font-size:13px;animation:fade .3s ease;}
-.bpalert .bpk{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--wire);font-weight:500;}
+.bpalert .bpk{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;color:var(--wire);font-weight:500;}
 .bpalert b{font-weight:600;}
 /* final */
 /* share card */
 .sharecard{border:2px solid var(--ink);border-radius:var(--rlg);padding:1.1rem 1.2rem;margin-top:10px;background:var(--panel);max-width:440px;}
-.sharecard .sh-brand{display:flex;align-items:center;gap:7px;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:8px;margin-bottom:10px;}
+.sharecard .sh-brand{display:flex;align-items:center;gap:7px;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:8px;margin-bottom:10px;}
 .sharecard .sh-wh{height:18px;width:auto;opacity:.85;}
 .sharecard .sh-main{display:flex;align-items:center;gap:12px;}
 .sharecard .sh-photo{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--ink);flex-shrink:0;}
 .sharecard .sh-mono{width:64px;height:64px;border-radius:50%;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:22px;color:var(--muted);flex-shrink:0;}
-.sharecard .sh-top{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--wire);}
+.sharecard .sh-top{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;color:var(--wire);}
 .sharecard .sh-nom{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:24px;line-height:1.05;}
 .sharecard .sh-pct{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:12px;color:var(--muted);margin-top:2px;}
-.sharecard .sh-whyhead{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;}
+.sharecard .sh-whyhead{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;color:var(--muted);margin:12px 0 4px;}
 .sharecard .sh-because{font-size:13.5px;color:var(--ink);margin:0;padding-left:18px;}
 .sharecard .sh-because li{margin:3px 0;}
 .sharecard .sh-actions{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
 .final{border:2px solid var(--wire);border-radius:var(--rlg);padding:1.2rem;text-align:center;margin-top:8px;}
 .final.maj{border-color:var(--tealx);}
-.final .fl{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+.final .fl{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;color:var(--muted);}
 .final .fn{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:28px;line-height:1.1;margin-top:3px;}
 .final .fs{font-size:13px;color:var(--muted);margin-top:5px;}
 /* heatmap */
@@ -178,7 +169,7 @@ input[type=range]{accent-color:var(--wire);}
 .aggsub{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;color:var(--faint);margin:-1px 0 3px 34px;}
 .ranklist{display:flex;flex-direction:column;gap:8px;}
 .rankrow{display:flex;align-items:center;gap:10px;}
-.rnum{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:18px;width:24px;color:var(--wire);text-align:center;flex-shrink:0;}
+.rnum{font-weight:600;font-size:15px;width:24px;color:var(--wire);text-align:center;flex-shrink:0;}
 .rkey{flex:1;font-size:13.5px;min-width:120px;}
 .rmover{display:block;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;color:var(--faint);margin-top:1px;}
 .rbart{width:120px;height:10px;background:var(--paper);border:1px solid var(--rule);border-radius:3px;position:relative;flex-shrink:0;}
@@ -191,7 +182,7 @@ input[type=range]{accent-color:var(--wire);}
 .hmtable{border-collapse:separate;border-spacing:0;width:100%;font-size:12px;border-top:1px solid var(--rule);border-left:1px solid var(--rule);}
 .hmtable th,.hmtable td{padding:6px 8px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);text-align:center;}
 .hmtable tr>:first-child{position:sticky;left:0;z-index:1;background:var(--panel);box-shadow:1px 0 0 var(--rule);}
-.hmtable th{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;}
+.hmtable th{color:var(--ink)!important;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11.5px;color:var(--muted);font-weight:500;}
 .hmtable td:first-child,.hmtable th:first-child{text-align:left;font-family:'Inter',sans-serif;font-size:12.5px;white-space:nowrap;}
 .hmtable td.big{font-weight:600;}
 .hmcell{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;}
@@ -213,10 +204,14 @@ body.show-adv .ctl.adv{display:flex;}
 .md-mono{width:62px;height:62px;border-radius:50%;border:2px solid var(--rule);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:22px;color:var(--muted);}
 .md-name{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:22px;line-height:1.05;}
 .md-meta{font-size:12.5px;color:var(--faint);margin-top:2px;}
-.md-odds{display:flex;gap:14px;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:12px;margin:10px 0;padding:8px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
-.md-odds b{color:var(--ink);}
+.md-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 12px;font-variant-numeric:tabular-nums;font-size:13px;margin:10px 0;padding:10px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+.md-stats span{display:flex;flex-direction:column;min-width:0;}
+.md-stats i{font-style:normal;font-size:12px;color:var(--faint);}
+.md-stats b{color:var(--ink);font-weight:500;}
+.md-stats .gap.pos{color:var(--tealx);}.md-stats .gap.neg{color:var(--wire);}
+.md-stats .est{font-size:11px;font-weight:400;color:var(--faint);}
 .md-sec{margin-top:12px;}
-.md-sec h4{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 4px;}
+.md-sec h4{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:12.5px;color:var(--muted);margin:0 0 4px;}
 .md-sec p,.md-sec li{font-size:13.5px;line-height:1.5;margin:2px 0;}
 .md-sec ul{margin:2px 0;padding-left:18px;}
 .md-path{font-size:13.5px;}
@@ -238,34 +233,34 @@ body.show-adv .ctl.adv{display:flex;}
 .hmctl{margin-top:1rem;}
 .hmhead{margin-top:1rem;}
 .shead a{color:inherit;text-decoration:underline;text-underline-offset:2px;}
-.nav{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:.2rem 0 .9rem;display:flex;gap:14px;flex-wrap:wrap;}
+.nav{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);margin:.2rem 0 .9rem;display:flex;gap:14px;flex-wrap:wrap;}
 .nav a{color:var(--wire);text-decoration:none;border-bottom:1px solid var(--wire-soft);}
 .nav a:hover{border-bottom-color:var(--wire);}
-.cc .gaplink{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--wire);text-decoration:none;margin-top:6px;}
+.cc .gaplink{font-family:'Inter',system-ui,sans-serif;font-size:12px;color:var(--wire);text-decoration:none;margin-top:6px;}
 .changestrip{margin-bottom:1.1rem;}
 #csBody{overflow-x:auto;}
-.changestrip .seg{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.06em;padding:3px 9px;border:1px solid var(--ink);border-radius:var(--rmd);cursor:pointer;background:transparent;color:var(--ink);text-transform:none;}
+.changestrip .seg{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10px;padding:3px 9px;border:1px solid var(--ink);border-radius:var(--rmd);cursor:pointer;background:transparent;color:var(--ink);text-transform:none;}
 .changestrip .seg.on{background:var(--ink);color:var(--paper);}
 .cstable{border-collapse:collapse;width:100%;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:12px;}
-.cstable th{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:500;text-align:right;padding:2px 8px;}
+.cstable th{font-size:11.5px;color:var(--faint);font-weight:500;text-align:right;padding:2px 8px;}
 .cstable td{padding:3px 8px;text-align:right;border-top:1px solid var(--rule);white-space:nowrap;}
 .cstable th:first-child,.cstable td:first-child{text-align:left;font-family:'Inter',sans-serif;}
 #callsBody .cstable td:first-child{white-space:normal;min-width:180px;}
 @media(max-width:740px){.mast-r{display:none;}}
 .cstable .book{text-align:left;color:var(--muted);font-size:11px;}
 .cstable .nottracked{text-align:center;color:var(--faint);font-style:italic;font-family:'Inter',sans-serif;font-size:11.5px;}
-.csmorelink{display:inline-block;margin-top:8px;font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--wire);text-decoration:none;}
+.csmorelink{display:inline-block;margin-top:8px;font-family:'Inter',system-ui,sans-serif;font-size:12.5px;color:var(--wire);text-decoration:none;}
 .up{color:var(--tealx);}.down{color:var(--wire);}
 .brgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px 18px;margin-bottom:10px;}
 .brcols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px;}
 @media(max-width:600px){.brcols{grid-template-columns:1fr;}}
-.brcol h4{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:500;margin:0 0 6px;}
+.brcol h4{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;color:var(--faint);font-weight:500;margin:0 0 6px;}
 .brrow{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;border-top:1px solid var(--rule);}
 .brrow b{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-weight:500;}
 .cardimg{width:100%;border:1px solid var(--rule);border-radius:var(--rmd);margin-top:10px;background:var(--paper);}
 .sharelink{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:12px;word-break:break-all;background:var(--paper);border:1px solid var(--rule);border-radius:var(--rmd);padding:8px 10px;margin-top:10px;}
 .quick{color:var(--amber);}
-.modetoggle .seg{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;letter-spacing:.06em;padding:5px 12px;border:1px solid var(--ink);border-radius:var(--rmd);cursor:pointer;background:transparent;color:var(--ink);}
+.modetoggle .seg{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;padding:5px 12px;border:1px solid var(--ink);border-radius:var(--rmd);cursor:pointer;background:transparent;color:var(--ink);}
 .modetoggle .seg.on{background:var(--ink);color:var(--paper);}
 .cols2{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;}
 @media(max-width:740px){.cols2{grid-template-columns:1fr;}.cl{width:100%;}.mast-l h1{font-size:27px;}}
@@ -277,19 +272,20 @@ body.show-adv .ctl.adv{display:flex;}
 .hero{margin:.2rem 0 1.1rem;}
 .hero-num{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:64px;line-height:1;letter-spacing:-.01em;min-height:64px;}
 .hero-range{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:13px;color:var(--faint);margin-top:4px;min-height:16px;}
-.hero-date{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-top:6px;}
-.hero-note{font-family:'Fraunces',Georgia,serif;font-size:19px;line-height:1.4;max-width:720px;margin-top:10px;}
-@media(max-width:740px){.hero-num{font-size:46px;min-height:46px;}.hero-note{font-size:17px;}}
+.hero-date{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:13px;color:var(--faint);margin-top:6px;}
+.hero-note{font-size:17px;line-height:1.45;max-width:720px;margin-top:12px;}
+@media(max-width:740px){.hero-num{font-size:46px;min-height:46px;}.hero-note{font-size:16px;}}
 .sticky{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--paper);border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:14px;padding:6px 18px;transform:translateY(-100%);transition:transform .2s ease;}
 .sticky.on{transform:translateY(0);}
 .sticky .st-title{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:15px;}
-.sticky .st-date{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);flex:1;}
-.sticky a{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--wire);text-decoration:none;border:1px solid var(--wire);border-radius:var(--rmd);padding:3px 9px;}
+.sticky .st-date{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:12px;color:var(--faint);flex:1;}
+.sticky a{font-family:'Inter',system-ui,sans-serif;font-size:12.5px;color:var(--wire);text-decoration:none;border:1px solid var(--wire);border-radius:var(--rmd);padding:3px 9px;}
 .mr{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid var(--rule);}
 .mr:first-child{border-top:none;}
 .mr .mpic{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--rule);flex-shrink:0;background:var(--paper);}
 .mr .mmono{width:48px;height:48px;border-radius:50%;border:2px solid var(--rule);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:15px;color:var(--muted);background:var(--paper);}
-.mr .mname{width:92px;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:16px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mr .mname{width:104px;font-weight:600;font-size:15px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25;}
+.mr .mname .mrange{display:block;width:auto;font-weight:400;}
 .mr .mtrack{flex:1;height:18px;background:var(--paper);border:1px solid var(--rule);border-radius:3px;overflow:hidden;min-width:60px;}
 .mr .mfill{height:100%;width:0;transition:width .4s ease;}
 .mfill.anchor{background:var(--p-anchor);}.mfill.fight{background:var(--p-fight);}.mfill.suburb{background:var(--p-suburb);}.mfill.working{background:var(--p-working);}.mfill.movement{background:var(--p-movement);}.mfill.out{background:var(--p-out);}
@@ -302,18 +298,18 @@ body.show-adv .ctl.adv{display:flex;}
 .mrest{display:none;}
 #aggregate.open .mrest{display:block;}
 .mmore{margin-top:8px;}
-@media(max-width:740px){.mr{flex-wrap:wrap;}.mr .mstats{width:100%;justify-content:flex-start;padding-left:58px;}.mr .mname{width:80px;font-size:14px;}}
+@media(max-width:740px){.mr{flex-wrap:wrap;row-gap:4px;}.mr .mstats{width:100%;justify-content:flex-start;padding-left:58px;flex-wrap:nowrap;white-space:nowrap;}.mr .mstats span{min-width:0;}.mr .mname{width:96px;font-size:14px;}}
 .csnote{font-size:12.5px;color:var(--muted);}
 .cstable th.mchg{color:var(--faint);}
 .cstable td.mchg{color:var(--faint);background:var(--paper);text-align:center;font-style:italic;font-family:'Inter',sans-serif;font-size:11.5px;white-space:normal;vertical-align:middle;}
 .nopoll{color:var(--faint);font-weight:400;cursor:help;}
 .hero-why{font-family:'Inter',system-ui,sans-serif;font-size:14.5px;line-height:1.5;color:var(--muted);max-width:720px;margin-top:8px;}
 .desknote{border:1px solid var(--rule);border-left:3px solid var(--wire);background:var(--panel);padding:10px 14px;margin:0 0 10px;}
-.desknote .dnlabel{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--wire);margin-bottom:4px;}
+.desknote .dnlabel{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:13px;font-weight:600;color:var(--wire);margin-bottom:4px;}
 .desknote .dnlabel span{color:var(--faint);margin-left:6px;}
 .desknote p{margin:0;font-size:14.5px;line-height:1.5;}
 .spark{display:block;margin-top:2px;color:var(--wire);}
-.rv{display:inline-block;font-family:'Inter',system-ui,sans-serif;font-size:10px;font-variant:small-caps;letter-spacing:.06em;color:var(--faint);margin-left:8px;white-space:nowrap;}
+.rv{display:inline-block;font-family:'Inter',system-ui,sans-serif;font-size:11px;color:var(--faint);margin-left:8px;white-space:nowrap;}
 .desknote a,.hero-note a{color:inherit;text-decoration:underline;text-underline-offset:2px;}
 .hero-note a{font-family:'Inter',system-ui,sans-serif;font-size:14px;margin-left:4px;}
 .settled{margin:1.6rem 0 0;}
@@ -328,11 +324,12 @@ body.show-adv .section.adv{display:block;}
 body.show-adv h2.s.adv{display:block;}
 .cardgrid{align-items:start;}
 .onecard .final,.onecard .sharecard{margin-top:12px;}
-.foot{font-family:'Inter',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:11px;color:var(--faint);border-top:1px solid var(--rule);padding-top:1rem;margin-top:2rem;line-height:1.6;}
+.foot{font-size:12.5px;color:var(--faint);border-top:1px solid var(--rule);padding-top:1rem;margin-top:2rem;line-height:1.6;}
+@media(max-width:360px){.mr .mstats{flex-wrap:wrap;padding-left:0;}}
 </style>
 </head>
 <body>
-<div class="sticky" id="sticky"><span class="st-title">The 2028 Machine</span><span class="st-date" id="stDate"></span><a href="gap.html">Gap</a></div>
+<div class="sticky" id="sticky"><span class="st-title">The 2028 Machine</span><span class="st-date" id="stDate"></span><a href="gap.html">Polls vs markets</a></div>
 <div class="wrap">
 
 <div class="mast">
@@ -342,11 +339,9 @@ body.show-adv h2.s.adv{display:block;}
   <div class="byline">By <b>Kevin Driscoll</b> · The Driscoll Globe · <span id="bylineDate">Updated nightly</span></div>
  </div>
  <svg class="wh" viewBox="0 0 360 92" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The White House"><g fill="var(--ink)"><rect x="6" y="82" width="348" height="4"/><rect x="16" y="50" width="328" height="32"/><rect x="10" y="45" width="340" height="6" rx="1"/><rect x="20" y="40" width="3" height="6"/><rect x="36" y="40" width="3" height="6"/><rect x="52" y="40" width="3" height="6"/><rect x="68" y="40" width="3" height="6"/><rect x="84" y="40" width="3" height="6"/><rect x="100" y="40" width="3" height="6"/><rect x="116" y="40" width="3" height="6"/><rect x="132" y="40" width="3" height="6"/><rect x="148" y="40" width="3" height="6"/><rect x="164" y="40" width="3" height="6"/><rect x="180" y="40" width="3" height="6"/><rect x="196" y="40" width="3" height="6"/><rect x="212" y="40" width="3" height="6"/><rect x="228" y="40" width="3" height="6"/><rect x="244" y="40" width="3" height="6"/><rect x="260" y="40" width="3" height="6"/><rect x="276" y="40" width="3" height="6"/><rect x="292" y="40" width="3" height="6"/><rect x="308" y="40" width="3" height="6"/><rect x="324" y="40" width="3" height="6"/><rect x="340" y="40" width="3" height="6"/><rect x="150" y="38" width="60" height="44"/><polygon points="146,40 180,22 214,40"/><rect x="178.5" y="6" width="2" height="18"/><rect x="180.5" y="6" width="13" height="7"/></g><g fill="var(--paper)"><rect x="157" y="46" width="3.5" height="34"/><rect x="168" y="46" width="3.5" height="34"/><rect x="179" y="46" width="3.5" height="34"/><rect x="190" y="46" width="3.5" height="34"/><rect x="201" y="46" width="3.5" height="34"/></g><rect x="174" y="62" width="12" height="18" fill="var(--ink)"/><g fill="var(--paper)"><rect x="26.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="40.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="54.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="68.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="82.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="96.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="110.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="124.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="138.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="210.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="224.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="238.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="252.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="266.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="280.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="294.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="308.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="322.0" y="58.0" width="7.0" height="9.0" rx="0.6"/><rect x="26.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="40.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="54.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="68.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="82.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="96.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="110.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="124.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="138.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="210.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="224.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="238.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="252.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="266.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="280.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="294.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="308.0" y="71.0" width="7.0" height="7.0" rx="0.6"/><rect x="322.0" y="71.0" width="7.0" height="7.0" rx="0.6"/></g></svg>
- <div class="mast-r">2028 DEMOCRATIC PRIMARY<br>SIMULATION DESK</div>
+ <div class="mast-r">2028 Democratic primary<br>Simulation desk</div>
 </div>
 <div class="nav"><a href="gap.html">The gap: polls vs markets</a><a href="track.html">Track record</a><a href="methodology.html">How it works</a><a href="changelog.html">Changelog</a><a href="https://driscollglobe.substack.com">The Driscoll Globe</a></div>
-
-<div class="ticker"><span class="tlabel">WIRE</span><span class="tickwrap"><span class="tscroll" id="ticker"></span></span></div>
 
 <div class="hero">
  <div class="hero-num" id="heroShare">&nbsp;</div>
@@ -445,7 +440,7 @@ body.show-adv h2.s.adv{display:block;}
 
 <h2 class="s">The field</h2>
 <div class="section">
- <div class="shead"><span>Hover a card for the dossier · set In/Out to override the market</span><button class="btn sm" onclick="resetField()">Reset field</button></div>
+ <div class="shead"><span>Click or tap a card for its full numbers. In and Out override the run odds.</span><button class="btn sm" onclick="resetField()">Reset field</button></div>
  <div class="cardgrid" id="cardgrid"></div>
  <div class="pollnote">Poll average weights national Democratic primary polls from the last 90 days by how recent they are (a poll counts half as much every 30 days), by sample size, and by pollster. Harvard CAPS Harris samples all Democrats rather than likely primary voters and runs hot on Harris, so its Harris number is taken down 15 points and the poll counts at 0.7 of a normal one. Polls this far out track name recognition, and the model adjusts for it: a candidate fewer voters know runs at a discount that shrinks as news coverage grows. Markets drive the model. The gap is the story.</div>
 </div>
@@ -455,7 +450,7 @@ body.show-adv h2.s.adv{display:block;}
 <h2 class="s">Calls</h2>
 <div class="section" id="calls"><div class="shead"><span>Dated claims, graded nightly against the books and the model</span><span class="note" id="callRecord">loading</span></div><div id="callsBody" class="muted">Loading the calls.</div><div class="legend">A call resolves true the first day its condition holds and false at its deadline if it never does. Past calls cannot be edited; a build check enforces it. <a href="track.html#calls">Full ledger</a></div></div>
 
-<p class="foot">THE 2028 MACHINE · A MODEL BUILT FROM ONE OPERATOR'S PRIORS, NOT A FORECAST · THE STRENGTHS ARE ARGUABLE ON PURPOSE; THE VALUE IS WHAT MOVES THE OUTCOME, NOT THE HEADLINE ODDS · PRIORS REVIEWED THROUGH <span id="priorsDate">SEPT. 2026</span> · MARKET PRICES UPDATED NIGHTLY FROM KALSHI AND POLYMARKET · POLLS PULLED NIGHTLY FROM PUBLIC AGGREGATORS · READER BRACKETS ARE ANONYMOUS AND AGGREGATED. NOTHING IDENTIFIES YOU. · NEWS ATTENTION IS A GOOGLE NEWS COUNT, SHOWN FOR CONTEXT AND NOT USED IN THE MODEL · POOL ASSIGNMENTS AND SHARES ARE OPERATOR PRIORS, NOT MEASURED VOTER DATA · THE DRISCOLL GLOBE · POLITICAL SYSTEMS DESK</p>
+<p class="foot">The 2028 Machine is a model built from one operator’s priors, not a forecast. The strengths are arguable on purpose; the value is in what moves the outcome, not the headline odds. Priors reviewed through <span id="priorsDate">Sept. 2026</span>. Market prices update nightly from Kalshi and Polymarket, and polls are pulled nightly from public aggregators. Reader brackets are anonymous and aggregated, and nothing identifies you. News attention is a Google News count, shown for context and not used in the model. Pool assignments and shares are operator priors, not measured voter data. The Driscoll Globe, political systems desk.</p>
 <div class="modal-bg" id="modalBg" onclick="closeModal(event)">
  <div class="modal" id="modalBox" onclick="event.stopPropagation()">
   <button class="modal-x" onclick="closeModal()">×</button>
@@ -1160,7 +1155,7 @@ function renderRankings(results){
  const mx=sorted[0].avgSwing||1;
  let h='<div class="ranklist">';
  sorted.forEach((r,i)=>{
-  h+='<div class="rankrow"><div class="rnum">'+(i+1)+'</div><div class="rkey">'+r.key+'<span class="rmover">biggest mover: '+lastName(r.mover)+' '+(r.mv>0?'+':'')+r.mv.toFixed(0)+'</span></div><div class="rbart"><div class="rbarf" style="width:'+(r.avgSwing/mx*100).toFixed(1)+'%"></div></div><div class="rval">'+r.avgSwing.toFixed(1)+'</div></div>';
+  h+='<div class="rankrow"><div class="rnum">'+(i+1)+'</div><div class="rkey">'+r.key+'<span class="rmover">Biggest mover: '+lastName(r.mover)+' '+(r.mv>0?'+':'')+r.mv.toFixed(0)+'</span></div><div class="rbart"><div class="rbarf" style="width:'+(r.avgSwing/mx*100).toFixed(1)+'%"></div></div><div class="rval">'+r.avgSwing.toFixed(1)+'</div></div>';
  });
  h+='</div><div class="legend">Average swing is how many percentage points a turning point moves the typical candidate\u2019s first place rate when it flips. Higher means the whole field bends around that one decision. This is the election measured as a system of choices.</div>';
  document.getElementById('rankings').innerHTML=h;
@@ -1169,19 +1164,20 @@ function renderRankings(results){
 function renderHeatmap(results,watch){
  const maxAbs=Math.max(...results.flatMap(r=>watch.map(k=>Math.abs(r.sw[k]))))||1;
  function cellColor(v){
+  // blue helps, orange hurts (ColorBrewer PuOr ends, safe for red-green color blindness). Opacity tops out at 0.7 so
+  // dark text keeps at least 5.6 to 1 contrast on every cell.
   const a=Math.min(1,Math.abs(v)/maxAbs);
-  if(v>=0)return 'background:rgba(31,122,92,'+(a*0.85).toFixed(2)+');color:'+(a>0.5?'#fff':'inherit');
-  return 'background:rgba(184,68,43,'+(a*0.85).toFixed(2)+');color:'+(a>0.5?'#fff':'inherit');
+  return 'background:rgba('+(v>=0?'33,102,172':'179,88,6')+','+(a*0.7).toFixed(2)+')';
  }
  let h='<table class="hmtable"><tr><th>Turning point</th>';
- watch.forEach(k=>h+='<th style="color:var(--p-'+(POOLOF[k]||'out')+')">'+lastName(k)+'</th>');
+ watch.forEach(k=>h+='<th>'+lastName(k)+'</th>');
  h+='<th>Biggest mover</th></tr>';
  results.forEach(r=>{
   h+='<tr><td class="big">'+r.key+'</td>';
-  watch.forEach(k=>{const v=r.sw[k];h+='<td class="hmcell" style="'+cellColor(v)+'">'+(v>0?'+':'')+v.toFixed(0)+'</td>';});
+  watch.forEach(k=>{const v=r.sw[k];h+=Math.abs(v)<1?'<td class="hmcell"></td>':'<td class="hmcell" style="'+cellColor(v)+'">'+(v>0?'+':'')+v.toFixed(0)+'</td>';});
   h+='<td style="text-align:left;font-weight:600;">'+lastName(r.mover)+' '+(r.mv>0?'+':'')+r.mv.toFixed(0)+'</td></tr>';
  });
- h+='</table><div class="legend">Each cell is the change in a candidate\u2019s first place rate (percentage points) when the turning point flips from off to on, with the same starting seeds and averaging over the model\u2019s other uncertainties. Green helps, red hurts. What changes the answer matters more than who wins.</div>';
+ h+='</table><div class="legend">Each cell is the change in a candidate\u2019s first place rate (percentage points) when the turning point flips from off to on, with the same starting seeds and averaging over the model\u2019s other uncertainties. Blue helps, orange hurts, and a blank cell moved less than one point. What changes the answer matters more than who wins.</div>';
  document.getElementById('heatmap').innerHTML=h;
  hmFade();
 }
@@ -1221,8 +1217,11 @@ function oddsRow(c){
  const gapTxt=x.gap===null?NOPOLL:'<b class="gap '+(x.gap>=0?'pos':'neg')+'">'+fmtGap(x.gap)+'</b>';
  return '<span'+(typeof c.madj==='number'?' title="Corrected for long-shot bias: '+pct1(c.madj)+'. The model anchors to the corrected price."':'')+'><i>Market</i><b>'+pct1(x.mkt)+'</b></span><span><i>Poll</i>'+pollTxt+'</span><span><i>Gap</i>'+gapTxt+'</span>';
 }
-function runRow(c){return '<span'+runTip(c)+'><i>Run</i><b>'+pct1(runPct(c))+'</b></span><span><i>Rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+nidCell(c)+attnCell(c);}
-function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=oddsRow(c);const r=document.getElementById('runrow_'+c.id);if(r)r.innerHTML=runRow(c);});}
+function runRow(c){return '<span'+runTip(c)+'><i>Run</i><b>'+pct1(runPct(c))+'</b></span><span title="Rank by model share"><i>Model rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+nidCell(c)+attnCell(c);}
+// a card shows three numbers: model first-place share, market and run odds. Everything else is in the dossier.
+function modelCell(c){const f=MODEL_FIRST[c.id];return '<span title="Share of simulated primaries this candidate wins"><i>Model</i><b>'+(typeof f==='number'?pct1(f):'\u2013')+'</b></span>';}
+function cardNums(c){return modelCell(c)+'<span'+(typeof c.madj==='number'?' title="Corrected for long-shot bias: '+pct1(c.madj)+'. The model anchors to the corrected price."':'')+'><i>Market</i><b>'+pct1(c.mkt)+'</b></span><span'+runTip(c)+'><i>Run</i><b>'+pct1(runPct(c))+'</b></span>';}
+function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=cardNums(c);});const md=document.getElementById('mdStats');if(md)md.innerHTML=dossierStats(md.dataset.id);}
 function renderPollBoard(){
  const body=document.getElementById('pollboardBody');if(!body)return;
  const top=CANDS.filter(c=>c.id!=='other').slice().sort((a,b)=>b.mkt-a.mkt).slice(0,6);
@@ -1260,8 +1259,7 @@ function buildCards(){
   return '<div class="cc" data-id="'+c.id+'" onclick="openDossier(\''+c.id+'\')"><div class="set" onclick="event.stopPropagation()"><select id="tg_'+c.id+'"><option value="sample" selected>Auto</option><option value="in">In</option><option value="out">Out</option></select></div>'
    +pic
    +'<div class="nm">'+c.name+'</div><div class="meta">'+c.role+' · '+c.age+' in \u201928</div>'
-   +'<div class="odds polls" id="odds_'+c.id+'">'+oddsRow(c)+'</div>'
-   +'<div class="odds pair" id="runrow_'+c.id+'">'+runRow(c)+'</div>'
+   +'<div class="odds" id="odds_'+c.id+'">'+cardNums(c)+'</div>'
    +'<span class="lane '+c.lane+'" title="'+poolTip(c).replace(/"/g,'&quot;')+'">'+tagLabel(c)+'</span>'
    +'<div class="sw"><b>Strength:</b> '+c.str+'<br><b>Weakness:</b> '+c.weak+'</div>'
    +'<a class="gaplink" href="gap.html#'+c.id+'" onclick="event.stopPropagation()">Polls vs market</a></div>';
@@ -1298,12 +1296,12 @@ function renderAggregate(rows,TOTAL,contestedPct,ballots){
   const c=CANDS.find(x=>x.id===r.id);const pn=pollNums(c);
   const pic=PHOTOS[r.id]?'<img class="mpic" src="'+PHOTOS[r.id]+'" alt="">':'<span class="mmono">'+'</span>';
   const gap=pn.gap===null?NOPOLL:'<b class="gap '+(pn.gap>=0?'pos':'neg')+'">'+fmtGap(pn.gap)+'</b>';
-  return '<div class="mr">'+pic+'<div class="mname">'+lastName(r.id)+'</div><div class="mtrack"><div class="mfill '+(c.lane||'out')+'" data-w="'+(r.first/mx*100).toFixed(1)+'"></div></div><div class="mshare">'+pct1(r.first)+'</div><div class="mrange" title="10th to 90th percentile when our own strength estimates are redrawn">'+rangeTxt(r.range)+'</div>'
+  return '<div class="mr">'+pic+'<div class="mname">'+lastName(r.id)+'<span class="mrange" title="10th to 90th percentile when our own strength estimates are redrawn">'+(r.range?'likely '+rangeTxt(r.range):'')+'</span></div><div class="mtrack"><div class="mfill '+(c.lane||'out')+'" data-w="'+(r.first/mx*100).toFixed(1)+'"></div></div><div class="mshare">'+pct1(r.first)+'</div>'
    +'<div class="mstats"><span>Market <b>'+pct1(pn.mkt)+'</b></span><span>Poll '+(pn.poll===null?NOPOLL:'<b>'+pct1(pn.poll)+'</b>')+'</span><span>Gap '+gap+'</span></div></div>';
  };
  let h='<div class="mtop">'+rows.slice(0,5).map(row).join('')+'</div>';
  if(rows.length>5)h+='<div class="mrest">'+rows.slice(5).map(row).join('')+'</div><button class="btn sm mmore" onclick="toggleAll(this)">Show all '+rows.length+'</button>';
- h+='<div class="legend">Share of simulated primaries where each candidate finishes first, at '+(TOTAL>=20000?'the default settings':'your current settings')+'. The small range beside each share is where it lands 80 percent of the time when we redraw our own estimates of each candidate\u2019s strength and each pool\u2019s size. Bar color is the candidate\u2019s pool: <span style="color:var(--p-anchor)">Party Anchor</span>, <span style="color:var(--p-fight)">Fight</span>, <span style="color:var(--p-suburb)">Suburb Democrats</span>, <span style="color:var(--p-working)">Working Families</span>, <span style="color:var(--p-movement)">Movement Left</span>, <span style="color:var(--p-out)">Outsider</span>. '+contestedPct+'% of these runs reach the convention without a pledged majority'+(ballots&&!ballots.unresolved?'; the model settles them on later ballots':', which the model leaves unresolved')+'. Market is the Kalshi and Polymarket blend, Poll the weighted national average, and Gap is poll minus market.</div>';
+ h+='<div class="legend">Share of simulated primaries where each candidate finishes first, at '+(TOTAL>=20000?'the default settings':'your current settings')+'. The small range beside each share is where it lands 80 percent of the time when we redraw our own estimates of each candidate\u2019s strength and each pool\u2019s size. Bar color is the candidate\u2019s pool: '+['anchor','fight','suburb','working','movement','out'].map(k=>'<span class="pooldot" style="background:var(--p-'+k+')"></span>'+poolLabel(k)).join(', ')+'. '+contestedPct+'% of these runs reach the convention without a pledged majority'+(ballots&&!ballots.unresolved?'; the model settles them on later ballots':', which the model leaves unresolved')+'. Market is the Kalshi and Polymarket blend, Poll the weighted national average, and Gap is poll minus market.</div>';
  h+=ballotLine(ballots);
  setTimeout(()=>{document.querySelectorAll('#aggregate .mfill').forEach(el=>{el.style.width=el.dataset.w+'%';});},30);
  setTimeout(()=>sortCards(rows.map(r=>r.id)),0);
@@ -1348,7 +1346,7 @@ function paintDefault(){
   if(!d||!d.first||!d.order){fallbackDefault();return;}
   DEF.data=d;DEF.painted=true;
   {const hrows=d.order.filter(id=>id!=='other').map(id=>({id,first:d.first[id],range:d.range&&d.range[id]}));const two=d.two_way===undefined?twoWay(hrows):d.two_way;
-   heroFromRows(hrows,(two?'Within two points of each other in ':'Wins the most of ')+d.runs.toLocaleString()+' simulated primaries, run on '+edDate(d.date,false)+' market prices',two);}
+   heroFromRows(hrows,(two?'Within two points of each other in ':'Wins the most of ')+d.runs.toLocaleString()+' simulated primaries, run on '+edDate(d.date,false).replace(' ','\u00a0')+' market prices',two);}
   setModelRank(d.first);
   const agg=document.getElementById('aggregate');agg.style.display='block';agg.classList.remove('open');
   agg.innerHTML='<div class="shead"><span>Who finishes first</span><span class="note">Run overnight '+edDate(d.date,false)+' · <a href="#runyourown">change any control to run your own</a></span></div><div id="aggBody"></div>';
@@ -1362,7 +1360,7 @@ function paintDefaultRows(){
  const rows=d.order.filter(id=>id!=='other').map(id=>({id,name:nm(id),first:d.first[id],majp:d.majority[id]||0,leadp:d.lead[id]||0,range:d.range&&d.range[id]}));
  document.getElementById('aggBody').innerHTML=renderAggregate(rows,d.runs,Math.round(d.contested),d.ballots);
 }
-function fallbackDefault(){updateFrontrunner();const t=contestedTicker();if(t)initTicker(t);document.getElementById('aggBody').innerHTML='<div class="muted">Last night\u2019s run didn\u2019t load. Click Run 10,000 primaries to run it here.</div>';}
+function fallbackDefault(){updateFrontrunner();document.getElementById('aggBody').innerHTML='<div class="muted">Last night\u2019s run didn\u2019t load. Click Run 10,000 primaries to run it here.</div>';}
 // Reader-facing dates are editorial (AP months): edDate('2026-11-09') is 'Nov. 9, 2026', edDate(d,false) is 'Nov. 9',
 // edMonth('2026-11') is 'Nov. 2026'. ISO stays in the data files, code and URLs.
 const AP_MON=['Jan.','Feb.','March','April','May','June','July','Aug.','Sept.','Oct.','Nov.','Dec.'];
@@ -1430,7 +1428,7 @@ function openDossier(id){
  const laneL=tagLabel(c)+(c.tag?' ('+poolLabel(c.lane)+')':'')+(c.lane2?' (secondary: '+poolLabel(c.lane2)+')':'');
  const coalition=(POOL_META[c.lane]||POOL_META.out).def+(POOL_WHY[id]?' '+POOL_WHY[id]:'');
  let h='<div class="md-head">'+pic+'<div><div class="md-name">'+c.name+'</div><div class="md-meta">'+c.role+' · age '+c.age+' in 2028 · '+laneL+'</div></div></div>';
- h+='<div class="md-odds"><span>Market <b>'+pct1(c.mkt)+'</b></span><span'+runTip(c)+'>Run <b>'+pct1(runPct(c))+'</b></span><span>Desk rank <b>#'+c.rank+'</b></span></div>';
+ h+='<div class="md-stats" id="mdStats" data-id="'+id+'">'+dossierStats(id)+'</div>';
  const rv=c.reviewed?'<span class="rv">Reviewed '+edMonth(c.reviewed)+'</span>':'';
  const as=NAMEID.score[id];
  h+='<div class="md-sec"><h4>Strength</h4><p>'+c.str+rv+'</p></div>';
@@ -1441,6 +1439,8 @@ function openDossier(id){
  document.getElementById('modalBody').innerHTML=h;
  document.getElementById('modalBg').classList.add('open');
 }
+// every number for one candidate: the three on the card, then poll, gap, ranks, model vs market, name ID, news, readers
+function dossierStats(id){const c=CANDS.find(x=>x.id===id);if(!c)return '';return cardNums(c)+oddsRow(c).replace(/^<span[^>]*><i>Market<\/i><b>[^<]*<\/b><\/span>/,'')+runRow(c).replace(/^<span[^>]*><i>Run<\/i><b>[^<]*<\/b><\/span>/,'')+'<span title="Where our own strength rating puts this candidate"><i>Desk rank</i><b>#'+c.rank+'</b></span>';}
 function closeModal(){document.getElementById('modalBg').classList.remove('open');}
 function computePaths(id){
  const box=document.getElementById('mdPaths');
@@ -1560,18 +1560,6 @@ function resetField(){CANDS.forEach(c=>{const e=document.getElementById('tg_'+c.
 const SITE='https://driscollglobe.github.io/2028-machine/';
 const QUICK=window.innerWidth<700; // small screens get capped, labelled quick runs
 function simBudget(n){return QUICK?Math.min(n,5000):n;}
-// The wire is written nightly to wire.json by scripts/wire.js from markets.json and default.json. No prices live here.
-let WIRE=[];
-function contestedTicker(){
- // Compute the contested-convention rate from the model itself, at default settings, fixed seed for stability.
- try{
-  const C=cfg();const N=3000;let c=0;const saved=rng;rng=mb(19481102);
-  for(let i=0;i<N;i++){if(!simulate(C,false).majority)c++;}
-  rng=saved;
-  return Math.round(c/N*100)+'% OF SIMULATED PRIMARIES REACH THE CONVENTION WITHOUT A PLEDGED MAJORITY';
- }catch(e){return null;}
-}
-function initTicker(extra){const items=WIRE.concat(extra?[extra]:[]);if(!items.length)return;const s=items.join('<span class="tsep">/</span>');document.getElementById('ticker').innerHTML=s+'<span class="tsep">/</span>'+s;}
 /*==SIM_CORE_END==*/
 // ==DAILY CHANGE STRIP== reads history.csv (written nightly by scripts/baseline.js)
 const HIST={rows:[],mode:'day'};
@@ -1612,7 +1600,7 @@ function renderSettled(){
 function renderReviewed(){
  document.querySelectorAll('.ctlnote[data-reviewed]').forEach(n=>{if(!n.querySelector('.rv'))n.insertAdjacentHTML('beforeend','<span class="rv">Reviewed '+edMonth(n.dataset.reviewed)+'</span>');});
  const dates=CANDS.map(c=>c.reviewed).concat([...document.querySelectorAll('[data-reviewed]')].map(n=>n.dataset.reviewed)).filter(Boolean).sort();
- const f=document.getElementById('priorsDate');if(f&&dates.length)f.textContent=edMonth(dates[dates.length-1]).toUpperCase();
+ const f=document.getElementById('priorsDate');if(f&&dates.length)f.textContent=edMonth(dates[dates.length-1]);
 }
 // ==NIGHTLY HEATMAP== heatmap.json and rankings.json are written by scripts/heatmap.js at default settings.
 // The chips are the top seven turning points by average swing, so nobody picks them by hand.
@@ -1665,9 +1653,6 @@ function loadApproval(){
 // ==DESK NOTE== notes/latest.json is written nightly by scripts/desk_note.py from templates
 function loadDeskNote(){
  fetch('notes/latest.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(n=>{if(!n||!n.text)return;const dt=document.getElementById('deskText');dt.textContent=n.text;if(n.link&&n.link.href){dt.insertAdjacentHTML('beforeend',' <a href="'+n.link.href+'">'+callEsc(n.link.text||'What changed')+'</a>');}document.getElementById('deskDate').textContent=edDate(n.date);document.getElementById('deskNote').hidden=false;}).catch(()=>{});
-}
-function loadWire(){
- fetch('wire.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(w=>{if(!w||!Array.isArray(w.items))return;WIRE=w.items;initTicker();}).catch(()=>{});
 }
 function setChangeMode(m){HIST.mode=m;document.getElementById('csDay').classList.toggle('on',m==='day');document.getElementById('csLaunch').classList.toggle('on',m==='launch');renderChangeStrip();}
 function sgn(x){return (x>0?'+':'')+x.toFixed(1);}
@@ -1810,7 +1795,7 @@ document.querySelectorAll('.ctl input[type=range]').forEach(r=>{
  const mk=(d,txt)=>{const b=document.createElement('button');b.type='button';b.className='step';b.textContent=txt;b.setAttribute('aria-label',(d>0?'Increase ':'Decrease ')+r.id);b.addEventListener('click',()=>{if(r.disabled)return;const v=Math.max(+r.min,Math.min(+r.max,+r.value+d));r.value=v;r.dispatchEvent(new Event('input',{bubbles:true}));});return b;};
  r.before(mk(-5,'-'));r.after(mk(5,'+'));
 });
-renderSettled();renderReviewed();loadDeskNote();loadWire();loadHeatmap();loadCalls();loadCrowd();loadAttention();loadApproval();document.getElementById('pTrump').addEventListener('input',()=>{APPR_TOUCHED=true;});buildCards();loadPolls();loadHistory();buildBracket();paintDefault();deepLink();bracketFromUrl();
+renderSettled();renderReviewed();loadDeskNote();loadHeatmap();loadCalls();loadCrowd();loadAttention();loadApproval();document.getElementById('pTrump').addEventListener('input',()=>{APPR_TOUCHED=true;});buildCards();loadPolls();loadHistory();buildBracket();paintDefault();deepLink();bracketFromUrl();
 // fitted market strengths for the anchor slider (scripts/calibrate_anchor.js, nightly)
 fetch('anchor.json?v='+Date.now()).then(r=>r.ok?r.json():null).then(A=>{if(!A||!A.mstr)return;CANDS.forEach(c=>{if(typeof A.mstr[c.id]==='number')c.mstr=A.mstr[c.id];});if(!DEF.painted&&!DEF.pending&&typeof queueFront==='function')queueFront();}).catch(()=>{});
 // ==NAME ID INPUTS== nameid.csv, attention_scores.csv and attention.csv set up the name ID layer on the page
