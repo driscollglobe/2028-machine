@@ -26,7 +26,7 @@ QUERIES = {
     "newsom": '"Gavin Newsom"', "aoc": '"Ocasio-Cortez"', "sanders": '"Bernie Sanders"',
     "ossoff": '"Ossoff"', "harris": '"Kamala Harris"', "shapiro": '"Josh Shapiro"',
     "pete": '"Buttigieg"', "pritzker": '"Pritzker" governor', "khanna": '"Ro Khanna"',
-    "murphy": '"Chris Murphy" senator', "kelly": '"Mark Kelly" senator', "beshear": '"Andy Beshear"',
+    "kelly": '"Mark Kelly" senator', "beshear": '"Andy Beshear"',
     "rahm": '"Rahm Emanuel"', "whitmer": '"Gretchen Whitmer"', "moore": '"Wes Moore" governor',
     "warnock": '"Raphael Warnock"', "talarico": '"Talarico" Senate', "elsayed": '"El-Sayed" Michigan',
     "stewart": '"Jon Stewart"', "fain": '"Shawn Fain"', "walz": '"Tim Walz"',
@@ -73,7 +73,10 @@ def main():
     if os.path.exists(OUT):
         with open(OUT, newline="") as f:
             dates = {r["date"] for r in new}
-            rows = [r for r in csv.DictReader(f) if r.get("date") not in dates]
+            rd = csv.DictReader(f)
+            # keep the columns of candidates who have left the field, so their past counts survive
+            head += [c for c in (rd.fieldnames or []) if c not in head]
+            rows = [r for r in rd if r.get("date") not in dates]
     rows.extend(new)
     rows.sort(key=lambda r: r["date"])
     with open(OUT, "w", newline="") as f:

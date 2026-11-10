@@ -32,13 +32,13 @@ from datetime import date, timedelta
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MAX_WORDS = 140
 
-NAMES = {"newsom": "Gavin Newsom", "aoc": "Alexandria Ocasio-Cortez", "sanders": "Bernie Sanders",
+NAMES = {"newsom": "Gavin Newsom", "aoc": "AOC", "sanders": "Bernie Sanders",
          "ossoff": "Jon Ossoff", "harris": "Kamala Harris", "shapiro": "Josh Shapiro", "pete": "Pete Buttigieg",
-         "pritzker": "JB Pritzker", "khanna": "Ro Khanna", "murphy": "Chris Murphy", "kelly": "Mark Kelly",
+         "pritzker": "JB Pritzker", "khanna": "Ro Khanna", "kelly": "Mark Kelly",
          "beshear": "Andy Beshear", "rahm": "Rahm Emanuel", "whitmer": "Gretchen Whitmer", "moore": "Wes Moore",
          "warnock": "Raphael Warnock", "talarico": "James Talarico", "elsayed": "Abdul El-Sayed",
          "stewart": "Jon Stewart", "fain": "Shawn Fain", "walz": "Tim Walz", "booker": "Cory Booker", "gallego": "Ruben Gallego", "slotkin": "Elissa Slotkin", "vanhollen": "Chris Van Hollen"}
-SHORT = {"aoc": "Ocasio-Cortez", "pete": "Buttigieg", "elsayed": "El-Sayed", "vanhollen": "Van Hollen"}
+SHORT = {"aoc": "AOC", "pete": "Buttigieg", "elsayed": "El-Sayed", "vanhollen": "Van Hollen"}
 
 
 def full(i):
@@ -49,8 +49,10 @@ def last(i):
     return SHORT.get(i) or NAMES.get(i, i).split(" ")[-1]
 
 
-def f1(x):
-    return "%.1f" % x
+def f0(x):
+    """A level (price, share, rate) as a whole number, so the note matches the hero and the cards.
+    Moves keep one decimal (pts). Rounds half up: 26.5 -> 27."""
+    return "%d" % int(x + 0.5) if x >= 0 else "-%d" % int(-x + 0.5)
 
 
 def pts(x):
@@ -117,7 +119,7 @@ def build(today, M, D, prev, calls, note="", changes=None):
     if mover:
         i, d = mover
         up = d > 0
-        p = f1(M["blend"][i])
+        p = f0(M["blend"][i])
         S.append((0, pick([
             "%s had the biggest move in the nomination markets %s, %s %s to %s." % (full(i), when, "up" if up else "down", pts(d), p),
             "Traders %s %s %s, pushing the blended price %s %s to %s." % ("bought" if up else "sold", full(i), when, "up" if up else "down", pts(d), p),
@@ -170,18 +172,18 @@ def build(today, M, D, prev, calls, note="", changes=None):
             dm = m1 - m0
             if abs(dm) < 0.5:
                 txt = pick([
-                    "Our simulations hardly noticed; %s still wins %s percent of them." % (last(i), f1(m1)),
-                    "It didn't change much in the model, where %s finishes first in %s percent of runs." % (last(i), f1(m1)),
+                    "Our simulations hardly noticed; %s still wins %s percent of them." % (last(i), f0(m1)),
+                    "It didn't change much in the model, where %s finishes first in %s percent of runs." % (last(i), f0(m1)),
                 ], key, "model_flat")
             elif (dm > 0) == (mover[1] > 0):
                 txt = pick([
-                    "The model went along, and %s now wins %s percent of simulated primaries, against %s the day before." % (last(i), f1(m1), f1(m0)),
-                    "In the simulations %s went from %s to %s percent of first-place finishes." % (last(i), f1(m0), f1(m1)),
+                    "The model went along, and %s now wins %s percent of simulated primaries, against %s the day before." % (last(i), f0(m1), f0(m0)),
+                    "In the simulations %s went from %s to %s percent of first-place finishes." % (last(i), f0(m0), f0(m1)),
                 ], key, "model_same")
             else:
                 txt = pick([
-                    "The model moved the other way, taking %s from %s to %s percent of simulated wins." % (last(i), f1(m0), f1(m1)),
-                    "Our simulations disagreed with the traders: %s went from %s to %s percent of first-place finishes." % (last(i), f1(m0), f1(m1)),
+                    "The model moved the other way, taking %s from %s to %s percent of simulated wins." % (last(i), f0(m0), f0(m1)),
+                    "Our simulations disagreed with the traders: %s went from %s to %s percent of first-place finishes." % (last(i), f0(m0), f0(m1)),
                 ], key, "model_opp")
             S.append((1, txt))
 
@@ -204,30 +206,30 @@ def build(today, M, D, prev, calls, note="", changes=None):
         return ("likely %d to %d" % (round(r[0]), round(r[1]))) if r else ""
 
     def share(i, r):
-        return "%s percent%s" % (f1(D["first"][i]), (" (" + rr(r) + ")") if r else "")
+        return "%s percent%s" % (f0(D["first"][i]), (" (" + rr(r) + ")") if r else "")
 
     if overlap:
         S.append((2, pick([
-            "The model calls it a two-way race: %s wins %s of simulated primaries and %s %s. %s leads the markets at %s." % (full(ml), share(ml, r1), full(m2), share(m2, r2), last(mk), f1(M["blend"][mk])),
-            "In our simulations it's a two-way race, too close to name a leader: %s at %s and %s at %s. The betting favorite is %s at %s." % (full(ml), share(ml, r1), full(m2), share(m2, r2), last(mk), f1(M["blend"][mk])),
+            "The model calls it a two-way race: %s wins %s of simulated primaries and %s %s. %s leads the markets at %s." % (full(ml), share(ml, r1), full(m2), share(m2, r2), last(mk), f0(M["blend"][mk])),
+            "In our simulations it's a two-way race, too close to name a leader: %s at %s and %s at %s. The betting favorite is %s at %s." % (full(ml), share(ml, r1), full(m2), share(m2, r2), last(mk), f0(M["blend"][mk])),
         ], key, "two_way")))
     elif mk == ml:
         S.append((2, pick([
-            "%s leads both the markets, at %s, and the model, winning %s percent of simulated primaries." % (full(mk), f1(M["blend"][mk]), f1(D["first"][ml])),
-            "Markets and model agree on the leader: %s, at %s in the blend and first in %s percent of our runs." % (full(mk), f1(M["blend"][mk]), f1(D["first"][ml])),
+            "%s leads both the markets, at %s, and the model, winning %s percent of simulated primaries." % (full(mk), f0(M["blend"][mk]), f0(D["first"][ml])),
+            "Markets and model agree on the leader: %s, at %s in the blend and first in %s percent of our runs." % (full(mk), f0(M["blend"][mk]), f0(D["first"][ml])),
         ], key, "lead_same")))
     else:
         S.append((2, pick([
-            "%s leads the markets at %s, but the model likes %s, who wins %s percent of simulated primaries." % (full(mk), f1(M["blend"][mk]), full(ml), f1(D["first"][ml])),
-            "The markets have %s on top at %s. In our simulations it's %s, first in %s percent of runs." % (full(mk), f1(M["blend"][mk]), full(ml), f1(D["first"][ml])),
-            "%s wins the most simulated primaries, %s percent, though the betting favorite is %s at %s." % (full(ml), f1(D["first"][ml]), full(mk), f1(M["blend"][mk])),
+            "%s leads the markets at %s, but the model likes %s, who wins %s percent of simulated primaries." % (full(mk), f0(M["blend"][mk]), full(ml), f0(D["first"][ml])),
+            "The markets have %s on top at %s. In our simulations it's %s, first in %s percent of runs." % (full(mk), f0(M["blend"][mk]), full(ml), f0(D["first"][ml])),
+            "%s wins the most simulated primaries, %s percent, though the betting favorite is %s at %s." % (full(ml), f0(D["first"][ml]), full(mk), f0(M["blend"][mk])),
         ], key, "lead_diff")))
 
     # 5. the convention
     c = D.get("contested")
     if isinstance(c, (int, float)):
         S.append((3, pick([
-            "In %s percent of those runs nobody reaches the convention with a pledged majority." % f1(c),
+            "In %s percent of those runs nobody reaches the convention with a pledged majority." % f0(c),
             "About %d in 100 simulated primaries end without a pledged majority, which sends the fight to the convention floor." % round(c),
         ], key, "conv")))
 
