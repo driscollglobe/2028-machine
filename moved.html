@@ -6,14 +6,14 @@
 <title>What moved | The 2028 Machine</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
 <style>
 :root{
  --ink:#16171a;--paper:#f5f3ec;--panel:#ffffff;--rule:rgba(20,21,24,.14);
  --muted:#5c5b55;--faint:#6b6a63;--wire:#b8442b;--wire-soft:#f3ddd4;
  --tealx:#1f7a5c;--tealx-soft:#dcefe7;--amber:#c98a18;--amber-soft:#f5e7c8;
  --rmd:7px;--rlg:11px;
- --serif:'Source Serif 4',Georgia,serif;--sans:'Libre Franklin',-apple-system,'Segoe UI',sans-serif;
+ --serif:'Source Serif 4',Georgia,serif;--sans:'Schibsted Grotesk',-apple-system,'Segoe UI',sans-serif;
  --p-anchor:#c98a18;--p-anchor-soft:#f5e7c8;--p-fight:#b8442b;--p-fight-soft:#f3ddd4;--p-suburb:#1f7a5c;--p-suburb-soft:#dcefe7;--p-working:#3b6ea5;--p-working-soft:#dbe6f3;--p-movement:#7a3e9d;--p-movement-soft:#e9dcf1;--p-out:#8c5a2b;--p-out-soft:#efe2d3;
 }
 @media (prefers-color-scheme:dark){
@@ -328,6 +328,50 @@ body.show-adv h2.s.adv{display:block;}
 .foot{font-size:12.5px;color:var(--faint);border-top:1px solid var(--rule);padding-top:1rem;margin-top:2rem;line-height:1.6;}
 @media(max-width:360px){.mr .mstats{flex-wrap:wrap;padding-left:0;}}
 .pagedek{font-size:15px;color:var(--muted);max-width:680px;margin:0 0 1rem;}
+/* ==FLAT== newspaper layout: no cards, no pills, no rounded corners, no shadows.
+   Sections open on a heavy ink rule; inside them, hairlines. Buttons are plain rectangles; the main action is ink. */
+:root{--rmd:0px;--rlg:0px;--panel:var(--paper);--track:rgba(20,21,24,.07);}
+@media (prefers-color-scheme:dark){:root{--track:rgba(255,255,255,.09);}}
+.section{border:0;border-top:2px solid var(--ink);background:transparent;padding:.85rem 0 1.3rem;}
+.shead{color:var(--ink);font-weight:600;}
+.shead .note,.shead span+span{font-weight:400;color:var(--muted);}
+h2.s{margin:2.2rem 0 .35rem;font-size:22px;}
+.sb,.pollboard{background:transparent;border:0;border-top:1px solid var(--rule);padding:.6rem 0;}
+.cc{background:transparent;border:0;border-top:2px solid var(--ink);padding:.7rem 0 .4rem;transition:border-color .15s;}
+.cc:hover{border-color:var(--wire);}
+.cc .lane{background:transparent!important;border-left:3px solid currentColor;border-radius:0;padding:0 0 0 6px;font-weight:500;}
+.tagx{border-radius:0;}
+.bpchip{border:0;border-bottom:1px solid var(--wire);border-radius:0;background:transparent;padding:3px 0;margin-right:8px;}
+.bpchip:hover{border-bottom-color:var(--ink);color:var(--ink);}
+.btn{border-radius:0;}
+.btn:hover{box-shadow:none;background:var(--ink);color:var(--paper);}
+.btn.go{background:var(--ink);border-color:var(--ink);color:var(--paper);}
+.btn.go:hover{background:var(--wire);border-color:var(--wire);color:#fff;}
+.desknote{border:0;border-top:2px solid var(--ink);background:transparent;padding:.75rem 0 .9rem;margin:0 0 1.2rem;}
+.desknote .dnlabel{color:var(--ink);}
+.desknote p{font-family:var(--serif);font-size:17px;line-height:1.55;}
+.bpalert{background:transparent;border-left:2px solid var(--wire);}
+.final{border:0;border-top:2px solid var(--wire);border-bottom:1px solid var(--rule);}
+.sharecard{border-width:1px;}
+.bt,.abt,.mr .mtrack,.rbart{background:var(--track);border:0;border-radius:0;}
+.rbarf{border-radius:0;}
+.hmwrap::after{background:linear-gradient(to right,transparent,var(--paper));}
+/* ==2027== big grotesk display type over the flat layout: heavy, tight headlines and numbers,
+   serif kept for the kicker and for reading. */
+.mast-l h1,.mast h1{font-family:var(--sans);font-weight:800;letter-spacing:-.035em;font-size:38px;}
+.hero-num{font-family:var(--sans);font-weight:800;font-size:112px;line-height:116px;height:116px;letter-spacing:-.05em;}
+@media(max-width:740px){.hero-num{font-size:68px;line-height:74px;height:74px;}}
+.hero-dek{font-size:15.5px;color:var(--ink);font-weight:500;}
+.hero-para{font-size:18px;line-height:1.55;}
+h2.s{font-family:var(--sans);font-weight:800;font-size:30px;letter-spacing:-.03em;line-height:1.1;}
+.shead{font-size:14.5px;}
+.mr .mshare{font-weight:700;letter-spacing:-.02em;}
+.hero-side .hs-row span:first-child{font-weight:700;}
+.sticky .st-title{font-family:var(--sans);font-weight:800;letter-spacing:-.03em;}
+.cc .nm{font-weight:700;letter-spacing:-.01em;font-size:15.5px;}
+.desknote p{font-size:17.5px;}
+/* Schibsted's tabular figures set periods, commas and colons a full digit wide ("Nov . 10"), so figures stay proportional */
+*{font-variant-numeric:normal!important;}
 </style>
 </head>
 <body>
