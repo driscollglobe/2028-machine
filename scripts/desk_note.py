@@ -186,7 +186,7 @@ def build(today, M, D, prev, calls, note="", changes=None):
             S.append((1, txt))
 
     # 4. who leads where. When first and second are within 2 points (default.json two_way, the same rule the
-    # hero, the share card and the wire use), the note names both with their ranges and calls nobody the leader.
+    # hero and the share card use), the note names both with their ranges and calls nobody the leader.
     mk = max(ids, key=lambda i: M["blend"][i])
     ml = D["frontrunner"]["id"]
     rng = D.get("range") or {}

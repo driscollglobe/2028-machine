@@ -1071,7 +1071,7 @@ function play(){
     +'<div class="sh-actions"><button class="btn sm" onclick=\'copyShare('+JSON.stringify(JSON.stringify(shareTxt))+')\'>Copy result</button></div></div>';
    document.getElementById('onehead').innerHTML=sc;document.getElementById('onehead').classList.remove('muted');
    runs++;bpFired+=bpThisRun;if(!s.majority)contestedCount++;
-   document.getElementById('oneStatus').textContent=runs+' run'+(runs===1?'':'s')+' · '+pct1(contestedCount/runs*100)+' without a pledged majority · '+bpThisRun+' turning point'+(bpThisRun===1?'':'s')+' this run';
+   document.getElementById('oneStatus').textContent=runs+' run'+(runs===1?'':'s')+' · '+pct0(contestedCount/runs*100)+' without a pledged majority · '+bpThisRun+' turning point'+(bpThisRun===1?'':'s')+' this run';
   }
  });
  }
@@ -1199,9 +1199,13 @@ function pollAverages(rows,today){
  if(typeof PollAvg==='undefined')return {avg:{},n:{},used:0};
  return PollAvg.weighted(rows,POLLS.pollsters,today,CANDS.map(c=>c.id));
 }
-function fmtGap(g){return (g>0?'+':'')+g.toFixed(1);}
-// one format for every share, price and probability on the page: one decimal and a percent sign.
-// Differences (gap, model vs market, What moved) are signed points with one decimal and no sign.
+function fmtGap(g){const r=Math.round(g);return (r>0?'+':'')+(r===0?'0':r);}
+// Number formats. Whole percents for every price, probability, poll and gap (pct0, fmtGap): this far out the
+// model has no tenth-of-a-point precision, and the likely ranges say so. One decimal (pct1) only for first-place
+// shares in a ranked list (the leaderboard and the bracket's top fives), where the range sits beside the share.
+// What moved keeps one decimal because a day's market move is often under a point.
+function gapCls(g){const r=Math.round(g);return r>0?'pos':(r<0?'neg':'');}
+function pct0(x){return Math.round(+x)+'%';}
 function pct1(x){return (+x).toFixed(1)+'%';}
 // a missing poll or gap is a grey dash that says why
 const NOPOLL='<b class="nopoll" title="No qualifying poll">\u2013</b>';
@@ -1213,21 +1217,21 @@ function pollNums(c){
 }
 function oddsRow(c){
  const x=pollNums(c);
- const pollTxt=x.poll===null?NOPOLL:'<b>'+pct1(x.poll)+'</b>';
- const gapTxt=x.gap===null?NOPOLL:'<b class="gap '+(x.gap>=0?'pos':'neg')+'">'+fmtGap(x.gap)+'</b>';
- return '<span'+(typeof c.madj==='number'?' title="Corrected for long-shot bias: '+pct1(c.madj)+'. The model anchors to the corrected price."':'')+'><i>Market</i><b>'+pct1(x.mkt)+'</b></span><span><i>Poll</i>'+pollTxt+'</span><span><i>Gap</i>'+gapTxt+'</span>';
+ const pollTxt=x.poll===null?NOPOLL:'<b>'+pct0(x.poll)+'</b>';
+ const gapTxt=x.gap===null?NOPOLL:'<b class="gap '+gapCls(x.gap)+'">'+fmtGap(x.gap)+'</b>';
+ return '<span'+(typeof c.madj==='number'?' title="Corrected for long-shot bias: '+pct0(c.madj)+'. The model anchors to the corrected price."':'')+'><i>Market</i><b>'+pct0(x.mkt)+'</b></span><span><i>Poll</i>'+pollTxt+'</span><span><i>Gap</i>'+gapTxt+'</span>';
 }
-function runRow(c){return '<span'+runTip(c)+'><i>Run</i><b>'+pct1(runPct(c))+'</b></span><span title="Rank by model share"><i>Model rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+nidCell(c)+attnCell(c);}
+function runRow(c){return '<span'+runTip(c)+'><i>Run</i><b>'+pct0(runPct(c))+'</b></span><span title="Rank by model share"><i>Model rank</i><b>#'+(MODEL_RANK[c.id]||c.rank)+'</b></span>'+mmm(c)+crowdCell(c)+nidCell(c)+attnCell(c);}
 // a card shows three numbers: model first-place share, market and run odds. Everything else is in the dossier.
-function modelCell(c){const f=MODEL_FIRST[c.id];return '<span title="Share of simulated primaries this candidate wins"><i>Model</i><b>'+(typeof f==='number'?pct1(f):'\u2013')+'</b></span>';}
-function cardNums(c){return modelCell(c)+'<span'+(typeof c.madj==='number'?' title="Corrected for long-shot bias: '+pct1(c.madj)+'. The model anchors to the corrected price."':'')+'><i>Market</i><b>'+pct1(c.mkt)+'</b></span><span'+runTip(c)+'><i>Run</i><b>'+pct1(runPct(c))+'</b></span>';}
+function modelCell(c){const f=MODEL_FIRST[c.id];return '<span title="Share of simulated primaries this candidate wins"><i>Model</i><b>'+(typeof f==='number'?pct0(f):'\u2013')+'</b></span>';}
+function cardNums(c){return modelCell(c)+'<span'+(typeof c.madj==='number'?' title="Corrected for long-shot bias: '+pct0(c.madj)+'. The model anchors to the corrected price."':'')+'><i>Market</i><b>'+pct0(c.mkt)+'</b></span><span'+runTip(c)+'><i>Run</i><b>'+pct0(runPct(c))+'</b></span>';}
 function refreshOdds(){CANDS.forEach(c=>{const e=document.getElementById('odds_'+c.id);if(e)e.innerHTML=cardNums(c);});const md=document.getElementById('mdStats');if(md)md.innerHTML=dossierStats(md.dataset.id);}
 function renderPollBoard(){
  const body=document.getElementById('pollboardBody');if(!body)return;
  const top=CANDS.filter(c=>c.id!=='other').slice().sort((a,b)=>b.mkt-a.mkt).slice(0,6);
  let h='<table><tr><th>Candidate</th><th>Market</th><th>Poll</th><th>Gap</th></tr>';
  top.forEach(c=>{const x=pollNums(c);
-  h+='<tr><td>'+c.name+'</td><td>'+pct1(x.mkt)+'</td><td>'+(x.poll===null?NOPOLL:pct1(x.poll))+'</td><td class="gap '+(x.gap===null?'':(x.gap>=0?'pos':'neg'))+'">'+(x.gap===null?NOPOLL:fmtGap(x.gap))+'</td></tr>';});
+  h+='<tr><td>'+c.name+'</td><td>'+pct0(x.mkt)+'</td><td>'+(x.poll===null?NOPOLL:pct0(x.poll))+'</td><td class="gap '+(x.gap===null?'':gapCls(x.gap))+'">'+(x.gap===null?NOPOLL:fmtGap(x.gap))+'</td></tr>';});
  h+='</table>';
  body.innerHTML=h;
 }
@@ -1295,9 +1299,9 @@ function renderAggregate(rows,TOTAL,contestedPct,ballots){
  const row=r=>{
   const c=CANDS.find(x=>x.id===r.id);const pn=pollNums(c);
   const pic=PHOTOS[r.id]?'<img class="mpic" src="'+PHOTOS[r.id]+'" alt="">':'<span class="mmono">'+'</span>';
-  const gap=pn.gap===null?NOPOLL:'<b class="gap '+(pn.gap>=0?'pos':'neg')+'">'+fmtGap(pn.gap)+'</b>';
+  const gap=pn.gap===null?NOPOLL:'<b class="gap '+gapCls(pn.gap)+'">'+fmtGap(pn.gap)+'</b>';
   return '<div class="mr">'+pic+'<div class="mname">'+lastName(r.id)+'<span class="mrange" title="10th to 90th percentile when our own strength estimates are redrawn">'+(r.range?'likely '+rangeTxt(r.range):'')+'</span></div><div class="mtrack"><div class="mfill '+(c.lane||'out')+'" data-w="'+(r.first/mx*100).toFixed(1)+'"></div></div><div class="mshare">'+pct1(r.first)+'</div>'
-   +'<div class="mstats"><span>Market <b>'+pct1(pn.mkt)+'</b></span><span>Poll '+(pn.poll===null?NOPOLL:'<b>'+pct1(pn.poll)+'</b>')+'</span><span>Gap '+gap+'</span></div></div>';
+   +'<div class="mstats"><span>Market <b>'+pct0(pn.mkt)+'</b></span><span>Poll '+(pn.poll===null?NOPOLL:'<b>'+pct0(pn.poll)+'</b>')+'</span><span>Gap '+gap+'</span></div></div>';
  };
  let h='<div class="mtop">'+rows.slice(0,5).map(row).join('')+'</div>';
  if(rows.length>5)h+='<div class="mrest">'+rows.slice(5).map(row).join('')+'</div><button class="btn sm mmore" onclick="toggleAll(this)">Show all '+rows.length+'</button>';
@@ -1311,7 +1315,7 @@ function toggleAll(btn){const agg=document.getElementById('aggregate');agg.class
 let MODEL_RANK={};
 let MODEL_FIRST={};
 // model share minus market price for a field card; updates whenever the live model reruns
-function crowdCell(c){const x=CROWD&&CROWD.candidates&&CROWD.candidates[c.id];return x?'<span title="median run odds from '+CROWD.count+' anonymous reader brackets"><i>Globe readers</i><b>'+pct1(x.median)+'</b></span>':'';}
+function crowdCell(c){const x=CROWD&&CROWD.candidates&&CROWD.candidates[c.id];return x?'<span title="median run odds from '+CROWD.count+' anonymous reader brackets"><i>Globe readers</i><b>'+pct0(x.median)+'</b></span>':'';}
 // ==ATTENTION== attention.csv: Google News results per candidate per day (scripts/fetch_attention.py).
 // Display only. It never enters the model.
 let ATTN={};
@@ -1333,9 +1337,9 @@ function runPct(c){if(typeof c.runIfAocOut!=='number')return c.run;const a=+((do
 function runTip(c){return typeof c.runIfAocOut==='number'?' title="Runs only if AOC stays out, and then '+c.runIfAocOut+' percent of the time"':'';}
 function nidCell(c){if(!NAMEID.on||typeof NAMEID.x0[c.id]!=='number')return '';const x=Math.round(NAMEID.x0[c.id]*100),src=NAMEID.src[c.id];
  const tip=NAMEID.est[c.id]?'No Economist/YouGov reading yet. Estimated from our attention score of '+(NAMEID.score[c.id]?NAMEID.score[c.id].score:1)+' out of 10.':'Share who have heard enough to rate them. Economist/YouGov, '+edDate(src.date)+'. '+src.source;
- return '<span title="'+tip.replace(/"/g,'&quot;')+'"><i>Known by</i><b>'+pct1(x)+(NAMEID.est[c.id]?' <small class="est">est.</small>':'')+'</b></span>';}
+ return '<span title="'+tip.replace(/"/g,'&quot;')+'"><i>Known by</i><b>'+pct0(x)+(NAMEID.est[c.id]?' <small class="est">est.</small>':'')+'</b></span>';}
 function attnCell(c){const a=ATTN[c.id];if(!a)return '';const tot=a.v.reduce((s,x)=>s+(x||0),0);return '<span title="Google News results, last '+a.days+' days; not in the model'+(a.cap?'; a day at 100 means 100 or more':'')+'"><i>News, '+a.days+' days</i><b>'+tot+(a.cap?'+':'')+'</b>'+spark(a.v)+'</span>';}
-function mmm(c){const f=MODEL_FIRST[c.id];if(typeof f!=='number')return '';const g=Math.round((f-c.mkt)*10)/10;return '<span title="Model share minus market price, in points"><i>Model vs market</i><b class="gap '+(g>=0?'pos':'neg')+'">'+(g>0?'+':'')+g.toFixed(1)+'</b></span>';}
+function mmm(c){const f=MODEL_FIRST[c.id];if(typeof f!=='number')return '';const g=f-c.mkt;return '<span title="Model share minus market price, in points"><i>Model vs market</i><b class="gap '+gapCls(g)+'">'+fmtGap(g)+'</b></span>';}
 function setModelRank(first){MODEL_FIRST=first||{};const ids=CANDS.filter(c=>c.id!=='other').map(c=>c.id).sort((a,b)=>(first[b]||0)-(first[a]||0));MODEL_RANK={};ids.forEach((id,i)=>MODEL_RANK[id]=i+1);refreshOdds();}
 // ==PRECOMPUTED DEFAULT== default.json is written nightly by scripts/baseline.js. On load the page paints from it
 // and only simulates once a reader changes a control.
@@ -1466,10 +1470,10 @@ function computePaths(id){
   // most sensitive: largest absolute deviation from base
   const sens=scored.slice().sort((a,b)=>Math.abs(b.r-baseRate)-Math.abs(a.r-baseRate))[0];
   let h='<h4>Best path</h4><ul class="md-path">';
-  best.forEach(b=>h+='<li><span class="pgood">When '+b.l+'</span>, finishes first '+pct1(b.r)+'</li>');
+  best.forEach(b=>h+='<li><span class="pgood">When '+b.l+'</span>, finishes first '+pct0(b.r)+'</li>');
   h+='</ul><h4 style="margin-top:10px;">Worst path</h4><ul class="md-path">';
-  worst.forEach(b=>h+='<li><span class="pbad">When '+b.l+'</span>, finishes first '+pct1(b.r)+'</li>');
-  h+='</ul><div class="md-sec"><h4>Most sensitive to</h4><p>'+sens.l.charAt(0).toUpperCase()+sens.l.slice(1)+' ('+(sens.r>baseRate?'+':'')+(sens.r-baseRate).toFixed(0)+' points against a baseline of '+pct1(baseRate)+')</p></div>';
+  worst.forEach(b=>h+='<li><span class="pbad">When '+b.l+'</span>, finishes first '+pct0(b.r)+'</li>');
+  h+='</ul><div class="md-sec"><h4>Most sensitive to</h4><p>'+sens.l.charAt(0).toUpperCase()+sens.l.slice(1)+' ('+(sens.r>baseRate?'+':'')+(sens.r-baseRate).toFixed(0)+' points against a baseline of '+pct0(baseRate)+')</p></div>';
   box.innerHTML=h;
  },20);
 }
@@ -1484,7 +1488,7 @@ function updateFrontrunner(){
  if(bk){const hrows=Object.keys(w).map(id=>({id,first:w[id]/tot*100})).filter(x=>x.id!=='other').sort((a,b)=>b.first-a.first);if(hrows.length)heroFromRows(hrows,(twoWay(hrows)?'Within two points of each other in ':'Wins the most of ')+N.toLocaleString()+' simulated primaries with your settings');}
 }
 function rangeTxt(r){return r&&r.length===2?Math.round(r[0])+' to '+Math.round(r[1]):'';}
-function setHero(name,pct,label,range){document.getElementById('heroShare').textContent=name+' '+pct1(pct);const hr=document.getElementById('heroRange');if(hr)hr.textContent=range?'likely '+rangeTxt(range):'';if(label)document.getElementById('heroDate').textContent=label;}
+function setHero(name,pct,label,range){document.getElementById('heroShare').textContent=name+' '+pct0(pct);const hr=document.getElementById('heroRange');if(hr)hr.textContent=range?'likely '+rangeTxt(range):'';if(label)document.getElementById('heroDate').textContent=label;}
 // the hero from a sorted result list: one name, or both when twoWay says the top two are inside the noise
 function heroFromRows(rows,label,two){
  two=two===undefined?twoWay(rows):two;
@@ -1493,7 +1497,7 @@ function heroFromRows(rows,label,two){
  const a=rows.find(x=>x.id===two[0]),b=rows.find(x=>x.id===two[1]);
  document.getElementById('heroShare').textContent=lastName(a.id)+' and '+lastName(b.id);
  const hr=document.getElementById('heroRange');
- if(hr)hr.textContent='A two-way race: '+lastName(a.id)+' '+pct1(a.first)+(a.range?', likely '+rangeTxt(a.range):'')+'; '+lastName(b.id)+' '+pct1(b.first)+(b.range?', likely '+rangeTxt(b.range):'');
+ if(hr)hr.textContent='A two-way race: '+lastName(a.id)+' '+pct0(a.first)+(a.range?', likely '+rangeTxt(a.range):'')+'; '+lastName(b.id)+' '+pct0(b.first)+(b.range?', likely '+rangeTxt(b.range):'');
  if(label)document.getElementById('heroDate').textContent=label;
 }
 // ==HERO LINES== Two sentences under the hero number, both written from the numbers on the page.
@@ -1510,9 +1514,9 @@ function renderState(rows){
  const names=big.map(x=>lastName(x.id)), list=names.length>2?names.slice(0,-1).join(', ')+' and '+names[names.length-1]:names.join(' and ');
  const sum=big.reduce((a,x)=>a+x.first,0);
  let t;
- if(!big.length)t='No candidate wins more than '+r[0].first.toFixed(1)+' percent of simulated primaries.';
- else if(big.length===1)t=list+' wins '+big[0].first.toFixed(1)+' percent of simulated primaries'+(rest?', and no one else wins more than '+rest.first.toFixed(1)+' percent.':'.');
- else t=list+' win '+sum.toFixed(1)+' percent of simulated primaries between them'+(rest?', and no one else wins more than '+rest.first.toFixed(1)+' percent.':'.');
+ if(!big.length)t='No candidate wins more than '+Math.round(r[0].first)+' percent of simulated primaries.';
+ else if(big.length===1)t=list+' wins '+Math.round(big[0].first)+' percent of simulated primaries'+(rest?', and no one else wins more than '+Math.round(rest.first)+' percent.':'.');
+ else t=list+' win '+Math.round(sum)+' percent of simulated primaries between them'+(rest?', and no one else wins more than '+Math.round(rest.first)+' percent.':'.');
  el.textContent=t;
 }
 function runProb(id){
@@ -1531,7 +1535,7 @@ function whyDrivers(L,K){
   if(r>1)out.push({s:w*ln(r),t:'more Democrats know '+nL+' ('+Math.round(NAMEID.x0[L]*100)+' percent to '+Math.round(NAMEID.x0[K]*100)+(NAMEID.est[L]||NAMEID.est[K]?', partly estimated':'')+')'});
  }
  const rL=runProb(L),rK=runProb(K);
- if(rK>0&&rL>rK)out.push({s:ln(rL/rK),t:nL+' is likelier to run ('+rL.toFixed(1)+' percent to '+rK.toFixed(1)+')'});
+ if(rK>0&&rL>rK)out.push({s:ln(rL/rK),t:nL+' is likelier to run ('+Math.round(rL)+' percent to '+Math.round(rK)+')'});
  const crowd=P('pCrowd');
  if(crowd>0){
   const mates=id=>POOLS[POOLOF[id]].filter(x=>x!==id&&x!=='other').reduce((t,x)=>t+runProb(x)/100,0);
@@ -1552,7 +1556,7 @@ function renderWhy(){
  const mk=CANDS.filter(c=>c.id!=='other').slice().sort((a,b)=>b.mkt-a.mkt)[0];
  if(!rows.length||!mk||rows[0].id===mk.id){el.hidden=true;el.textContent='';return;}
  const L=rows[0].id,d=whyDrivers(L,mk.id);
- el.textContent='The markets have '+lastName(mk.id)+' ahead at '+pct1(mk.mkt)+'. The model puts '+lastName(L)+' first'+(d.length?' because '+d.map(x=>x.t).join(', and '):'')+'.';
+ el.textContent='The markets have '+lastName(mk.id)+' ahead at '+pct0(mk.mkt)+'. The model puts '+lastName(L)+' first'+(d.length?' because '+d.map(x=>x.t).join(', and '):'')+'.';
  el.hidden=false;
 }
 function lastName(id){const c=CANDS.find(x=>x.id===id);return c&&c.short?c.short:nm(id).split(' ').slice(-1)[0];}
