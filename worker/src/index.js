@@ -6,7 +6,7 @@
 // day and is never written anywhere, and the rate-limit entry expires before the next UTC day.
 // A saved bracket holds only the six numbers and the UTC date.
 
-const IDS = ['newsom', 'aoc', 'sanders', 'ossoff', 'harris', 'shapiro', 'pete', 'pritzker', 'khanna', 'murphy',
+const IDS = ['newsom', 'aoc', 'sanders', 'ossoff', 'harris', 'shapiro', 'pete', 'pritzker', 'khanna',
   'kelly', 'beshear', 'rahm', 'whitmer', 'moore', 'warnock', 'talarico', 'elsayed', 'stewart', 'fain', 'walz', 'booker', 'gallego', 'slotkin', 'vanhollen'];
 const NEED = 6;
 const AGG_KEY = 'agg:cache';
