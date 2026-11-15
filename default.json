@@ -1,92 +1,92 @@
 {
- "date": "2026-11-14",
+ "date": "2026-11-15",
  "runs": 50000,
  "anchor": 50,
- "contested": 11,
+ "contested": 10.1,
  "unresolved": 0,
  "ballots": {
-  "1": 89,
-  "2": 6,
-  "3": 2.1,
-  "4": 0.7,
-  "plurality": 2.2
+  "1": 89.9,
+  "2": 5.5,
+  "3": 1.9,
+  "4": 0.6,
+  "plurality": 2.1
  },
  "frontrunner": {
   "id": "aoc",
-  "share": 29.9
+  "share": 30.5
  },
  "two_way": null,
  "first": {
-  "newsom": 20.8,
-  "aoc": 29.9,
-  "harris": 5.6,
-  "sanders": 0.6,
-  "ossoff": 19.3,
-  "shapiro": 3.1,
-  "pete": 4.7,
+  "newsom": 21.1,
+  "aoc": 30.5,
+  "harris": 5.2,
+  "sanders": 0.7,
+  "ossoff": 19.2,
+  "shapiro": 3,
+  "pete": 4.5,
   "pritzker": 0.4,
-  "khanna": 4,
+  "khanna": 3.9,
   "kelly": 0.9,
-  "beshear": 1.2,
+  "beshear": 1.4,
   "rahm": 0,
   "whitmer": 0,
-  "moore": 0.4,
-  "warnock": 1.4,
-  "talarico": 0.7,
-  "elsayed": 4,
-  "stewart": 0.2,
+  "moore": 0.3,
+  "warnock": 1.5,
+  "talarico": 0.6,
+  "elsayed": 3.9,
+  "stewart": 0.3,
   "fain": 0.2,
   "walz": 0,
   "booker": 0.1,
   "gallego": 0,
   "slotkin": 0,
   "vanhollen": 0,
-  "other": 2.4
+  "other": 2.3
  },
  "range": {
   "newsom": [
    10,
-   32.8
+   34.8
   ],
   "aoc": [
-   18.3,
-   42.5
+   18.2,
+   43.7
   ],
   "harris": [
    1.7,
-   10.2
+   10.1
   ],
   "sanders": [
-   0.5,
-   0.9
+   0.4,
+   1.3
   ],
   "ossoff": [
-   10.1,
-   28.8
+   11.1,
+   28.7
   ],
   "shapiro": [
-   0.8,
-   5.2
+   1.6,
+   5.1
   ],
   "pete": [
-   1.8,
-   8.1
+   1.7,
+   7.3
   ],
   "pritzker": [
-   0.3,
-   0.6
+   0.2,
+   0.8
   ],
   "khanna": [
-   2.3,
-   5.7
+   2.5,
+   5.4
   ],
   "kelly": [
-   0.4,
+   0.5,
    1.4
   ],
   "beshear": [
-   0.5,
-   2.2
+   0.6,
+   2.3
   ],
   "rahm": [
    0,
@@ -97,36 +97,36 @@
    0
   ],
   "moore": [
-   0.1,
-   0.8
+   0.2,
+   0.6
   ],
   "warnock": [
-   0.7,
-   2.2
+   0.5,
+   2.4
   ],
   "talarico": [
-   0.4,
-   1.3
+   0.2,
+   1.4
   ],
   "elsayed": [
-   2,
-   6.7
+   1.9,
+   6
   ],
   "stewart": [
-   0.1,
-   0.5
+   0.2,
+   0.4
   ],
   "fain": [
    0.2,
-   0.2
+   0.3
   ],
   "walz": [
    0,
    0
   ],
   "booker": [
-   0,
-   0
+   0.1,
+   0.7
   ],
   "gallego": [
    0,
@@ -141,87 +141,87 @@
    0
   ],
   "other": [
-   0.6,
+   0.5,
    4.4
   ]
  },
  "dist": {
   "newsom": {
    "p10": 10,
-   "p25": 14.6,
+   "p25": 14.4,
    "p50": 20.1,
-   "p75": 25.5,
-   "p90": 32.8
+   "p75": 26.5,
+   "p90": 34.8
   },
   "aoc": {
-   "p10": 18.3,
-   "p25": 23.7,
+   "p10": 18.2,
+   "p25": 22.8,
    "p50": 30,
-   "p75": 36.3,
-   "p90": 42.5
+   "p75": 37.3,
+   "p90": 43.7
   },
   "harris": {
    "p10": 1.7,
-   "p25": 2.6,
-   "p50": 5.1,
-   "p75": 7.6,
-   "p90": 10.2
+   "p25": 2.5,
+   "p50": 4.2,
+   "p75": 6.7,
+   "p90": 10.1
   },
   "sanders": {
-   "p10": 0.5,
-   "p25": 0.5,
-   "p50": 0.5,
-   "p75": 0.7,
-   "p90": 0.9
-  },
-  "ossoff": {
-   "p10": 10.1,
-   "p25": 13.7,
-   "p50": 18.1,
-   "p75": 24.4,
-   "p90": 28.8
-  },
-  "shapiro": {
-   "p10": 0.8,
-   "p25": 1.6,
-   "p50": 3,
-   "p75": 3.8,
-   "p90": 5.2
-  },
-  "pete": {
-   "p10": 1.8,
-   "p25": 2.6,
-   "p50": 4.2,
-   "p75": 5.7,
-   "p90": 8.1
-  },
-  "pritzker": {
-   "p10": 0.3,
-   "p25": 0.3,
-   "p50": 0.3,
-   "p75": 0.6,
-   "p90": 0.6
-  },
-  "khanna": {
-   "p10": 2.3,
-   "p25": 2.8,
-   "p50": 4,
-   "p75": 4.6,
-   "p90": 5.7
-  },
-  "kelly": {
    "p10": 0.4,
    "p25": 0.4,
-   "p50": 0.9,
-   "p75": 0.9,
+   "p50": 0.4,
+   "p75": 0.8,
+   "p90": 1.3
+  },
+  "ossoff": {
+   "p10": 11.1,
+   "p25": 13.7,
+   "p50": 18.1,
+   "p75": 23.4,
+   "p90": 28.7
+  },
+  "shapiro": {
+   "p10": 1.6,
+   "p25": 1.6,
+   "p50": 2.3,
+   "p75": 3.7,
+   "p90": 5.1
+  },
+  "pete": {
+   "p10": 1.7,
+   "p25": 2.5,
+   "p50": 4.1,
+   "p75": 5.7,
+   "p90": 7.3
+  },
+  "pritzker": {
+   "p10": 0.2,
+   "p25": 0.2,
+   "p50": 0.2,
+   "p75": 0.8,
+   "p90": 0.8
+  },
+  "khanna": {
+   "p10": 2.5,
+   "p25": 3,
+   "p50": 3.9,
+   "p75": 4.4,
+   "p90": 5.4
+  },
+  "kelly": {
+   "p10": 0.5,
+   "p25": 0.5,
+   "p50": 1,
+   "p75": 1,
    "p90": 1.4
   },
   "beshear": {
-   "p10": 0.5,
-   "p25": 0.5,
-   "p50": 1.1,
-   "p75": 1.6,
-   "p90": 2.2
+   "p10": 0.6,
+   "p25": 0.6,
+   "p50": 1.2,
+   "p75": 1.7,
+   "p90": 2.3
   },
   "rahm": {
    "p10": 0,
@@ -238,46 +238,46 @@
    "p90": 0
   },
   "moore": {
-   "p10": 0.1,
-   "p25": 0.1,
-   "p50": 0.1,
-   "p75": 0.8,
-   "p90": 0.8
+   "p10": 0.2,
+   "p25": 0.2,
+   "p50": 0.2,
+   "p75": 0.2,
+   "p90": 0.6
   },
   "warnock": {
-   "p10": 0.7,
-   "p25": 0.7,
+   "p10": 0.5,
+   "p25": 0.5,
    "p50": 1.2,
-   "p75": 1.7,
-   "p90": 2.2
+   "p75": 1.8,
+   "p90": 2.4
   },
   "talarico": {
-   "p10": 0.4,
-   "p25": 0.4,
-   "p50": 0.4,
-   "p75": 0.9,
-   "p90": 1.3
+   "p10": 0.2,
+   "p25": 0.2,
+   "p50": 0.2,
+   "p75": 0.8,
+   "p90": 1.4
   },
   "elsayed": {
-   "p10": 2,
+   "p10": 1.9,
    "p25": 2.6,
-   "p50": 4,
-   "p75": 4.7,
-   "p90": 6.7
+   "p50": 3.3,
+   "p75": 4.6,
+   "p90": 6
   },
   "stewart": {
-   "p10": 0.1,
-   "p25": 0.1,
-   "p50": 0.1,
-   "p75": 0.1,
-   "p90": 0.5
+   "p10": 0.2,
+   "p25": 0.2,
+   "p50": 0.2,
+   "p75": 0.2,
+   "p90": 0.4
   },
   "fain": {
    "p10": 0.2,
    "p25": 0.2,
    "p50": 0.2,
    "p75": 0.2,
-   "p90": 0.2
+   "p90": 0.3
   },
   "walz": {
    "p10": 0,
@@ -287,11 +287,11 @@
    "p90": 0
   },
   "booker": {
-   "p10": 0,
-   "p25": 0,
-   "p50": 0,
-   "p75": 0,
-   "p90": 0
+   "p10": 0.1,
+   "p25": 0.1,
+   "p50": 0.1,
+   "p75": 0.1,
+   "p90": 0.7
   },
   "gallego": {
    "p10": 0,
@@ -315,51 +315,51 @@
    "p90": 0
   },
   "other": {
-   "p10": 0.6,
+   "p10": 0.5,
    "p25": 1.3,
    "p50": 2.1,
-   "p75": 2.9,
+   "p75": 2.8,
    "p90": 4.4
   }
  },
  "draws": 500,
- "spread": 0.2977168949771689,
- "days_to_sc": 434,
+ "spread": 0.2972602739726027,
+ "days_to_sc": 433,
  "majority": {
-  "newsom": 19.5,
-  "aoc": 29.1,
-  "harris": 3.9,
-  "sanders": 0.5,
-  "ossoff": 16,
-  "shapiro": 2.4,
-  "pete": 3.8,
+  "newsom": 19.8,
+  "aoc": 29.7,
+  "harris": 3.8,
+  "sanders": 0.7,
+  "ossoff": 16.3,
+  "shapiro": 2.3,
+  "pete": 3.7,
   "pritzker": 0.3,
-  "khanna": 3.6,
-  "kelly": 0.6,
-  "beshear": 0.9,
+  "khanna": 3.5,
+  "kelly": 0.7,
+  "beshear": 1,
   "rahm": 0,
   "whitmer": 0,
-  "moore": 0.3,
-  "warnock": 1,
-  "talarico": 0.6,
-  "elsayed": 3.6,
+  "moore": 0.2,
+  "warnock": 1.1,
+  "talarico": 0.5,
+  "elsayed": 3.4,
   "stewart": 0.2,
   "fain": 0.2,
   "walz": 0,
-  "booker": 0,
+  "booker": 0.1,
   "gallego": 0,
   "slotkin": 0,
   "vanhollen": 0,
-  "other": 2.4
+  "other": 2.3
  },
  "lead": {
   "newsom": 1.3,
-  "aoc": 0.9,
-  "harris": 1.7,
+  "aoc": 0.8,
+  "harris": 1.4,
   "sanders": 0.1,
-  "ossoff": 3.3,
+  "ossoff": 2.9,
   "shapiro": 0.7,
-  "pete": 0.9,
+  "pete": 0.8,
   "pritzker": 0.1,
   "khanna": 0.4,
   "kelly": 0.3,
@@ -367,13 +367,13 @@
   "rahm": 0,
   "whitmer": 0,
   "moore": 0.1,
-  "warnock": 0.4,
+  "warnock": 0.3,
   "talarico": 0.1,
-  "elsayed": 0.5,
+  "elsayed": 0.4,
   "stewart": 0,
   "fain": 0,
   "walz": 0,
-  "booker": 0,
+  "booker": 0.1,
   "gallego": 0,
   "slotkin": 0,
   "vanhollen": 0,
@@ -392,8 +392,8 @@
   "warnock",
   "beshear",
   "kelly",
-  "talarico",
   "sanders",
+  "talarico",
   "pritzker",
   "moore",
   "stewart",
@@ -407,80 +407,80 @@
   "vanhollen"
  ],
  "mkt": {
-  "newsom": 10.1,
-  "aoc": 14.4,
-  "harris": 5.1,
+  "newsom": 10.2,
+  "aoc": 14.8,
+  "harris": 4.5,
   "sanders": 0.4,
-  "ossoff": 25.6,
+  "ossoff": 26.2,
   "shapiro": 5.2,
   "pete": 5.4,
-  "pritzker": 2.1,
-  "khanna": 2.3,
+  "pritzker": 2.2,
+  "khanna": 2.2,
   "kelly": 3,
-  "beshear": 4.1,
-  "rahm": 1.4,
+  "beshear": 4,
+  "rahm": 1.5,
   "whitmer": 0.7,
   "moore": 2.3,
-  "warnock": 3.3,
-  "talarico": 2.1,
-  "elsayed": 1.2,
+  "warnock": 3.2,
+  "talarico": 1.8,
+  "elsayed": 1,
   "stewart": 0.4,
-  "fain": 0.3,
+  "fain": 0.2,
   "walz": 0.1,
   "booker": 0.7,
-  "gallego": 0.5,
-  "slotkin": 0.4,
-  "vanhollen": 0.7,
-  "other": 8.2
+  "gallego": 0.6,
+  "slotkin": 0.7,
+  "vanhollen": 0.8,
+  "other": 7.9
  },
  "run": {
   "newsom": 83,
-  "aoc": 62,
-  "harris": 56,
+  "aoc": 63,
+  "harris": 53,
   "sanders": 10,
-  "ossoff": 69,
+  "ossoff": 64,
   "shapiro": 80,
   "pete": 95,
   "pritzker": 88,
-  "khanna": 85,
-  "kelly": 81,
+  "khanna": 89,
+  "kelly": 78,
   "beshear": 91,
   "rahm": 86,
-  "whitmer": 37,
-  "moore": 82,
+  "whitmer": 36,
+  "moore": 83,
   "warnock": 66,
-  "talarico": 11,
-  "elsayed": 27,
-  "stewart": 8,
+  "talarico": 12,
+  "elsayed": 26,
+  "stewart": 10,
   "fain": 15,
   "walz": 5,
-  "booker": 78,
-  "gallego": 65,
-  "slotkin": 53,
-  "vanhollen": 23,
+  "booker": 77,
+  "gallego": 69,
+  "slotkin": 58,
+  "vanhollen": 39,
   "other": 100
  },
  "gap": {
-  "newsom": 3,
-  "aoc": -3.2,
-  "harris": 15.8,
+  "newsom": 2.8,
+  "aoc": -3.5,
+  "harris": 16.3,
   "sanders": 1.6,
-  "ossoff": -15.7,
+  "ossoff": -16.3,
   "shapiro": -0.7,
   "pete": 5.9,
-  "pritzker": 0.9,
+  "pritzker": 0.8,
   "kelly": 3.2,
-  "beshear": -1.2,
-  "talarico": 0,
+  "beshear": -1.1,
+  "talarico": 0.3,
   "booker": 1.4,
-  "rahm": -0.5,
+  "rahm": -0.6,
   "whitmer": 1.4,
   "moore": -1.3,
-  "gallego": -0.5,
-  "khanna": -1.3,
+  "gallego": -0.6,
+  "khanna": -1.2,
   "walz": 1.9,
-  "warnock": -2.3,
-  "elsayed": -0.2
+  "warnock": -2.2,
+  "elsayed": 0
  },
  "resolved": [
   {
