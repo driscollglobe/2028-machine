@@ -1,5 +1,10 @@
 [
  {
+  "id": "2026-11-15",
+  "date": "2026-11-15",
+  "file": "2026-11-15.md"
+ },
+ {
   "id": "2026-11-10-murphy-out",
   "date": "2026-11-10",
   "file": "2026-11-10-murphy-out.md"
@@ -10,24 +15,14 @@
   "file": "2026-11-10-fain-pool.md"
  },
  {
+  "id": "2026-11-09-weighted-polls",
+  "date": "2026-11-09",
+  "file": "2026-11-09-weighted-polls.md"
+ },
+ {
   "id": "2026-11-09-warnock-heir",
   "date": "2026-11-09",
   "file": "2026-11-09-warnock-heir.md"
- },
- {
-  "id": "2026-11-09-run-average",
-  "date": "2026-11-09",
-  "file": "2026-11-09-run-average.md"
- },
- {
-  "id": "2026-11-09-elsayed-run",
-  "date": "2026-11-09",
-  "file": "2026-11-09-elsayed-run.md"
- },
- {
-  "id": "2026-11-09-name-id",
-  "date": "2026-11-09",
-  "file": "2026-11-09-name-id.md"
  },
  {
   "id": "2026-11-09-two-way",
@@ -35,39 +30,14 @@
   "file": "2026-11-09-two-way.md"
  },
  {
-  "id": "2026-11-09-freeze-knobs",
-  "date": "2026-11-09",
-  "file": "2026-11-09-freeze-knobs.md"
- },
- {
-  "id": "2026-11-09-clock",
-  "date": "2026-11-09",
-  "file": "2026-11-09-clock.md"
- },
- {
-  "id": "2026-11-09-weighted-polls",
-  "date": "2026-11-09",
-  "file": "2026-11-09-weighted-polls.md"
- },
- {
-  "id": "2026-11-09-longshot",
-  "date": "2026-11-09",
-  "file": "2026-11-09-longshot.md"
- },
- {
-  "id": "2026-11-09-drawn-priors",
-  "date": "2026-11-09",
-  "file": "2026-11-09-drawn-priors.md"
- },
- {
-  "id": "2026-11-09-iowa-swing",
-  "date": "2026-11-09",
-  "file": "2026-11-09-iowa-swing.md"
- },
- {
   "id": "2026-11-09-transfer",
   "date": "2026-11-09",
   "file": "2026-11-09-transfer.md"
+ },
+ {
+  "id": "2026-11-09-run-average",
+  "date": "2026-11-09",
+  "file": "2026-11-09-run-average.md"
  },
  {
   "id": "2026-11-09-publication-pass",
@@ -78,6 +48,41 @@
   "id": "2026-11-09-post-midterm",
   "date": "2026-11-09",
   "file": "2026-11-09-post-midterm.md"
+ },
+ {
+  "id": "2026-11-09-name-id",
+  "date": "2026-11-09",
+  "file": "2026-11-09-name-id.md"
+ },
+ {
+  "id": "2026-11-09-longshot",
+  "date": "2026-11-09",
+  "file": "2026-11-09-longshot.md"
+ },
+ {
+  "id": "2026-11-09-iowa-swing",
+  "date": "2026-11-09",
+  "file": "2026-11-09-iowa-swing.md"
+ },
+ {
+  "id": "2026-11-09-freeze-knobs",
+  "date": "2026-11-09",
+  "file": "2026-11-09-freeze-knobs.md"
+ },
+ {
+  "id": "2026-11-09-elsayed-run",
+  "date": "2026-11-09",
+  "file": "2026-11-09-elsayed-run.md"
+ },
+ {
+  "id": "2026-11-09-drawn-priors",
+  "date": "2026-11-09",
+  "file": "2026-11-09-drawn-priors.md"
+ },
+ {
+  "id": "2026-11-09-clock",
+  "date": "2026-11-09",
+  "file": "2026-11-09-clock.md"
  },
  {
   "id": "2026-11-08",
