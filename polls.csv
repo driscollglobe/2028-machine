@@ -1,87 +1,87 @@
 pollster,sponsor,field_start,field_end,sample,population,geography,newsom,aoc,sanders,ossoff,harris,shapiro,pete,pritzker,khanna,kelly,beshear,rahm,whitmer,moore,warnock,talarico,elsayed,stewart,fain,walz,booker,gallego,slotkin,vanhollen,other
-Emerson College,,2026-11-14,2026-11-16,499,voters,national,8,12,0,17,6,2,6,1,,3,4,,,0,,1,1,,,,1,,,,20
-Emerson College,,2026-11-14,2026-11-16,499,voters,national,11,15,,17,16,3,14,3,0,4,7,0,,,,,,,,,,,,,3
-Echelon Insights,,2026-11-12,2026-11-16,531,registered voters,national,11,10,,10,19,4,15,3,1,5,2,,2,,1,,,,,,2,,,,1
-Verasight,,2026-11-11,2026-11-13,726,adults,national,10,17,,12,18,4,15,3,1,,1,,,1,1,,,,,,,,,,2
-The Economist,YouGov,2026-11-09,2026-11-11,489,likely voters,national,13,12,2,15,20,3,10,3,,4,3,,,,,1,,,,,2,,,,12
-McLaughlin & Associates,,2026-10-30,2026-11-05,471,likely voters,national,16,9,,7,28,6,9,3,,5,3,1,2,1,,,,,,,3,,,,
-Cygnal,,2026-11-04,2026-11-05,,registered voters,national,12,18,,,14,6,19,3,,,4,,2,2,,,,,,,,,,,
-AtlasIntel,,2026-10-28,2026-11-01,3566,likely voters,national,9,17.6,,18.2,12.6,3.4,15.8,2.5,,9.1,3.9,,,,,,,,,,1.5,,,,4.1
-Harvard Harris,,2026-10-24,2026-10-26,,registered voters,national,20,11,,6,34,7,10,5,,,,,,,,,,,,,,,,,4
-Leger,,2026-10-23,2026-10-25,375,adults,national,11,7,,6,22,7,8,5,,,2,,,,,,,,,,,,,,4
-New York Times,Siena,2026-10-12,2026-10-19,1170,registered voters,national,9,6,,4,12,1,7,2,,3,1,,,,,,,,,,0,,,,10
-Echelon Insights,,2026-10-15,2026-10-19,522,likely voters,national,14,13,,5,19,4,13,2,,7,2,,,,,4,,,,,3,,,,7
-Noble Predictive Insights,The Center Square,2026-10-05,2026-10-07,1171,registered voters,national,14,9,,8,29,5,10,3,,6,3,,,,,,,,,,3,,,,5
-Harvard Harris,,2026-09-26,2026-09-28,,registered voters,national,17,12,,6,38,7,11,5,,,,,,,,,,,,,,,,,4
-Focaldata,Financial Times,2026-09-26,2026-09-28,778,likely voters,national,15,9,,8,30,5,9,,,5,3,,,,,,,,,,,,,,
-McLaughlin & Associates,,2026-09-16,2026-09-22,463,likely voters,national,12,8,,,29,5,9,2,,8,,,,,,,,,,,4,,,,7
-Echelon Insights,,2026-09-17,2026-09-21,491,likely voters,national,14,7,,8,24,3,10,,,7,2,,,,,,,,,,3,0,,,8
-Big Data Poll,,2026-09-13,2026-09-15,1329,likely voters,national,16,10,,6,27,5,10,,,5,4,,2.5,,,,,,,,,,,,2.5
+Emerson College,,2026-11-14,2026-11-16,499,registered voters,national,8.4,12.1,0.2,16.5,6.1,2,6,1.2,,2.6,4,,,0.2,,1.1,0.8,,,,0.6,,,,19
+Emerson College,,2026-11-14,2026-11-16,499,registered voters,national,11.3,15,,17,15.5,2.6,13.8,3.4,0.4,4.2,6.5,0.2,,,,,,,,,,,,,2.1
+Echelon Insights,,2026-11-12,2026-11-16,531,likely voters,national,11,10,,10,19,4,15,3,1,5,2,,2,,1,,,,,,2,,,,1
+Strength in Numbers,Verasight,2026-11-11,2026-11-13,726,adults,national,10,17,,12,18,4,15,3,1,,1,,,1,1,,,,,,,,,,2
+Rainey Center,,2026-11-08,2026-11-12,518,likely voters,national,16,6,,10,17,7,8,3,0,4,5,1,1,1,1,6,,,,,3,0,,,2
+Economist,YouGov,2026-11-09,2026-11-11,489,adults,national,13,12,2,15,20,3,10,3,,4,3,,,,,1,,,,,2,,,,11
+McLaughlin & Associates,,2026-10-30,2026-11-05,471,likely voters,national,16,9,,7,28,3,9,3,,5,3,1,2,2,,,,,,,4,,,,
+Cygnal,,2026-11-04,2026-11-05,3000,registered voters,national,12.1,17.9,,,13.6,6.4,18.5,2.8,,,3.6,,1.5,2.3,,,,,,,,,,,0.2
+AtlasIntel,,2026-10-28,2026-11-01,3566,likely voters,national,9,17.6,,18.2,12.6,3.4,15.8,2.5,,9.1,3.9,,,,,,,,,,1.5,,,,6.4
+Harvard CAPS,Harris,2026-10-24,2026-10-26,2700,registered voters,national,20,11,,7,34,8,10,4,,,2,,,,,,,,,,,,,,3
+Leger,,2026-10-23,2026-10-25,375,adults,national,14,7,,6,22,4,8,2,,7,2,,1,,,3,,,,,6,,,,
+New York Times,Siena College,2026-10-12,2026-10-19,1170,likely voters,national,11,6,2,5,11,2,8,1,,3,1,,,,,1,,,,,1,,,,9
+Echelon Insights,,2026-10-15,2026-10-19,522,likely voters,national,14,13,,5,19,4,13,2,,7,2,1,1,1,1,4,,,,,3,,,,2
+The Center Square,Noble Predictive Insights,2026-10-05,2026-10-07,1171,registered voters,national,14,9,,,29,5,10,3,1,6,3,,,1,,,,,,,3,,,,3
+Focaldata,Financial Times,2026-10-02,2026-10-05,778,likely voters,national,15,9,,8,30,5,9,,0,5,3,0,,,,,,,,,,,,,
+Harvard CAPS,Harris,2026-09-26,2026-09-28,2200,registered voters,national,17,12,,6,38,7,11,5,,,,,,,,,,,,,,,,,4
+McLaughlin & Associates,,2026-09-16,2026-09-22,463,likely voters,national,12,8,,,29,5,9,2,,8,,1,2,1,,,,,,,4,,,,3
+Echelon Insights,,2026-09-17,2026-09-21,491,likely voters,national,14,7,,8,24,3,10,2,,7,2,,2,1,1,,,,,,3,,,1,1
+Big Data Poll,,2026-09-13,2026-09-15,1329,likely voters,national,16.1,10.3,,6.4,26.7,5.5,10.3,,,5.4,3.5,,2.5,,,,,,,,,,,,2.8
 Veteran Action,The Honest Poll,2026-09-07,2026-09-13,626,likely voters,national,21,9,,6,32,5,13,,,,,,,,,,,,,,,,,,4
-Focaldata,,2026-08-28,2026-09-02,614,likely voters,national,14,11,,7,29,8,9,,1,6,3,1,,,,,,,,,,,,,
-Bowling Green State University,YouGov,2026-08-25,2026-09-01,566,likely voters,national,14,14,,7,17,3,16,2,,6,3,0,,,,,,,,2,4,,,,24
-Morning Consult,,2026-08-28,2026-08-30,,registered voters,national,12,,,7,24,,9,,,,,,,,,,,,,,,,,,
-Harvard Harris,,2026-08-28,2026-08-30,2100,registered voters,national,18,9,,7,42,7,9,4,,,,,,,,,,,,,,,,,3
-Quantus Insights,,2026-08-26,2026-08-28,551,likely voters,national,7.1,15.3,,21.3,8.1,,25.7,,,,,,,,,,,,,,,,,,1
+Focaldata,Financial Times,2026-08-28,2026-09-02,614,likely voters,national,14,11,,7,29,8,9,,1,6,3,1,,,,,,,,,,,,,
+BGSU,YouGov,2026-08-25,2026-09-01,566,likely voters,national,14,14,,,17,3,16,2,,10,3,0,1,,,,,,,2,4,,,,23
+Morning Consult,,2026-08-28,2026-08-30,,,national,12,,,7,24,,9,,,,,,,,,,,,,,,,,,
+Harvard CAPS,Harris,2026-08-28,2026-08-30,2100,registered voters,national,18,9,,7,42,7,9,4,,,,,,,,,,,,,,,,,3
+Quantus Insights,,2026-08-26,2026-08-28,515,likely voters,national,7.1,15.3,,21.3,8.1,,25.7,,,,,,,,,,,,,,,,,,3.1
 McLaughlin & Associates,,2026-08-18,2026-08-24,474,likely voters,national,16,9,,,29,6,10,3,,7,,1,2,1,,,,,,,3,,,,
 Echelon Insights,,2026-08-13,2026-08-17,483,likely voters,national,12,11,,5,18,6,13,3,1,7,2,,2,1,1,,1,,,,3,,,,1
-Noble Predictive Insights {{Sponsored by Center Square Voters' Voice}},,2026-08-12,2026-08-16,930,registered voters,national,14,7,,,28,5,12,3,,3,3,,,,,,,,,,3,,,,
-Focaldata,,2026-08-07,2026-08-11,616,likely voters,national,15,9,,7,26,8,13,,1,6,1,1,,,,,,,,,,,,,
-Rasmussen Reports,,2026-08-02,2026-08-04,1222,likely voters,national,14,9,,,37,6,10,,,9,,,,,,,,,,,,,,,
-Big Data Poll,,2026-07-24,2026-07-27,1338,likely voters,national,14.3,8.6,,6.2,29.7,6.5,7.4,,,5,4,,2.6,,,,,,,,,,,,3.5
-McLauglin & Associates,,2026-07-15,2026-07-21,472,likely voters,national,18,10,,,28,5,8,5,,3,,1,2,2,,,,,,,5,,,,
-J.L. Partners,,2026-07-20,2026-07-20,517,registered voters,national,15,7,,4,31,5,9,3,,4,,,,,,,,,,,,,,,12
-Emerson College,,2026-07-19,2026-07-20,574,voters,national,17,13,,13,8,5,19,3,2,,7,,,,,,,,,,,,,,3
-Echelon Insights,,2026-07-09,2026-07-13,496,likely voters,national,14,9,,,21,7,13,3,,4,,,,,,,,,,,,,,,16
-Harvard Harris,,2026-07-11,2026-07-12,1776,registered voters,national,24,9,,,37,9,10,5,,,,,,,,,,,,,,,,,5
+The Center Square,Noble Predictive Insights,2026-08-12,2026-08-16,930,registered voters,national,14,7,,,28,5,12,3,1,5,3,,,1,,,,,,,3,,,,5
+Focaldata,Financial Times,2026-08-07,2026-08-11,616,likely voters,national,15,9,,5,26,8,13,,1,6,1,1,,,,,,,,,,,,,
+Big Data Poll,,2026-07-26,2026-07-29,1338,likely voters,national,14.3,8.6,,6.2,29.7,6.5,7.4,,,5,4,,2.6,,,,,,,,,,,,3.6
+McLaughlin & Associates,,2026-07-15,2026-07-21,472,likely voters,national,17,10,,,28,4,8,3,,7,,1,,,,,,,,,2,,,,7
+Emerson College,,2026-07-19,2026-07-20,574,likely voters,national,16.9,12.5,,12.6,8.1,5,18.8,2.7,1.5,,6.7,,,,,,,,,,,,,,2.5
+Daily Mail,J.L. Partners,2026-07-17,2026-07-20,516,registered voters,national,14,7,,4,31,5,9,3,1,3,2,,1,2,,,,,,3,3,0,,,1
+Echelon Insights,,2026-07-09,2026-07-13,496,likely voters,national,14,9,,3,21,7,13,3,1,4,3,,2,1,1,,,,,,2,,,,1
+Harvard CAPS,Harris,2026-07-11,2026-07-12,1776,registered voters,national,24,9,,,37,9,10,5,,,,,,,,,,,,,,,,,5
 YouGov,,2026-07-08,2026-07-10,485,adults,national,13,10,,3,17,1,9,3,,3,2,,,,,,,,,,2,,,,17
-Quantus Insights,,2026-07-03,2026-07-07,1140,likely voters,national,17.7,11.1,,,35.3,7.1,12.9,,,,,,,,,,,,,,,,,,16
-Manhattan Institute,,2026-07-01,2026-07-06,1121,likely voters,national,15,12,,3,19,4,13,,,6,,,,,,,,,,,3,,,,6
-Zogby,,2026-07-01,2026-07-04,391,likely voters,national,19,12,,,38,7,9,5,,6,,,,,,,,,,,,1,,,3
-Focaldata,,2026-06-26,2026-06-30,755,likely voters,national,15,9,,2,33,7,8,3,,5,2,,,,,,,1,,,,,,,
-Daily Mail,J.L. Partners,2026-06-24,2026-06-26,1040,registered voters,national,15,6,,2,29,3,11,3,1,5,3,,2,1,,,,,,3,4,,,,
-McLauglin & Associates,,2026-06-17,2026-06-23,464,likely voters,national,16,9,,,26,5,8,5,,3,,1,2,2,,,,,,,5,,,,
-Echelon Insights,,2026-06-11,2026-06-14,515,likely voters,national,14,12,,2,20,6,14,3,1,4,2,,2,1,,,,,,,3,,,,5
-Noble Predictive Insights {{Sponsored by Center Square Voters' Voice}},,2026-06-01,2026-06-04,1013,registered voters,national,14,8,,,27,,11,2,,,2,,,,,,,,,,,,,,
-Focaldata,,2026-05-29,2026-06-01,685,registered voters,national,17,7,,2,37,3,8,2,,5,3,,,,,,,1,,,,,,,
-Harvard Harris,,2026-05-29,2026-05-31,1725,registered voters,national,26,8,,,44,10,,7,,,,,,,,,,,,,,,,,6
-I&I,TIPP,2026-05-26,2026-05-28,593,registered voters,national,14,5,,1,31,6,6,3,1,4,2,,2,1,1,,,,,2,4,,,,2
-Emerson College,,2026-05-24,2026-05-25,432,likely voters,national,15.9,11.1,,,17.9,10,9.9,4.4,1,,8.5,,,,,,,,,,,,,,3.7
-Rasmussen Reports,,2026-05-18,2026-05-20,433,likely voters,national,12,11,,,34,9,10,2,,9,4,,,,,,,,,,,,,,
-Overton Insights,,2026-05-16,2026-05-20,661,likely voters,national,13,12,9,,9,8,16,1,,4,3,,0,2,,,,,,,7,,,,2
+Quantus Insights,,2026-07-03,2026-07-07,503,likely voters,national,17.7,11.1,,,35.3,7.1,12.9,,,,,,,,,,,,,,,,,,16
+Manhattan Institute,,2026-07-01,2026-07-06,1121,likely voters,national,15,12,,3,19,4,13,1,,6,2,,,,,,,1,,,3,,,,3
+Zogby Analytics,,2026-07-01,2026-07-04,391,likely voters,national,19.1,12.3,,,37.5,7,9.2,5.3,,5.9,,,,,,,,,,,,0.6,,,3.4
+Focaldata,Financial Times,2026-06-26,2026-06-30,755,likely voters,national,15,9,,2,33,7,8,3,,5,2,,,,,,,1,,,,,,,
+Big Data Poll,,2026-06-26,2026-06-28,1256,likely voters,national,15.6,8.3,,3.5,28.8,6.9,9.5,,,6.4,2.2,,3.8,,,,,,,,,,,,3.3
+Daily Mail,J.L. Partners,2026-06-24,2026-06-26,1040,registered voters,national,15,6,,2,29,4,11,3,1,5,3,,2,1,,,,,,3,4,0,,,3
+McLaughlin & Associates,,2026-06-17,2026-06-23,464,likely voters,national,16,9,,,26,5,8,5,,3,,1,2,2,,,,,,,5,,,,
+Echelon Insights,,2026-06-11,2026-06-14,515,likely voters,national,14,12,,2,20,6,14,3,1,4,2,,2,1,,,,,,,3,,,,3
+The Center Square,Noble Predictive Insights,2026-06-01,2026-06-04,1013,registered voters,national,14,8,,,27,,11,2,,,2,,,,,,,,,,,,,,
+Focaldata,Financial Times,2026-05-29,2026-06-01,646,registered voters,national,17,7,,2,37,3,8,2,,5,3,,,,,,,1,,,,,,,
+Harvard CAPS,Harris,2026-05-29,2026-05-31,1725,registered voters,national,26,8,,,44,10,,7,,,,,,,,,,,,,,,,,6
+I&I,TIPP,2026-05-26,2026-05-28,593,registered voters,national,14,5,,1,31,6,6,3,1,4,2,,2,1,1,,,,,2,4,,,,1
+Emerson College,,2026-05-24,2026-05-25,485,likely voters,national,15.9,11.1,,,9.9,10,17.9,4.4,1,,8.5,,,,,,,,,,,,,,3.8
+Overton Insights,,2026-05-16,2026-05-20,1337,likely voters,national,13,12,9,,9,8,16,1,,4,3,,0,2,,,,,,,7,,,,2
 McLaughlin & Associates,,2026-05-12,2026-05-18,459,likely voters,national,16,7,,,28,6,9,2,,,,2,2,1,,,,,,2,5,,,,5
-Echelon Insights,,2026-05-14,2026-05-18,501,likely voters,national,17,11,,1,23,5,10,4,1,6,2,,4,1,1,,,,,,3,,,,1
-Lake Research Partners,,2026-05-06,2026-05-11,800,likely voters,national,17,10,,,26,7,16,4,0,8,2,1,3,,,,,,,,5,0,,,
-AtlasIntel,,2026-05-04,2026-05-07,2069,adults,national,21.2,26,,,12.9,2.4,22.4,,0.9,,4.1,0.6,1.1,0.4,0.1,,,,,,3.9,,,,3.1
-Focaldata,,2026-05-01,2026-05-05,1339,likely voters,national,16,9,,1,38,5,9,3,,5,2,,,,,,,1,,,,,,,
-Harvard Harris,,2026-04-23,2026-04-26,2745,registered voters,national,22,8,,,50,9,,6,,,,,,,,,,,,,,,,,5
+Echelon Insights,,2026-05-14,2026-05-18,501,likely voters,national,17,11,,1,23,5,10,4,1,6,2,,4,1,1,,,,,,3,,,,2
+Lake Research Partners,,2026-05-06,2026-05-11,800,likely voters,national,17,10,,,26,7,16,4,0,8,3,1,3,,,,,,,,5,0,,,
+AtlasIntel,,2026-05-04,2026-05-07,2069,adults,national,21.2,26,,,12.9,2.4,22.4,,0.9,,4.1,0.6,1.1,0.4,0,,,,,1,3.9,,,,3.1
+Focaldata,Financial Times,2026-05-01,2026-05-05,1339,likely voters,national,16,9,,1,38,5,9,3,,6,2,,,,,,,1,,,,,,,
+Harvard CAPS,Harris,2026-04-23,2026-04-26,2745,registered voters,national,22,8,,,50,9,,6,,,,,,,,,,,,,,,,,5
 Verasight,,2026-04-21,2026-04-23,864,adults,national,15,13,11,,22,4,12,2,,6,,,1,,,,,,,,4,,,,3
-Echelon Insights,,2026-04-17,2026-04-20,525,registered voters,national,21,10,,2,22,5,12,3,1,3,2,,2,1,1,,,,,,4,2,,,2
-McLaughlin & Associates,,2026-04-08,2026-04-15,457,registered voters,national,15,4,,,29,4,10,3,,,,1,4,2,,,,,,2,4,,,,12
-YouGov,,2026-04-08,2026-04-13,968,registered voters,national,12,9,,,24,5,9,3,,,,,,,,,,,,,2,,,,19
-Harvard Harris,,2026-03-25,2026-03-26,2009,registered voters,national,26,8,,,41,10,,7,,,,,,,,,,,,,,,,,6
-JL Partners,Daily Mail,2026-03-18,2026-03-20,541,likely voters,national,19,7,,2,22,8,11,3,0,5,3,,2,1,,,,,,2,3,1,,,3
-Echelon Insights,,2026-03-12,2026-03-16,1033,likely voters,national,19,11,,1,21,5,9,2,1,4,4,,2,2,2,,,,,,4,,,,3
-Focaldata,,2026-03-06,2026-03-10,1782,voters,national,22,11,,2,39,6,8,4,,4,2,,,,,,,2,,,,,,,
-Yale Youth Poll,,2026-03-03,2026-03-09,1557,registered voters,national,19.2,12.7,,1.4,19.7,3.5,13.9,3.5,,6.7,2.4,0,2,0.9,1.1,,,,,1.8,2.2,0.2,,,8.9
+Echelon Insights,,2026-04-17,2026-04-20,525,likely voters,national,21,10,,2,22,5,12,3,1,3,2,,2,1,1,,,,,,4,,,,4
+McLaughlin & Associates,,2026-04-08,2026-04-15,457,likely voters,national,15,4,,,29,4,10,3,,,,1,4,2,,,,,,2,4,,,,8
+YouGov,,2026-04-08,2026-04-13,968,adults,national,12,9,7,,24,4,9,3,,5,2,,1,,,,,,,1,2,,,,6
+Harvard CAPS,Harris,2026-03-25,2026-03-26,2009,registered voters,national,26,8,,,41,10,,7,,,,,,,,,,,,,,,,,6
+Daily Mail,J.L. Partners,2026-03-18,2026-03-20,541,likely voters,national,19,7,,,22,8,10,,,,,,,,,,,,,,,,,,
+Echelon Insights,,2026-03-12,2026-03-16,513,likely voters,national,19,11,,1,21,5,9,2,1,4,3,,2,2,2,,,,,,4,,,,3
+Focaldata,,2026-03-06,2026-03-10,672,likely voters,national,22,11,,2,39,6,8,4,,4,2,,,,,,,2,,,,,,,
+Yale Youth Poll,,2026-03-03,2026-03-09,1754,registered voters,national,19.1,12.7,,1.4,19.7,3.5,13.9,3.5,,6.7,2.4,0,2,0.9,1.1,,,,,1.8,2.2,0.2,,,8.9
 McLaughlin & Associates,,2026-03-04,2026-03-09,456,likely voters,national,19,11,,,20,5,9,2,,,,1,3,1,,,,,,2,2,,,,9
-Noble Predictive Insights,,2026-03-02,2026-03-05,1152,registered voters,national,16,6,,,31,5,7,2,,,,,,,,,,,,,3,,,,12
-J.L. Partners,,2026-02-25,2026-02-27,1095,registered voters,national,19,9,,,23,5,10,4,,,,,,,,,,,,,5,,,,25
-Harvard Harris,,2026-02-25,2026-02-26,1999,registered voters,national,24,14,,7,39,10,,6,,,,,,,,,,,,,,,,,7
-Echelon Insights,,2026-02-19,2026-02-23,1002,likely voters,national,24,9,,1,18,4,8,4,,4,2,,2,1,1,,,,,,3,,,,4
-Emerson College,,2026-02-21,2026-02-22,438,likely voters,national,20,9,,,13,7,16,3,,,5,,2,,,,,,,,,,,,
-YouGov,BGSU,2026-02-13,2026-02-18,556,registered voters,national,21,11,,,18,3,11,6,,7,3,0,2,,,,,,,3,2,,,,16
-Manhattan Institute,,2026-02-06,2026-02-15,1782,registered voters,national,20,7,,1,23,5,8,2,1,4,2,0,2,1,,,,2,,,2,0,,,4
-YouGov,Yahoo,2026-02-09,2026-02-12,1704,registered voters,national,19,12,,,18,,13,6,,9,,,,,,,,,,3,3,,,,
-Focaldata,,2026-02-10,2026-02-10,1148,registered voters,national,21,10,,,39,7,7,3,,,,,,,,,,,,,,,,,13
-I&I,TIPP,2026-01-27,2026-01-29,527,registered voters,national,13,2,,,38,4,5,3,,,,,,,,,,,,,,,,,35
-Harvard Harris,,2026-01-28,2026-01-29,2000,registered voters,national,30,12,,,39,9,,7,,,,,,,,,,,,,,,,,4
-Rasmussen Reports,,2026-01-25,2026-01-27,1115,likely voters,national,20,7,,,34,10,10,,,,,,,3,,,,,,,6,,,,3
-McLaughlin & Associates,,2026-01-21,2026-01-27,455,likely voters,national,14,7,,,27,4,8,2,,,,1,2,1,,,,,,3,3,,,,12
-Echelon Insights,,2026-01-22,2026-01-26,3,,national,9,3,,,27,2,21,3,,4,4,,3,1,2,,,,,,8,,,,1
+The Center Square,Noble Predictive Insights,2026-03-02,2026-03-05,1152,registered voters,national,16,6,,,31,5,7,2,0,4,2,,,1,,,,,,,3,,,,11
+Daily Mail,J.L. Partners,2026-02-25,2026-02-27,1095,registered voters,national,19,7,,1,23,5,10,4,0,5,2,,3,0,,,,,,2,5,0,,,2
+Harvard CAPS,Harris,2026-02-25,2026-02-26,1999,registered voters,national,24,14,,,39,10,,6,,,,,,,,,,,,,,,,,7
+Echelon Insights,,2026-02-19,2026-02-23,498,likely voters,national,24,9,,1,18,4,8,4,,4,2,,2,1,1,,,,,,3,,,,4
+Emerson College,,2026-02-21,2026-02-22,438,likely voters,national,19.6,9.1,,,12.8,7,15.7,2.7,,,5.1,,2.4,,,,,,,,,,,,2.2
+BGSU,YouGov,2026-02-13,2026-02-18,556,registered voters,national,21,11,,,18,3,11,6,,7,3,0,2,,,,,,,3,2,,,,13
+Manhattan Institute,,2026-02-06,2026-02-15,1782,likely voters,national,20,7,,1,23,5,8,2,1,4,2,0,2,1,,,,2,,,2,0,,,4
+Yahoo,YouGov,2026-02-09,2026-02-12,1704,registered voters,national,19,12,,,18,,13,6,,9,,,,,,,,,,3,3,,,,
+Focaldata,,2026-02-10,2026-02-10,438,likely voters,national,21,10,,1,39,7,7,3,,6,1,,4,,,,,,,,,,,,
+I&I,TIPP,2026-01-27,2026-01-29,527,registered voters,national,13,2,,2,38,4,5,3,,3,2,,2,1,,,,,,3,,,,,4
+Harvard CAPS,Harris,2026-01-28,2026-01-29,2000,registered voters,national,30,12,,,39,9,,7,,,,,,,,,,,,,,,,,4
+McLaughlin & Associates,,2026-01-21,2026-01-27,455,likely voters,national,14,7,,,27,4,8,2,,,,1,2,1,,,,,,3,3,,,,10
+Focaldata,,2026-01-23,2026-01-26,791,likely voters,national,22,9,,1,40,4,9,4,,6,2,,3,,,,,,,,,,,,
+Echelon Insights,,2026-01-22,2026-01-26,502,likely voters,national,27,9,,,21,3,8,3,,4,2,,3,1,2,,,,,,3,,,,1
 Big Data Poll,,2026-01-22,2026-01-24,1346,likely voters,national,22.2,6.4,,,31.4,6.1,11.7,,,,2.5,,3.1,,,,,,,,,,,,4.1
-YouGov,,2026-01-09,2026-01-14,2250,likely voters,national,17,9,7,,20,2,8,3,,7,2,,0,,,,,,,1,3,,,,4
-Zogby Analytics,,2026-01-01,2026-01-07,374,likely voters,national,21,11,,,30,6,8,5,,7,,,,,,,,,,,,1,,,
+YouGov,,2026-01-09,2026-01-14,1024,adults,national,17,9,7,,20,2,8,3,,7,2,,0,,,,,,,1,3,,,,4
+Zogby Analytics,,2026-01-01,2026-01-07,374,likely voters,national,20.7,11,,,30.4,6,7.6,5.2,,7.3,,,,,,,,,,,,1.4,,,2.4
 McLaughlin & Associates,,2025-12-12,2025-12-19,460,likely voters,national,17,6,,,27,5,8,2,,,,,2,,,,,,,4,2,,,,10
 Daily Mail,J.L. Partners,2025-12-17,2025-12-19,383,likely voters,national,21,3,,,30,4,7,3,,,,,2,,,,,,,3,3,,,,13
 AtlasIntel,,2025-12-15,2025-12-19,2315,adults,national,35.4,16,,,7.8,6.1,14.5,,,,,,1.8,,,,,,,4.3,2.5,,,,11.5
